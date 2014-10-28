@@ -4,7 +4,7 @@
 //
 //  Created by Le Ngoc Giang on 10/22/14.
 //  Copyright (c) 2014 seesaavn. All rights reserved.
-//
+//  in develop
 
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
