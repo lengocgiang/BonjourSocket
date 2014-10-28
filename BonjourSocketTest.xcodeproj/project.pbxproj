@@ -9,11 +9,21 @@
 /* Begin PBXBuildFile section */
 		51B2CD7019FE239500CCD69F /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 51B2CD6F19FE239500CCD69F /* main.m */; };
 		51B2CD7319FE239500CCD69F /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 51B2CD7219FE239500CCD69F /* AppDelegate.m */; };
-		51B2CD7619FE239500CCD69F /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 51B2CD7519FE239500CCD69F /* ViewController.m */; };
 		51B2CD7919FE239500CCD69F /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 51B2CD7719FE239500CCD69F /* Main.storyboard */; };
 		51B2CD7B19FE239500CCD69F /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 51B2CD7A19FE239500CCD69F /* Images.xcassets */; };
 		51B2CD7E19FE239500CCD69F /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 51B2CD7C19FE239500CCD69F /* LaunchScreen.xib */; };
 		51B2CD8A19FE239500CCD69F /* BonjourSocketTestTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 51B2CD8919FE239500CCD69F /* BonjourSocketTestTests.m */; };
+		51B2CDA219FE23A000CCD69F /* BonjourClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 51B2CD9619FE23A000CCD69F /* BonjourClient.m */; };
+		51B2CDA519FE23A000CCD69F /* BonjourRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 51B2CD9D19FE23A000CCD69F /* BonjourRequest.m */; };
+		51B2CDA619FE23A000CCD69F /* BonjourResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = 51B2CD9F19FE23A000CCD69F /* BonjourResponse.m */; };
+		51B2CDA719FE23A000CCD69F /* Util.m in Sources */ = {isa = PBXBuildFile; fileRef = 51B2CDA119FE23A000CCD69F /* Util.m */; };
+		51B2CE0E19FE29D600CCD69F /* BonjourConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = 51B2CE0B19FE29D600CCD69F /* BonjourConnection.m */; };
+		51B2CE0F19FE29D600CCD69F /* BonjourServer.m in Sources */ = {isa = PBXBuildFile; fileRef = 51B2CE0D19FE29D600CCD69F /* BonjourServer.m */; };
+		51B2CE1419FE2B5200CCD69F /* BrowserViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 51B2CE1119FE2B5200CCD69F /* BrowserViewController.m */; };
+		51B2CE1519FE2B5200CCD69F /* InfoServiceViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 51B2CE1319FE2B5200CCD69F /* InfoServiceViewController.m */; };
+		51B2CE1B19FE2BDA00CCD69F /* ServerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 51B2CE1A19FE2BDA00CCD69F /* ServerViewController.m */; };
+		51B2CE2219FE420500CCD69F /* file.zip in Resources */ = {isa = PBXBuildFile; fileRef = 51B2CE2019FE420500CCD69F /* file.zip */; };
+		51B2CE2319FE420500CCD69F /* readme.txt in Resources */ = {isa = PBXBuildFile; fileRef = 51B2CE2119FE420500CCD69F /* readme.txt */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -32,14 +42,32 @@
 		51B2CD6F19FE239500CCD69F /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		51B2CD7119FE239500CCD69F /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		51B2CD7219FE239500CCD69F /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
-		51B2CD7419FE239500CCD69F /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
-		51B2CD7519FE239500CCD69F /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
 		51B2CD7819FE239500CCD69F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		51B2CD7A19FE239500CCD69F /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		51B2CD7D19FE239500CCD69F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
 		51B2CD8319FE239500CCD69F /* BonjourSocketTestTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BonjourSocketTestTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		51B2CD8819FE239500CCD69F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		51B2CD8919FE239500CCD69F /* BonjourSocketTestTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BonjourSocketTestTests.m; sourceTree = "<group>"; };
+		51B2CD9519FE23A000CCD69F /* BonjourClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BonjourClient.h; sourceTree = "<group>"; };
+		51B2CD9619FE23A000CCD69F /* BonjourClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BonjourClient.m; sourceTree = "<group>"; };
+		51B2CD9C19FE23A000CCD69F /* BonjourRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BonjourRequest.h; sourceTree = "<group>"; };
+		51B2CD9D19FE23A000CCD69F /* BonjourRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BonjourRequest.m; sourceTree = "<group>"; };
+		51B2CD9E19FE23A000CCD69F /* BonjourResponse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BonjourResponse.h; sourceTree = "<group>"; };
+		51B2CD9F19FE23A000CCD69F /* BonjourResponse.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BonjourResponse.m; sourceTree = "<group>"; };
+		51B2CDA019FE23A000CCD69F /* Util.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Util.h; sourceTree = "<group>"; };
+		51B2CDA119FE23A000CCD69F /* Util.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Util.m; sourceTree = "<group>"; };
+		51B2CE0A19FE29D600CCD69F /* BonjourConnection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BonjourConnection.h; sourceTree = "<group>"; };
+		51B2CE0B19FE29D600CCD69F /* BonjourConnection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BonjourConnection.m; sourceTree = "<group>"; };
+		51B2CE0C19FE29D600CCD69F /* BonjourServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BonjourServer.h; sourceTree = "<group>"; };
+		51B2CE0D19FE29D600CCD69F /* BonjourServer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BonjourServer.m; sourceTree = "<group>"; };
+		51B2CE1019FE2B5200CCD69F /* BrowserViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BrowserViewController.h; sourceTree = "<group>"; };
+		51B2CE1119FE2B5200CCD69F /* BrowserViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BrowserViewController.m; sourceTree = "<group>"; };
+		51B2CE1219FE2B5200CCD69F /* InfoServiceViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InfoServiceViewController.h; sourceTree = "<group>"; };
+		51B2CE1319FE2B5200CCD69F /* InfoServiceViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InfoServiceViewController.m; sourceTree = "<group>"; };
+		51B2CE1919FE2BDA00CCD69F /* ServerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ServerViewController.h; sourceTree = "<group>"; };
+		51B2CE1A19FE2BDA00CCD69F /* ServerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ServerViewController.m; sourceTree = "<group>"; };
+		51B2CE2019FE420500CCD69F /* file.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; path = file.zip; sourceTree = "<group>"; };
+		51B2CE2119FE420500CCD69F /* readme.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = readme.txt; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -81,10 +109,15 @@
 		51B2CD6C19FE239500CCD69F /* BonjourSocketTest */ = {
 			isa = PBXGroup;
 			children = (
+				51B2CD9319FE23A000CCD69F /* BonjourSocket */,
 				51B2CD7119FE239500CCD69F /* AppDelegate.h */,
 				51B2CD7219FE239500CCD69F /* AppDelegate.m */,
-				51B2CD7419FE239500CCD69F /* ViewController.h */,
-				51B2CD7519FE239500CCD69F /* ViewController.m */,
+				51B2CE1919FE2BDA00CCD69F /* ServerViewController.h */,
+				51B2CE1A19FE2BDA00CCD69F /* ServerViewController.m */,
+				51B2CE1019FE2B5200CCD69F /* BrowserViewController.h */,
+				51B2CE1119FE2B5200CCD69F /* BrowserViewController.m */,
+				51B2CE1219FE2B5200CCD69F /* InfoServiceViewController.h */,
+				51B2CE1319FE2B5200CCD69F /* InfoServiceViewController.m */,
 				51B2CD7719FE239500CCD69F /* Main.storyboard */,
 				51B2CD7A19FE239500CCD69F /* Images.xcassets */,
 				51B2CD7C19FE239500CCD69F /* LaunchScreen.xib */,
@@ -96,6 +129,7 @@
 		51B2CD6D19FE239500CCD69F /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				51B2CE1F19FE420500CCD69F /* Resource */,
 				51B2CD6E19FE239500CCD69F /* Info.plist */,
 				51B2CD6F19FE239500CCD69F /* main.m */,
 			);
@@ -117,6 +151,58 @@
 				51B2CD8819FE239500CCD69F /* Info.plist */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		51B2CD9319FE23A000CCD69F /* BonjourSocket */ = {
+			isa = PBXGroup;
+			children = (
+				51B2CE0919FE29D600CCD69F /* BonjourServer */,
+				51B2CD9419FE23A000CCD69F /* BonjourClient */,
+				51B2CD9B19FE23A000CCD69F /* BonjourTransfer */,
+				51B2CDA019FE23A000CCD69F /* Util.h */,
+				51B2CDA119FE23A000CCD69F /* Util.m */,
+			);
+			path = BonjourSocket;
+			sourceTree = "<group>";
+		};
+		51B2CD9419FE23A000CCD69F /* BonjourClient */ = {
+			isa = PBXGroup;
+			children = (
+				51B2CD9519FE23A000CCD69F /* BonjourClient.h */,
+				51B2CD9619FE23A000CCD69F /* BonjourClient.m */,
+			);
+			path = BonjourClient;
+			sourceTree = "<group>";
+		};
+		51B2CD9B19FE23A000CCD69F /* BonjourTransfer */ = {
+			isa = PBXGroup;
+			children = (
+				51B2CD9C19FE23A000CCD69F /* BonjourRequest.h */,
+				51B2CD9D19FE23A000CCD69F /* BonjourRequest.m */,
+				51B2CD9E19FE23A000CCD69F /* BonjourResponse.h */,
+				51B2CD9F19FE23A000CCD69F /* BonjourResponse.m */,
+			);
+			path = BonjourTransfer;
+			sourceTree = "<group>";
+		};
+		51B2CE0919FE29D600CCD69F /* BonjourServer */ = {
+			isa = PBXGroup;
+			children = (
+				51B2CE0A19FE29D600CCD69F /* BonjourConnection.h */,
+				51B2CE0B19FE29D600CCD69F /* BonjourConnection.m */,
+				51B2CE0C19FE29D600CCD69F /* BonjourServer.h */,
+				51B2CE0D19FE29D600CCD69F /* BonjourServer.m */,
+			);
+			path = BonjourServer;
+			sourceTree = "<group>";
+		};
+		51B2CE1F19FE420500CCD69F /* Resource */ = {
+			isa = PBXGroup;
+			children = (
+				51B2CE2019FE420500CCD69F /* file.zip */,
+				51B2CE2119FE420500CCD69F /* readme.txt */,
+			);
+			path = Resource;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -199,9 +285,11 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				51B2CE2319FE420500CCD69F /* readme.txt in Resources */,
 				51B2CD7919FE239500CCD69F /* Main.storyboard in Resources */,
 				51B2CD7E19FE239500CCD69F /* LaunchScreen.xib in Resources */,
 				51B2CD7B19FE239500CCD69F /* Images.xcassets in Resources */,
+				51B2CE2219FE420500CCD69F /* file.zip in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -219,9 +307,17 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				51B2CD7619FE239500CCD69F /* ViewController.m in Sources */,
+				51B2CDA219FE23A000CCD69F /* BonjourClient.m in Sources */,
+				51B2CE0F19FE29D600CCD69F /* BonjourServer.m in Sources */,
+				51B2CDA619FE23A000CCD69F /* BonjourResponse.m in Sources */,
+				51B2CDA519FE23A000CCD69F /* BonjourRequest.m in Sources */,
+				51B2CE1519FE2B5200CCD69F /* InfoServiceViewController.m in Sources */,
 				51B2CD7319FE239500CCD69F /* AppDelegate.m in Sources */,
+				51B2CE0E19FE29D600CCD69F /* BonjourConnection.m in Sources */,
+				51B2CE1B19FE2BDA00CCD69F /* ServerViewController.m in Sources */,
+				51B2CE1419FE2B5200CCD69F /* BrowserViewController.m in Sources */,
 				51B2CD7019FE239500CCD69F /* main.m in Sources */,
+				51B2CDA719FE23A000CCD69F /* Util.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -344,6 +440,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				INFOPLIST_FILE = BonjourSocketTest/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -354,6 +451,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				INFOPLIST_FILE = BonjourSocketTest/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -412,6 +510,7 @@
 				51B2CD8F19FE239500CCD69F /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		51B2CD9019FE239500CCD69F /* Build configuration list for PBXNativeTarget "BonjourSocketTestTests" */ = {
 			isa = XCConfigurationList;
@@ -420,6 +519,7 @@
 				51B2CD9219FE239500CCD69F /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

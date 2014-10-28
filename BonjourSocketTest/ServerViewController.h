@@ -1,5 +1,5 @@
 //
-//  ViewController.h
+//  RootViewController.h
 //  BonjourSocketTest
 //
 //  Created by Le Ngoc Giang on 10/27/14.
@@ -8,8 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-@interface ViewController : UIViewController
-
+@interface ServerViewController : UIViewController
 
 @end
-
