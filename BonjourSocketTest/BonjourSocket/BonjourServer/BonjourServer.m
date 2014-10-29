@@ -9,6 +9,7 @@
 #import "BonjourServer.h"
 #import "BonjourConnection.h"
 #import "Util.h"
+#import "BonjourConfig.h"
 
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -89,7 +90,7 @@ static void BonjourServerAcceptCallback(CFSocketRef socket,CFSocketCallBackType 
     
     assert(self.port > 0 && self.port < 65536);
     self.netService = [[NSNetService alloc]initWithDomain:@"local"
-                                                     type:@"_gcocoaecho._tcp"
+                                                     type:kServiceType
                                                      name:@"" port:(int)self.port];
     [self.netService setIncludesPeerToPeer:YES];
     [self.netService publish];
@@ -246,9 +247,7 @@ static void BonjourServerAcceptCallback(CFSocketRef socket,CFSocketCallBackType 
         [self.connections addObject:connection];
         [connection openStreams];
         [(NSNotificationCenter *)[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(echoConnectionDidCloseNotification:) name:EchoConnectionDidCloseNotification object:connection];
-        
-        [Util postNotification:EchoConnectionDidCloseNotification];
-        
+
         NSLog(@"Added connection %@",connection);
     }
     else

@@ -37,6 +37,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		5128D4621A00F11B0036C672 /* BonjourConfig.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = BonjourConfig.h; path = BonjourSocketTest/BonjourSocket/BonjourConfig.h; sourceTree = SOURCE_ROOT; };
 		51B2CD6A19FE239500CCD69F /* BonjourSocketTest.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BonjourSocketTest.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		51B2CD6E19FE239500CCD69F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		51B2CD6F19FE239500CCD69F /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -181,6 +182,7 @@
 				51B2CD9D19FE23A000CCD69F /* BonjourRequest.m */,
 				51B2CD9E19FE23A000CCD69F /* BonjourResponse.h */,
 				51B2CD9F19FE23A000CCD69F /* BonjourResponse.m */,
+				5128D4621A00F11B0036C672 /* BonjourConfig.h */,
 			);
 			path = BonjourTransfer;
 			sourceTree = "<group>";

@@ -120,7 +120,12 @@ NSString * EchoConnectionDidRequestedNotification   = @"EchoConnectionDidRequest
         case NSStreamEventEndEncountered:
         case NSStreamEventErrorOccurred:
         {
+            NSError *theError = [aStream streamError];
+            NSLog(@"Error reading stream! \n %i %@",[theError code],[theError localizedDescription]);
             [self closeStreams];
+
+            break;
+
         }break;
             
         case NSStreamEventHasSpaceAvailable:

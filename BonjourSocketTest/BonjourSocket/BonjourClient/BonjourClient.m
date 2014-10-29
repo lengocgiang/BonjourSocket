@@ -8,6 +8,7 @@
 
 #import "BonjourClient.h"
 #import "Util.h"
+#import "BonjourConfig.h"
 
 @interface NSNetService(qNetworkAdditions)
 - (BOOL)qNetworkAdditions_getInputStream:(out NSInputStream **)inputStreamPtr outputStream:(out NSOutputStream **)outputStreamPtr;
@@ -150,7 +151,7 @@ enum {
 #pragma mark - Public methods
 - (void)browserForServer
 {
-    [self browserForServerWithType:@"_gcocoaecho._tcp"];
+    [self browserForServerWithType:kServiceType];
 }
 
 - (void)browserForServerWithType:(NSString *)serverType
