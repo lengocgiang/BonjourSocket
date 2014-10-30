@@ -225,7 +225,7 @@ static void BonjourServerAcceptCallback(CFSocketRef socket,CFSocketCallBackType 
     return YES;
 }
 
-- (void)echoConnectionDidCloseNotification:(NSNotification *)notification
+- (void)echoConnectionDidOpenNotification:(NSNotification *)notification
 {
     BonjourConnection *connection = [notification object];
     assert([connection isKindOfClass:[BonjourConnection class]]);
@@ -246,7 +246,7 @@ static void BonjourServerAcceptCallback(CFSocketRef socket,CFSocketCallBackType 
         BonjourConnection * connection = [[BonjourConnection alloc]initWithInputStream:(__bridge NSInputStream *)readStream outputStream:(__bridge NSOutputStream*)writeStream];
         [self.connections addObject:connection];
         [connection openStreams];
-        [(NSNotificationCenter *)[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(echoConnectionDidCloseNotification:) name:EchoConnectionDidCloseNotification object:connection];
+        [(NSNotificationCenter *)[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(echoConnectionDidOpenNotification:) name:EchoConnectionDidOpenNotification object:connection];
 
         NSLog(@"Added connection %@",connection);
     }

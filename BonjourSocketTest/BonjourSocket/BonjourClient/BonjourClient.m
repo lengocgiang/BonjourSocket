@@ -247,6 +247,7 @@ enum {
     
     [Util postNotification:kEchoClientOpenStreamSuccess];
 }
+
 - (void)closeStreams
 {
     [self.inputStream setDelegate:nil];
@@ -265,14 +266,14 @@ enum {
 }
 - (void)closeStreamsWithStatus:(NSString *)status
 {
+    [self.inputStream removeFromRunLoop:[NSRunLoop currentRunLoop] forMode:NSRunLoopCommonModes];
+    [self.outputStream removeFromRunLoop:[NSRunLoop currentRunLoop] forMode:NSRunLoopCommonModes];
+    
     [self.inputStream setDelegate:nil];
     [self.outputStream setDelegate:nil];
     
     [self.inputStream close];
     [self.outputStream close];
-    
-    [self.inputStream removeFromRunLoop:[NSRunLoop currentRunLoop] forMode:NSRunLoopCommonModes];
-    [self.outputStream removeFromRunLoop:[NSRunLoop currentRunLoop] forMode:NSRunLoopCommonModes];
     
     self.inputStream    = nil;
     self.outputStream   = nil;

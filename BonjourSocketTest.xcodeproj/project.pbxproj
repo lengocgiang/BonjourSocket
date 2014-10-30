@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		5128D4641A00FC420036C672 /* test3.png in Resources */ = {isa = PBXBuildFile; fileRef = 5128D4631A00FC420036C672 /* test3.png */; };
+		5133F60A1A0237050037DDAC /* exit.png in Resources */ = {isa = PBXBuildFile; fileRef = 5133F6091A0237050037DDAC /* exit.png */; };
 		51B2CD7019FE239500CCD69F /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 51B2CD6F19FE239500CCD69F /* main.m */; };
 		51B2CD7319FE239500CCD69F /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 51B2CD7219FE239500CCD69F /* AppDelegate.m */; };
 		51B2CD7919FE239500CCD69F /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 51B2CD7719FE239500CCD69F /* Main.storyboard */; };
@@ -46,6 +47,7 @@
 /* Begin PBXFileReference section */
 		5128D4621A00F11B0036C672 /* BonjourConfig.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = BonjourConfig.h; path = BonjourSocketTest/BonjourSocket/BonjourConfig.h; sourceTree = SOURCE_ROOT; };
 		5128D4631A00FC420036C672 /* test3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = test3.png; sourceTree = "<group>"; };
+		5133F6091A0237050037DDAC /* exit.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = exit.png; sourceTree = "<group>"; };
 		51B2CD6A19FE239500CCD69F /* BonjourSocketTest.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BonjourSocketTest.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		51B2CD6E19FE239500CCD69F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		51B2CD6F19FE239500CCD69F /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -215,6 +217,7 @@
 		51B2CE1F19FE420500CCD69F /* Resource */ = {
 			isa = PBXGroup;
 			children = (
+				5133F6091A0237050037DDAC /* exit.png */,
 				51FBB49D1A0213F7004CF5A4 /* test4.png */,
 				51FBB49E1A0213F7004CF5A4 /* test5.png */,
 				51FBB49F1A0213F7004CF5A4 /* test6.png */,
@@ -314,6 +317,7 @@
 				51B2CD7919FE239500CCD69F /* Main.storyboard in Resources */,
 				51B2CD7E19FE239500CCD69F /* LaunchScreen.xib in Resources */,
 				51FBB49C1A021394004CF5A4 /* test7.png in Resources */,
+				5133F60A1A0237050037DDAC /* exit.png in Resources */,
 				51FBB4961A01EB42004CF5A4 /* test1.png in Resources */,
 				51FBB4A01A0213F7004CF5A4 /* test4.png in Resources */,
 				5128D4641A00FC420036C672 /* test3.png in Resources */,
@@ -469,6 +473,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				INFOPLIST_FILE = BonjourSocketTest/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -480,6 +485,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				INFOPLIST_FILE = BonjourSocketTest/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";

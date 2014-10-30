@@ -13,6 +13,7 @@
 
 @interface BrowserViewController ()
 <
+    InfoServiceViewControllerDelegate,
     NSNetServiceBrowserDelegate
 >
 @property(strong, nonatomic, readwrite) NSNetServiceBrowser         *serviceBrowser;
@@ -119,6 +120,7 @@
     if ([segue.identifier isEqualToString:@"infoSegue"])
     {
         InfoServiceViewController *infoVC = segue.destinationViewController;
+        infoVC.delegate = self;
         infoVC.netService = _netServiceSelected;
     }
 }
@@ -139,6 +141,12 @@
 {
     NSLog(@"Stop search");
     [self.tableView reloadData];
+}
+
+#pragma mark - InfoServiceVCDelegate
+- (void)tapToDismissViewController:(InfoServiceViewController *)controller
+{
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 @end

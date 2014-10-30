@@ -23,9 +23,9 @@
 
 @property (strong, nonatomic) NSArray *pickerData;
 
-- (void)handleRequestNotification:(NSNotification *)notification;
-- (void)handleEchoServerAddConnectionNotification:(NSNotification *)notification;
 
+- (void)handleEchoServerOpenConnectionNotification:(NSNotification *)notification;
+- (void)handleEchoServerCloseConnectionNotification:(NSNotification *)notification;
 @end
 
 @implementation ServerViewController
@@ -35,8 +35,9 @@
     self = [super initWithCoder:aDecoder];
     if (self)
     {
-        [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(handleRequestNotification:) name:EchoConnectionDidRequestedNotification object:nil];
-        [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(handleEchoServerAddConnectionNotification:) name:EchoConnectionDidCloseNotification object:nil];
+//        [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(handleRequestNotification:) name:EchoConnectionDidRequestedNotification object:nil];
+        [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(handleEchoServerOpenConnectionNotification:) name:EchoConnectionDidOpenNotification object:nil];
+        [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(handleEchoServerCloseConnectionNotification:) name:EchoConnectionDidCloseNotification object:nil];
     }
     
     return self;
@@ -112,19 +113,16 @@
 }
 
 #pragma mark - Handle Request Notification
-- (void)handleEchoServerAddConnectionNotification:(NSNotification *)notification
+- (void)handleEchoServerOpenConnectionNotification:(NSNotification *)notification
 {
-    self.logTextView.text = [self.logTextView.text stringByAppendingString:@"\n Add connection"];
+    self.logTextView.text = [self.logTextView.text stringByAppendingString:@"\n Open connection"];
 }
-- (void)handleRequestNotification:(NSNotification *)notification
+- (void)handleEchoServerCloseConnectionNotification:(NSNotification *)notification
 {
-//    NSString *title = [NSString stringWithFormat:@"From %@",[UIDevice currentDevice].name];
-//    UIAlertView *alert = [[UIAlertView alloc]initWithTitle:title
-//                                                   message:@"Chơi không em??"
-//                                                  delegate:nil
-//                                         cancelButtonTitle:@"OK" otherButtonTitles:nil];
-//    [alert show];
-    
+    self.logTextView.text = [self.logTextView.text stringByAppendingString:@"\n Close connection"];
 }
+
+         
+
 
 @end

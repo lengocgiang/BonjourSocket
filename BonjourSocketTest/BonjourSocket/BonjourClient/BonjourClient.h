@@ -41,7 +41,7 @@ typedef NS_ENUM(NSUInteger, BonjourClientSendData) {
 
 - (void)openStreamToConnectNetService:(NSNetService *)netService;
 - (void)openStreamToConnectNetService:(NSNetService *)netService withName:(NSString *)name;
-- (void)outputText:(NSString *)text;
+- (void)closeStreams;
 - (void)dataSending:(NSData *)dataSending;
 
 

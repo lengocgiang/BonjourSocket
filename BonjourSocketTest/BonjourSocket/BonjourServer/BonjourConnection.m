@@ -49,6 +49,7 @@ NSString * EchoConnectionDidRequestedNotification   = @"EchoConnectionDidRequest
     NSLog(@"open stream");
  
     self.filePath = [[Util sharesInstance]pathForTemporaryFileWithPrefix:@"Receive"];
+    
     self.outputStream = [NSOutputStream outputStreamToFileAtPath:self.filePath append:NO];
     
     [self.inputStream setDelegate:self];
@@ -56,8 +57,10 @@ NSString * EchoConnectionDidRequestedNotification   = @"EchoConnectionDidRequest
     
     [self.inputStream scheduleInRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
     [self.outputStream scheduleInRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
+    
     [self.inputStream open];
     [self.outputStream open];
+    [(NSNotificationCenter*)[NSNotificationCenter defaultCenter]postNotificationName:EchoConnectionDidOpenNotification object:self];
     return YES;
 }
 

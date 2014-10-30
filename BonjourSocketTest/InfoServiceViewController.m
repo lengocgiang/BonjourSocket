@@ -55,22 +55,21 @@
         [imgV addGestureRecognizer:tapGesture];
     }
 }
-
+- (void)dealloc
+{
+    [[BonjourClient sharedBrowser]closeStreams];
+}
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
 - (IBAction)sentToServer:(id)sender
 {
-    //[[BonjourClient sharedBrowser]outputText:self.sendTextField.text];
+
     [[BonjourClient sharedBrowser]openStreamToConnectNetService:self.netService];
 
 }
-- (IBAction)sendFileToServer:(id)sender
-{
-//    NSString *filePath = [[NSBundle mainBundle]pathForResource:@"file.zip" ofType:nil];
-//    [[BonjourClient sharedBrowser]startSendFileWithPath:filePath toNetService:self.netService];
-}
+
 #pragma mark - Handle Notification
 
 - (void)echoClientOpenStreamSuccess:(NSNotification *)notification
@@ -125,6 +124,11 @@
 {
     [textField resignFirstResponder];
     return NO;
+}
+#pragma mark -
+- (IBAction)tapToExit:(id)sender
+{
+    [self.delegate tapToDismissViewController:self];
 }
 
 @end

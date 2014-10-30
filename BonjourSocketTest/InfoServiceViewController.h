@@ -8,7 +8,16 @@
 
 #import <UIKit/UIKit.h>
 
+@class InfoServiceViewController;
+
+@protocol InfoServiceViewControllerDelegate <NSObject>
+
+- (void)tapToDismissViewController:(InfoServiceViewController *)controller;
+
+@end
+
 @interface InfoServiceViewController : UIViewController
+@property (assign, nonatomic) id<InfoServiceViewControllerDelegate> delegate;
 @property (strong, nonatomic) NSNetService          *netService;
 
 @end
