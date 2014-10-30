@@ -185,12 +185,44 @@ enum {
 
 
 #pragma mark - Private Methods
+- (void)openStreamToConnectNetService:(NSNetService *)netService withName:(NSString *)name;
+{
+    NSInputStream       *istream;
+    NSOutputStream      *ostream;
+
+    NSString *fileName = [NSString stringWithFormat:@"%@.png",name];
+    
+    NSString *path = [[NSBundle mainBundle]pathForResource:fileName ofType:nil];
+    
+    istream = [NSInputStream inputStreamWithFileAtPath:path];
+    
+    [self closeStreams];
+    
+    if ([netService qNetworkAdditions_getInputStream:NULL outputStream:&ostream])
+    {
+        self.inputStream    = istream;
+        self.outputStream   = ostream;
+        
+        [self.inputStream setDelegate:self];
+        [self.outputStream setDelegate:self];
+        
+        [self.inputStream scheduleInRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
+        [self.outputStream scheduleInRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
+        
+        [self.inputStream open];
+        [self.outputStream open];
+        
+        //[self outputText:nil];
+    }
+    
+    [Util postNotification:kEchoClientOpenStreamSuccess];
+}
 - (void)openStreamToConnectNetService:(NSNetService *)netService
 {
     NSInputStream       *istream;
     NSOutputStream      *ostream;
     
-    NSString *path = [[NSBundle mainBundle]pathForResource:@"test.png" ofType:nil];
+    NSString *path = [[NSBundle mainBundle]pathForResource:@"test6.png" ofType:nil];
 
     istream = [NSInputStream inputStreamWithFileAtPath:path];
     

@@ -13,11 +13,13 @@
 
 @interface InfoServiceViewController ()
 <
+    UIGestureRecognizerDelegate,
     UITextFieldDelegate
 >
 @property (weak, nonatomic) IBOutlet UITextView *serverInfoTextView;
 @property (weak, nonatomic) IBOutlet UITextField *sendTextField;
 @property (weak, nonatomic) IBOutlet UILabel *sentStatusLabel;
+@property (weak, nonatomic) IBOutlet UIView *sendView;
 
 - (void)echoClientOpenStreamSuccess:(NSNotification *)notification;
 - (void)bonjourClientStartSendingData:(NSNotification *)notification;
@@ -44,9 +46,14 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.sendTextField.delegate = self;
-
-    
-    [self.serverInfoTextView setText:[NSString stringWithFormat:@"%@ \n Address :%@ \n Port : %zd",self.netService,self.netService.addresses,self.netService.port]];
+    for(UIImageView *imgV in self.sendView.subviews)
+    {
+        UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(tapToSend:)];
+        tapGesture.numberOfTapsRequired =1;
+        tapGesture.delegate = self;
+        imgV.userInteractionEnabled = YES;
+        [imgV addGestureRecognizer:tapGesture];
+    }
 }
 
 - (void)didReceiveMemoryWarning {
@@ -75,6 +82,44 @@
 {
     self.sentStatusLabel.text = @"Start sending data";
 }
+#pragma mark - Hanle TapGestureRecoginzer
+- (IBAction)tapToSend:(UITapGestureRecognizer *)sender
+{
+    UIImageView *v = (UIImageView *)[sender view];
+    switch (v.tag)
+    {
+        case 1001:
+            //NSLog(@"%f",sender.view.frame.size.width);
+            [[BonjourClient sharedBrowser]openStreamToConnectNetService:self.netService withName:@"test1"];
+            break;
+        case 1002:
+            //NSLog(@"%f",sender.view.frame.size.width);
+                        [[BonjourClient sharedBrowser]openStreamToConnectNetService:self.netService withName:@"test2"];
+            break;
+        case 1003:
+            //NSLog(@"%f",sender.view.frame.size.width);
+                        [[BonjourClient sharedBrowser]openStreamToConnectNetService:self.netService withName:@"test3"];
+            break;
+        case 1004:
+            //NSLog(@"%f",sender.view.frame.size.width);
+                        [[BonjourClient sharedBrowser]openStreamToConnectNetService:self.netService withName:@"test4"];
+            break;
+        case 1005:
+            //NSLog(@"%f",sender.view.frame.size.width);
+                        [[BonjourClient sharedBrowser]openStreamToConnectNetService:self.netService withName:@"test5"];
+            break;
+        case 1006:
+            //NSLog(@"%f",sender.view.frame.size.width);
+                        [[BonjourClient sharedBrowser]openStreamToConnectNetService:self.netService withName:@"test6"];
+            break;
+            
+        default:
+            break;
+    }
+}
+
+
+
 #pragma mark - Text field delegate
 - (BOOL)textFieldShouldReturn:(UITextField *)textField
 {

@@ -9,6 +9,7 @@
 #import "BonjourConnection.h"
 #import "Util.h"
 
+NSString * EchoConnectionDidOpenNotification        = @"EchoConnectionDidOpenNotification";
 NSString * EchoConnectionDidCloseNotification       = @"EchoConnectionDidCloseNotification";
 NSString * EchoConnectionDidRequestedNotification   = @"EchoConnectionDidRequestedNotification";
 

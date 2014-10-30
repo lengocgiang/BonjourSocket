@@ -124,20 +124,6 @@
                                 <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="OR5-c4-nks">
-                                <rect key="frame" x="16" y="119" width="288" height="30"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                <textInputTraits key="textInputTraits"/>
-                            </textField>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="QO3-jc-PY4">
-                                <rect key="frame" x="164" y="169" width="129" height="30"/>
-                                <state key="normal" title="Sent text to Server">
-                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                </state>
-                                <connections>
-                                    <action selector="sentToServer:" destination="XSA-q8-4BU" eventType="touchUpInside" id="zx7-6r-4Mf"/>
-                                </connections>
-                            </button>
                             <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="L7e-8u-SWJ">
                                 <rect key="frame" x="0.0" y="220" width="320" height="348"/>
                                 <subviews>
@@ -161,13 +147,23 @@
                                     </imageView>
                                 </subviews>
                                 <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                <gestureRecognizers/>
                             </view>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="QO3-jc-PY4">
+                                <rect key="frame" x="96" y="113" width="129" height="30"/>
+                                <state key="normal" title="Sent text to Server">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="sentToServer:" destination="XSA-q8-4BU" eventType="touchUpInside" id="zx7-6r-4Mf"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
                     <navigationItem key="navigationItem" id="BEo-8a-OkU"/>
                     <connections>
-                        <outlet property="sendTextField" destination="OR5-c4-nks" id="K2o-DW-oRL"/>
+                        <outlet property="sendView" destination="L7e-8u-SWJ" id="GgI-Mr-34i"/>
                         <outlet property="serverInfoTextView" destination="2ln-XO-cdW" id="q5m-aN-eM0"/>
                     </connections>
                 </viewController>
