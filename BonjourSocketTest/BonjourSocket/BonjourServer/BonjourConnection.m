@@ -7,6 +7,7 @@
 //
 
 #import "BonjourConnection.h"
+#import "Util.h"
 
 NSString * EchoConnectionDidCloseNotification       = @"EchoConnectionDidCloseNotification";
 NSString * EchoConnectionDidRequestedNotification   = @"EchoConnectionDidRequestedNotification";
@@ -23,6 +24,8 @@ NSString * EchoConnectionDidRequestedNotification   = @"EchoConnectionDidRequest
 
 @property (strong, nonatomic) NSNumber                          *bytesRead;
 @property (strong, nonatomic) NSNumber                          *bytesWritten;
+
+@property (strong, nonatomic) NSString                          *filePath;
 
 @end
 
@@ -42,8 +45,14 @@ NSString * EchoConnectionDidRequestedNotification   = @"EchoConnectionDidRequest
 
 - (BOOL)openStreams
 {
+    NSLog(@"open stream");
+ 
+    self.filePath = [[Util sharesInstance]pathForTemporaryFileWithPrefix:@"Receive"];
+    self.outputStream = [NSOutputStream outputStreamToFileAtPath:self.filePath append:NO];
+    
     [self.inputStream setDelegate:self];
     [self.outputStream setDelegate:self];
+    
     [self.inputStream scheduleInRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
     [self.outputStream scheduleInRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
     [self.inputStream open];
@@ -53,12 +62,45 @@ NSString * EchoConnectionDidRequestedNotification   = @"EchoConnectionDidRequest
 
 - (void)closeStreams
 {
+    NSLog(@"close stream");
     [self.inputStream setDelegate:nil];
     [self.outputStream setDelegate:nil];
     [self.inputStream removeFromRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
     [self.outputStream removeFromRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
     [(NSNotificationCenter*)[NSNotificationCenter defaultCenter]postNotificationName:EchoConnectionDidCloseNotification object:self];
     
+}
+- (void)closeStreamsWithStatus:(NSString *)status
+{
+    [self.inputStream setDelegate:nil];
+    [self.outputStream setDelegate:nil];
+    
+    [self.inputStream close];
+    [self.outputStream close];
+    
+    [self.inputStream removeFromRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
+    [self.outputStream removeFromRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
+    
+    self.inputStream = nil;
+    self.outputStream = nil;
+
+    [self receiveDidStopWithStatus:status];
+    
+    self.filePath = nil;
+    
+    [(NSNotificationCenter*)[NSNotificationCenter defaultCenter]postNotificationName:EchoConnectionDidCloseNotification object:self];
+    
+}
+
+- (void)receiveDidStopWithStatus:(NSString *)status
+{
+    NSLog(@"SAVE IMAGE DONE!!!!!");
+    if (status == nil)
+    {
+        assert(self.filePath != nil);
+        UIImage *img = [UIImage imageWithContentsOfFile:self.filePath];
+        UIImageWriteToSavedPhotosAlbum(img, nil, nil, nil);
+    }
 }
 /**
     Trạng thái trả về NSStreamStatus là một hằng chỉ ra "Stream" đang được mở, ghi
@@ -85,43 +127,55 @@ NSString * EchoConnectionDidRequestedNotification   = @"EchoConnectionDidRequest
  */
 - (void)stream:(NSStream *)aStream handleEvent:(NSStreamEvent)eventCode
 {
-    assert(aStream == self.inputStream || aStream == self.outputStream);
+    //assert(aStream == self.inputStream || aStream == self.outputStream);
     #pragma unused(aStream)
     switch (eventCode) {
         case NSStreamEventHasBytesAvailable:
         {// input Stream
-            uint8_t buffer[2048];
-            NSInteger actuallyRead = [self.inputStream read:(uint8_t *)buffer maxLength:sizeof(buffer)];
-            if (actuallyRead > 0)
-            {
-                NSInteger actuallyWritten = [self.outputStream write:buffer maxLength:(NSUInteger)actuallyRead];
-                if (actuallyWritten != actuallyRead)
-                {
-                    //  -write:maxLength: may return -1 to indicate an error or a non-negative
-                    //  value less than maxLength to indicate a 'short write'. In the case of an
-                    //  error we just shut down the connection. The short write case is more
-                    //  interesting. A short write mean that the client has sent us data to echo
-                    //  but isn't reading the data the we sent back to it.
-                    [self closeStreams];
-                }
-                else
-                {
-                    [[NSNotificationCenter defaultCenter]postNotificationName:EchoConnectionDidRequestedNotification object:nil userInfo:nil];
-                    NSLog(@"Echoed %zd bytes.",(ssize_t)actuallyWritten);
-                }
+            NSInteger       bytesRead;
+            uint8_t         buffer[32768];
+            
+            //[self updateStatus:@"Receiving"];
+            
+            // Pull some data off the network.
+            
+            bytesRead = [self.inputStream read:buffer maxLength:sizeof(buffer)];
+            if (bytesRead == -1) {
+                //[self stopReceiveWithStatus:@"Network read error"];
+                NSLog(@"Network read error");
+                [self closeStreamsWithStatus:@"Network read error"];
+                //[self closeStreams];
+            } else if (bytesRead == 0) {
+                //[self stopReceiveWithStatus:nil];
+                [self closeStreamsWithStatus:nil];
+
+            } else {
+                NSInteger   bytesWritten;
+                NSInteger   bytesWrittenSoFar;
+                
+                // Write to the file.
+                
+                bytesWrittenSoFar = 0;
+                do {
+                    bytesWritten = [self.outputStream write:&buffer[bytesWrittenSoFar] maxLength:bytesRead - bytesWrittenSoFar];
+                    assert(bytesWritten != 0);
+                    if (bytesWritten == -1) {
+                        NSLog(@"File write error");
+                        [self closeStreamsWithStatus:@"File write error"];
+                        break;
+                    } else {
+                        bytesWrittenSoFar += bytesWritten;
+                    }
+                } while (bytesWrittenSoFar != bytesRead);
+                NSLog(@"bytesWrittenSoFar %.2fKB",(float)bytesWrittenSoFar/1024);
             }
-            else
-            {
-                // A non-positive value from -read:maxLength indicates either end of file (0)
-                // or an error (-1). In either case we just wait for the corresponding stream event
-                // to come throught
-            }
+
         }break;
         case NSStreamEventEndEncountered:
         case NSStreamEventErrorOccurred:
         {
             NSError *theError = [aStream streamError];
-            NSLog(@"Error reading stream! \n %i %@",[theError code],[theError localizedDescription]);
+            NSLog(@"Error reading stream! \n %zd %@",[theError code],[theError localizedDescription]);
             [self closeStreams];
 
             break;
@@ -130,25 +184,7 @@ NSString * EchoConnectionDidRequestedNotification   = @"EchoConnectionDidRequest
             
         case NSStreamEventHasSpaceAvailable:
         {
-            // output
-            // send data if there're pending
-            if (aStream == self.outputStream)
-            {
-                uint8_t *readBytes = (uint8_t *)[_sendData mutableBytes];
-                
-                // keep track of pointer position
-                readBytes += [_bytesWritten intValue];
-                
-                NSUInteger data_len = [_sendData length];
-                
-                NSInteger len = 0;
-                len = ((data_len - [_bytesWritten intValue] >= 1024? 1024:data_len - [_bytesWritten intValue]));
-                
-                _bytesWritten = [NSNumber numberWithLong:([_bytesWritten intValue] + len)];
-                
-                
-            }
-            
+
         }break;
             
         case NSStreamEventOpenCompleted:

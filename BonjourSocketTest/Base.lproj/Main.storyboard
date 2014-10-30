@@ -44,6 +44,12 @@
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                             </textView>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="FPs-UQ-ieZ">
+                                <rect key="frame" x="236" y="80" width="64" height="30"/>
+                                <state key="normal" title="Checkfile">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
@@ -135,21 +141,24 @@
                             <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="L7e-8u-SWJ">
                                 <rect key="frame" x="0.0" y="220" width="320" height="348"/>
                                 <subviews>
-                                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="LoA-vs-Hab">
-                                        <rect key="frame" x="8" y="13" width="60" height="30"/>
-                                        <state key="normal" title="Send file">
-                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                        </state>
-                                        <connections>
-                                            <action selector="sendFileToServer:" destination="XSA-q8-4BU" eventType="touchUpInside" id="9vk-Kk-ENC"/>
-                                        </connections>
-                                    </button>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Sent status" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="536-hy-Z3p">
-                                        <rect key="frame" x="12" y="65" width="300" height="21"/>
-                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                        <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
-                                        <nil key="highlightedColor"/>
-                                    </label>
+                                    <imageView userInteractionEnabled="NO" tag="1001" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="test.png" translatesAutoresizingMaskIntoConstraints="NO" id="Yvg-vT-kBb">
+                                        <rect key="frame" x="8" y="13" width="90" height="90"/>
+                                    </imageView>
+                                    <imageView userInteractionEnabled="NO" tag="1003" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="test3.png" translatesAutoresizingMaskIntoConstraints="NO" id="w2f-t6-93K">
+                                        <rect key="frame" x="222" y="13" width="90" height="90"/>
+                                    </imageView>
+                                    <imageView userInteractionEnabled="NO" tag="1002" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="test2.png" translatesAutoresizingMaskIntoConstraints="NO" id="jJB-Jx-xGT">
+                                        <rect key="frame" x="115" y="13" width="90" height="90"/>
+                                    </imageView>
+                                    <imageView userInteractionEnabled="NO" tag="1006" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="test6.png" translatesAutoresizingMaskIntoConstraints="NO" id="jF3-zd-yh7">
+                                        <rect key="frame" x="222" y="129" width="90" height="90"/>
+                                    </imageView>
+                                    <imageView userInteractionEnabled="NO" tag="1005" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="test5.png" translatesAutoresizingMaskIntoConstraints="NO" id="fur-zJ-UdP">
+                                        <rect key="frame" x="115" y="129" width="90" height="90"/>
+                                    </imageView>
+                                    <imageView userInteractionEnabled="NO" tag="1004" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="test4.png" translatesAutoresizingMaskIntoConstraints="NO" id="9pd-Um-iB8">
+                                        <rect key="frame" x="8" y="129" width="90" height="90"/>
+                                    </imageView>
                                 </subviews>
                                 <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                             </view>
@@ -159,7 +168,6 @@
                     <navigationItem key="navigationItem" id="BEo-8a-OkU"/>
                     <connections>
                         <outlet property="sendTextField" destination="OR5-c4-nks" id="K2o-DW-oRL"/>
-                        <outlet property="sentStatusLabel" destination="536-hy-Z3p" id="fh2-1t-vGz"/>
                         <outlet property="serverInfoTextView" destination="2ln-XO-cdW" id="q5m-aN-eM0"/>
                     </connections>
                 </viewController>
@@ -186,6 +194,14 @@
             <point key="canvasLocation" x="114" y="406"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="test.png" width="620" height="270"/>
+        <image name="test2.png" width="500" height="333"/>
+        <image name="test3.png" width="412" height="582"/>
+        <image name="test4.png" width="500" height="281"/>
+        <image name="test5.png" width="500" height="500"/>
+        <image name="test6.png" width="500" height="750"/>
+    </resources>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedStatusBarMetrics key="statusBar"/>
         <simulatedOrientationMetrics key="orientation"/>

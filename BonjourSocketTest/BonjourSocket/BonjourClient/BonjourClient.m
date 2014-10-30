@@ -173,55 +173,16 @@ enum {
     self.services = [NSMutableArray new];
 }
 
-- (void)outputText:(NSString *)text
+
+- (void)dataSending:(NSData *)dataSending
 {
-    NSData * dataToSend = [text dataUsingEncoding:NSUTF8StringEncoding];
-    if (self.outputBuffer != nil)
+    if (self.outputStream)
     {
-        BOOL wasEmpty = ([self.outputBuffer length] == 0);
-        [self.outputBuffer appendData:dataToSend];
-        if (wasEmpty) {
-            [self startOutput];
-        }
+        if (![self.outputStream hasSpaceAvailable]) return;
+        
     }
 }
 
-- (void)startSendFileWithPath:(NSString *)filePath toNetService:(NSNetService *)netService
-{
-    NSInputStream   *input;
-    NSOutputStream  *output;
-    BOOL            success;
-    
-    assert(filePath != nil);            // check file path exists
-    
-    assert(self.outputStream == nil);   // don't tap send twice in a row
-    assert(self.inputStream == nil);    // did to
-    
-    // Open a stream for the file
-    self.inputStream = [NSInputStream inputStreamWithFileAtPath:filePath];
-    assert(self.inputStream == nil);
-    
-    // Open stream to the server, finding the server via Bonjour. Then configure
-    // the stream for async operation
-    success = [netService qNetworkAdditions_getInputStream:&input outputStream:&output];
-    assert(success);
-    
-    self.inputStream = input;
-    self.outputStream = output;
-    
-    [self.inputStream setDelegate:self];
-    [self.outputStream setDelegate:self];
-    
-    [self.inputStream scheduleInRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
-    [self.outputStream scheduleInRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
-    
-    [self.inputStream open];
-    [self.outputStream open];
-    
-    // Tell the UI we're sending
-    [Util postNotification:kBonjourClientStartSendDataNotification];
-    
-}
 
 #pragma mark - Private Methods
 - (void)openStreamToConnectNetService:(NSNetService *)netService
@@ -229,12 +190,17 @@ enum {
     NSInputStream       *istream;
     NSOutputStream      *ostream;
     
+    NSString *path = [[NSBundle mainBundle]pathForResource:@"test.png" ofType:nil];
+
+    istream = [NSInputStream inputStreamWithFileAtPath:path];
+    
     [self closeStreams];
     
-    if ([netService qNetworkAdditions_getInputStream:&istream outputStream:&ostream])
+    if ([netService qNetworkAdditions_getInputStream:NULL outputStream:&ostream])
     {
         self.inputStream    = istream;
         self.outputStream   = ostream;
+        
         [self.inputStream setDelegate:self];
         [self.outputStream setDelegate:self];
         
@@ -243,6 +209,8 @@ enum {
         
         [self.inputStream open];
         [self.outputStream open];
+        
+        //[self outputText:nil];
     }
     
     [Util postNotification:kEchoClientOpenStreamSuccess];
@@ -263,70 +231,24 @@ enum {
     self.inputBuffer    = nil;
     self.outputStream   = nil;
 }
-
-#pragma mark - NSNetServiceBrowserDelegate
-- (void)netServiceBrowser:(NSNetServiceBrowser *)aNetServiceBrowser didFindService:(NSNetService *)aNetService moreComing:(BOOL)moreComing
+- (void)closeStreamsWithStatus:(NSString *)status
 {
-    if (![self.services containsObject:aNetService])
-    {
-        [self.services addObject:aNetService];
-    }
-    if (!moreComing)
-    {
-        [Util postNotification:kBonjourClientBrowserSuccessNotification];
-    }
-}
-- (void)netServiceBrowser:(NSNetServiceBrowser *)aNetServiceBrowser didRemoveService:(NSNetService *)aNetService moreComing:(BOOL)moreComing
-{
-    if ([self.services containsObject:aNetService])
-    {
-        [self.services removeObject:aNetService];
-    }
-    if (!moreComing) {
-        [Util postNotification:kBonjourClientBrowserRemoveServiceNotification];
-    }
-}
-
-- (void)netServiceBrowser:(NSNetServiceBrowser *)aNetServiceBrowser didNotSearch:(NSDictionary *)errorDict
-{
-//    [self.serviceBrowser setDelegate:nil];
-//    [self.serviceBrowser stop];
-//    self.serviceBrowser = nil;
+    [self.inputStream setDelegate:nil];
+    [self.outputStream setDelegate:nil];
     
-    [Util postNotification:kBonjourClientBrowserSearchErrorNotification];
-}
-
-- (void)netServiceBrowserDidStopSearch:(NSNetServiceBrowser *)aNetServiceBrowser
-{
-//    [self.serviceBrowser setDelegate:nil];
-//    self.serviceBrowser = nil;
+    [self.inputStream close];
+    [self.outputStream close];
     
-    [Util postNotification:kBonjourClientBrowserStopSearchNotification];
+    [self.inputStream removeFromRunLoop:[NSRunLoop currentRunLoop] forMode:NSRunLoopCommonModes];
+    [self.outputStream removeFromRunLoop:[NSRunLoop currentRunLoop] forMode:NSRunLoopCommonModes];
+    
+    self.inputStream    = nil;
+    self.outputStream   = nil;
+    self.inputBuffer    = nil;
+    self.outputStream   = nil;
 }
 
 #pragma mark - Stream method
-
-- (void)startOutput
-{
-    assert([self.outputBuffer length] != 0);
-    
-    NSInteger actuallyWritten = [self.outputStream write:[self.outputBuffer bytes] maxLength:[self.outputBuffer length]];
-    
-    if (actuallyWritten > 0)
-    {
-        [self.outputBuffer replaceBytesInRange:NSMakeRange(0, (NSUInteger)actuallyWritten) withBytes:NULL length:0];
-        // If we didn't write all the bytes we'll continue writing them in response to the
-        // next has-space-avaiable event
-    }
-    else
-    {
-        // A non-positive result from -write:maxLength: indicates a failure of some form
-        // in this simple app we respond by simply closing down our connection
-        [self closeStreams];
-    }
-        
-}
-
 - (void)stream:(NSStream *)aStream handleEvent:(NSStreamEvent)eventCode
 {
     assert(aStream == self.inputStream || aStream == self.outputStream);
@@ -347,41 +269,46 @@ enum {
             
         case NSStreamEventHasSpaceAvailable:
         {// sent request -> output
-            if ([self.outputBuffer length] != 0)
+            // Sending
+            if (self.bufferOffset == self.bufferLimit)
             {
-                [self startOutput];
-            }
-        }break;
-        case NSStreamEventHasBytesAvailable:
-        {
-            uint8_t buffer[2048];
-            NSInteger actuallyRead = [self.inputStream read:buffer maxLength:sizeof(buffer)];
-            if (actuallyRead > 0)
-            {
-                [self.inputBuffer appendBytes:buffer length:(NSInteger)actuallyRead];
-                // If the input buffer ends with CR LF, show it to the user.
-                if([self.inputBuffer length] >= 2 && memcmp((const char *)[self.inputBuffer bytes] +[self.inputBuffer length] - 2, @"\rn", 2) == 0)
-                    
+                NSInteger bytesRead = [self.inputStream read:self.buffer maxLength:kSendBufferSize];
+                if (bytesRead == -1)
                 {
-                    NSString *string = [[NSString alloc]initWithData:self.inputBuffer encoding:NSUTF8StringEncoding];
-                    if (string == nil)
-                    {
-                        NSLog(@"");
-                        [[[UIAlertView alloc]initWithTitle:@"Response" message:@"deo co gi em oi @@" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil]show];
-                    }
-                    else
-                    {
-                        [[[UIAlertView alloc]initWithTitle:@"Response" message:string delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil]show];
-                    }
-                    [self.inputBuffer setLength:0];
+                    NSLog(@"Client : File read error");
+                    [self closeStreamsWithStatus:@"File read error"];
+                }
+                else if (bytesRead ==0)
+                {
+                    NSLog(@"Ok roi em ey :D");
+                    [self closeStreamsWithStatus:nil];
+                }
+                else
+                {
+                    self.bufferOffset = 0;
+                    self.bufferLimit = bytesRead;
                 }
             }
-            else
+            if (self.bufferOffset != self.bufferLimit)
             {
-                // A non-positive value from - read:maxLength: indicates either end of file (0)
-                // or an error (-1). In either case I just wait for the corresponding stream event
-                // to come throught
+                NSInteger bytesWritten;
+                bytesWritten = [self.outputStream write:&self.buffer[self.bufferOffset] maxLength:self.bufferLimit - self.bufferOffset];
+                assert(bytesWritten != 0);
+                if (bytesWritten == -1)
+                {
+                    NSLog(@"Network write error");
+                    [self closeStreamsWithStatus:@"Network write error"];
+                }
+                else
+                {
+                    self.bufferOffset += bytesWritten;
+                }
             }
+        }
+            break;
+        case NSStreamEventHasBytesAvailable:
+        {
+          
         }break;
         case NSStreamEventErrorOccurred:
         case NSStreamEventEndEncountered:
@@ -430,5 +357,46 @@ enum {
             break;
     }
 }
+
+#pragma mark - NSNetServiceBrowserDelegate
+- (void)netServiceBrowser:(NSNetServiceBrowser *)aNetServiceBrowser didFindService:(NSNetService *)aNetService moreComing:(BOOL)moreComing
+{
+    if (![self.services containsObject:aNetService])
+    {
+        [self.services addObject:aNetService];
+    }
+    if (!moreComing)
+    {
+        [Util postNotification:kBonjourClientBrowserSuccessNotification];
+    }
+}
+- (void)netServiceBrowser:(NSNetServiceBrowser *)aNetServiceBrowser didRemoveService:(NSNetService *)aNetService moreComing:(BOOL)moreComing
+{
+    if ([self.services containsObject:aNetService])
+    {
+        [self.services removeObject:aNetService];
+    }
+    if (!moreComing) {
+        [Util postNotification:kBonjourClientBrowserRemoveServiceNotification];
+    }
+}
+
+- (void)netServiceBrowser:(NSNetServiceBrowser *)aNetServiceBrowser didNotSearch:(NSDictionary *)errorDict
+{
+    //    [self.serviceBrowser setDelegate:nil];
+    //    [self.serviceBrowser stop];
+    //    self.serviceBrowser = nil;
+    
+    [Util postNotification:kBonjourClientBrowserSearchErrorNotification];
+}
+
+- (void)netServiceBrowserDidStopSearch:(NSNetServiceBrowser *)aNetServiceBrowser
+{
+    //    [self.serviceBrowser setDelegate:nil];
+    //    self.serviceBrowser = nil;
+    
+    [Util postNotification:kBonjourClientBrowserStopSearchNotification];
+}
+
 
 @end

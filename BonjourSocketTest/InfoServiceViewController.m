@@ -44,8 +44,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.sendTextField.delegate = self;
-    
-    [[BonjourClient sharedBrowser]openStreamToConnectNetService:self.netService];
+
     
     [self.serverInfoTextView setText:[NSString stringWithFormat:@"%@ \n Address :%@ \n Port : %zd",self.netService,self.netService.addresses,self.netService.port]];
 }
@@ -56,13 +55,14 @@
 }
 - (IBAction)sentToServer:(id)sender
 {
-    [[BonjourClient sharedBrowser]outputText:self.sendTextField.text];
+    //[[BonjourClient sharedBrowser]outputText:self.sendTextField.text];
+    [[BonjourClient sharedBrowser]openStreamToConnectNetService:self.netService];
 
 }
 - (IBAction)sendFileToServer:(id)sender
 {
-    NSString *filePath = [[NSBundle mainBundle]pathForResource:@"file.zip" ofType:nil];
-    [[BonjourClient sharedBrowser]startSendFileWithPath:filePath toNetService:self.netService];
+//    NSString *filePath = [[NSBundle mainBundle]pathForResource:@"file.zip" ofType:nil];
+//    [[BonjourClient sharedBrowser]startSendFileWithPath:filePath toNetService:self.netService];
 }
 #pragma mark - Handle Notification
 

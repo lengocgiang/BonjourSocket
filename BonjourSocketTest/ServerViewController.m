@@ -118,12 +118,12 @@
 }
 - (void)handleRequestNotification:(NSNotification *)notification
 {
-    NSString *title = [NSString stringWithFormat:@"From %@",[UIDevice currentDevice].name];
-    UIAlertView *alert = [[UIAlertView alloc]initWithTitle:title
-                                                   message:@"Chơi không em??"
-                                                  delegate:nil
-                                         cancelButtonTitle:@"OK" otherButtonTitles:nil];
-    [alert show];
+//    NSString *title = [NSString stringWithFormat:@"From %@",[UIDevice currentDevice].name];
+//    UIAlertView *alert = [[UIAlertView alloc]initWithTitle:title
+//                                                   message:@"Chơi không em??"
+//                                                  delegate:nil
+//                                         cancelButtonTitle:@"OK" otherButtonTitles:nil];
+//    [alert show];
     
 }
 

@@ -9,6 +9,37 @@
 #import "Util.h"
 
 @implementation Util
+
++ (Util *)sharesInstance
+{
+    static Util *_sharedInstance = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        _sharedInstance = [[Util alloc]init];
+    });
+    return _sharedInstance;
+}
+
+- (NSString *)pathForTemporaryFileWithPrefix:(NSString *)prefix
+{
+    NSString *  result;
+    CFUUIDRef   uuid;
+    NSString *  uuidStr;
+    
+    uuid = CFUUIDCreate(NULL);
+    assert(uuid != NULL);
+    
+    uuidStr = CFBridgingRelease( CFUUIDCreateString(NULL, uuid) );
+    
+    result = [NSTemporaryDirectory() stringByAppendingPathComponent:[NSString stringWithFormat:@"%@-%@", prefix, uuidStr]];
+    assert(result != nil);
+    
+    CFRelease(uuid);
+    
+    return result;
+}
+
+
 + (void)postNotification:(NSString *)notification
 {
     // post notification to the main thread

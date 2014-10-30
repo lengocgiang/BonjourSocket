@@ -7,7 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
-
+#import <UIKit/UIKit.h>
 @interface BonjourConnection : NSObject
 
 - (id)initWithInputStream:(NSInputStream *)inputStream outputStream:(NSOutputStream *)outputStream;

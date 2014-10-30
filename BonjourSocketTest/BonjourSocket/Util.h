@@ -10,6 +10,10 @@
 
 @interface Util : NSObject
 
++ (Util *)sharesInstance;
+- (NSString *)pathForTemporaryFileWithPrefix:(NSString *)prefix;
+
+
 + (void)postNotification:(NSString *)notification;
 
 @end
