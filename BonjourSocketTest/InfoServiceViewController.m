@@ -94,23 +94,23 @@
             break;
         case 1002:
             //NSLog(@"%f",sender.view.frame.size.width);
-                        [[BonjourClient sharedBrowser]openStreamToConnectNetService:self.netService withName:@"test2"];
+            [[BonjourClient sharedBrowser]openStreamToConnectNetService:self.netService withName:@"test2"];
             break;
         case 1003:
             //NSLog(@"%f",sender.view.frame.size.width);
-                        [[BonjourClient sharedBrowser]openStreamToConnectNetService:self.netService withName:@"test3"];
+            [[BonjourClient sharedBrowser]openStreamToConnectNetService:self.netService withName:@"test3"];
             break;
         case 1004:
             //NSLog(@"%f",sender.view.frame.size.width);
-                        [[BonjourClient sharedBrowser]openStreamToConnectNetService:self.netService withName:@"test4"];
+            [[BonjourClient sharedBrowser]openStreamToConnectNetService:self.netService withName:@"test4"];
             break;
         case 1005:
             //NSLog(@"%f",sender.view.frame.size.width);
-                        [[BonjourClient sharedBrowser]openStreamToConnectNetService:self.netService withName:@"test5"];
+            [[BonjourClient sharedBrowser]openStreamToConnectNetService:self.netService withName:@"test5"];
             break;
         case 1006:
             //NSLog(@"%f",sender.view.frame.size.width);
-                        [[BonjourClient sharedBrowser]openStreamToConnectNetService:self.netService withName:@"test6"];
+            [[BonjourClient sharedBrowser]openStreamToConnectNetService:self.netService withName:@"test6"];
             break;
             
         default:
