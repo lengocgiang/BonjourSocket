@@ -13,15 +13,9 @@
 #import "BonjourConnection.h"
 
 @interface ServerViewController ()
-<
-    UIPickerViewDataSource,
-    UIPickerViewDelegate
->
+
 @property (weak, nonatomic) IBOutlet UIButton *startServerBtn;
 @property (weak, nonatomic) IBOutlet UITextView *logTextView;
-@property (weak, nonatomic) IBOutlet UIPickerView *serverPicker;
-
-@property (strong, nonatomic) NSArray *pickerData;
 
 
 - (void)handleEchoServerOpenConnectionNotification:(NSNotification *)notification;
@@ -46,10 +40,6 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
-    // Initialize Picker Data
-    _pickerData = @[@"_ggServer",@"All server"];
-    self.serverPicker.dataSource = self;
-    self.serverPicker.delegate = self;
     
     [self.startServerBtn setTitle:@"Start Server" forState:UIControlStateNormal];
     [self.startServerBtn setTitle:@"Stop Server" forState:UIControlStateSelected];
@@ -84,33 +74,6 @@
     
 }
 
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
-{
-    if ([segue.identifier isEqualToString:@"browserSegue"])
-    {
-        NSInteger row;
-        row = [self.serverPicker selectedRowInComponent:0];
-        
-        BrowserViewController *browserVC = segue.destinationViewController;
-        browserVC.serverType = [_pickerData objectAtIndex:row];
-    }
-}
-
-#pragma mark - UIPicker Data source
-- (NSInteger)numberOfComponentsInPickerView:(UIPickerView *)pickerView
-{
-    return 1;
-}
-
-- (NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger)component
-{
-    return [_pickerData count];
-}
-// The data to return for the row and component (colum) that's being passed it
-- (NSString *)pickerView:(UIPickerView *)pickerView titleForRow:(NSInteger)row forComponent:(NSInteger)component
-{
-    return _pickerData[row];
-}
 
 #pragma mark - Handle Request Notification
 - (void)handleEchoServerOpenConnectionNotification:(NSNotification *)notification
