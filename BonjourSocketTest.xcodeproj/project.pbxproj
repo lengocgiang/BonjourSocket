@@ -7,6 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		511446EA1A071B01007C83C1 /* audioplayer_pause.png in Resources */ = {isa = PBXBuildFile; fileRef = 511446E81A071B01007C83C1 /* audioplayer_pause.png */; };
+		511446EB1A071B01007C83C1 /* audioplayer_play.png in Resources */ = {isa = PBXBuildFile; fileRef = 511446E91A071B01007C83C1 /* audioplayer_play.png */; };
+		511446EF1A0727F8007C83C1 /* GGAudioPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 511446EE1A0727F8007C83C1 /* GGAudioPlayer.m */; };
+		511446F21A0738BF007C83C1 /* GGAudioOutputStreamer.m in Sources */ = {isa = PBXBuildFile; fileRef = 511446F11A0738BF007C83C1 /* GGAudioOutputStreamer.m */; };
+		511446F51A07393C007C83C1 /* GGAudioStream.m in Sources */ = {isa = PBXBuildFile; fileRef = 511446F41A07393C007C83C1 /* GGAudioStream.m */; };
 		5128D4641A00FC420036C672 /* test3.png in Resources */ = {isa = PBXBuildFile; fileRef = 5128D4631A00FC420036C672 /* test3.png */; };
 		5133F60A1A0237050037DDAC /* exit.png in Resources */ = {isa = PBXBuildFile; fileRef = 5133F6091A0237050037DDAC /* exit.png */; };
 		51B2CD7019FE239500CCD69F /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 51B2CD6F19FE239500CCD69F /* main.m */; };
@@ -26,6 +31,7 @@
 		51B2CE1B19FE2BDA00CCD69F /* ServerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 51B2CE1A19FE2BDA00CCD69F /* ServerViewController.m */; };
 		51B2CE2219FE420500CCD69F /* file.zip in Resources */ = {isa = PBXBuildFile; fileRef = 51B2CE2019FE420500CCD69F /* file.zip */; };
 		51B2CE2319FE420500CCD69F /* readme.txt in Resources */ = {isa = PBXBuildFile; fileRef = 51B2CE2119FE420500CCD69F /* readme.txt */; };
+		51F186761A0363E800EB1CF4 /* music.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 51F186751A0363E800EB1CF4 /* music.mp3 */; };
 		51FBB4961A01EB42004CF5A4 /* test1.png in Resources */ = {isa = PBXBuildFile; fileRef = 51FBB4951A01EB42004CF5A4 /* test1.png */; };
 		51FBB49A1A021374004CF5A4 /* test2.png in Resources */ = {isa = PBXBuildFile; fileRef = 51FBB4991A021374004CF5A4 /* test2.png */; };
 		51FBB49C1A021394004CF5A4 /* test7.png in Resources */ = {isa = PBXBuildFile; fileRef = 51FBB49B1A021394004CF5A4 /* test7.png */; };
@@ -45,6 +51,14 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		511446E81A071B01007C83C1 /* audioplayer_pause.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = audioplayer_pause.png; sourceTree = "<group>"; };
+		511446E91A071B01007C83C1 /* audioplayer_play.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = audioplayer_play.png; sourceTree = "<group>"; };
+		511446ED1A0727F8007C83C1 /* GGAudioPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GGAudioPlayer.h; sourceTree = "<group>"; };
+		511446EE1A0727F8007C83C1 /* GGAudioPlayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GGAudioPlayer.m; sourceTree = "<group>"; };
+		511446F01A0738BF007C83C1 /* GGAudioOutputStreamer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GGAudioOutputStreamer.h; sourceTree = "<group>"; };
+		511446F11A0738BF007C83C1 /* GGAudioOutputStreamer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GGAudioOutputStreamer.m; sourceTree = "<group>"; };
+		511446F31A07393C007C83C1 /* GGAudioStream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GGAudioStream.h; sourceTree = "<group>"; };
+		511446F41A07393C007C83C1 /* GGAudioStream.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GGAudioStream.m; sourceTree = "<group>"; };
 		5128D4621A00F11B0036C672 /* BonjourConfig.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = BonjourConfig.h; path = BonjourSocketTest/BonjourSocket/BonjourConfig.h; sourceTree = SOURCE_ROOT; };
 		5128D4631A00FC420036C672 /* test3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = test3.png; sourceTree = "<group>"; };
 		5133F6091A0237050037DDAC /* exit.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = exit.png; sourceTree = "<group>"; };
@@ -79,6 +93,7 @@
 		51B2CE1A19FE2BDA00CCD69F /* ServerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ServerViewController.m; sourceTree = "<group>"; };
 		51B2CE2019FE420500CCD69F /* file.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; path = file.zip; sourceTree = "<group>"; };
 		51B2CE2119FE420500CCD69F /* readme.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = readme.txt; sourceTree = "<group>"; };
+		51F186751A0363E800EB1CF4 /* music.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = music.mp3; sourceTree = "<group>"; };
 		51FBB4951A01EB42004CF5A4 /* test1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = test1.png; sourceTree = "<group>"; };
 		51FBB4991A021374004CF5A4 /* test2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = test2.png; sourceTree = "<group>"; };
 		51FBB49B1A021394004CF5A4 /* test7.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = test7.png; sourceTree = "<group>"; };
@@ -105,6 +120,19 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		511446EC1A0727DA007C83C1 /* GGAudioPlayer */ = {
+			isa = PBXGroup;
+			children = (
+				511446ED1A0727F8007C83C1 /* GGAudioPlayer.h */,
+				511446EE1A0727F8007C83C1 /* GGAudioPlayer.m */,
+				511446F01A0738BF007C83C1 /* GGAudioOutputStreamer.h */,
+				511446F11A0738BF007C83C1 /* GGAudioOutputStreamer.m */,
+				511446F31A07393C007C83C1 /* GGAudioStream.h */,
+				511446F41A07393C007C83C1 /* GGAudioStream.m */,
+			);
+			path = GGAudioPlayer;
+			sourceTree = "<group>";
+		};
 		51B2CD6119FE239500CCD69F = {
 			isa = PBXGroup;
 			children = (
@@ -173,6 +201,7 @@
 		51B2CD9319FE23A000CCD69F /* BonjourSocket */ = {
 			isa = PBXGroup;
 			children = (
+				511446EC1A0727DA007C83C1 /* GGAudioPlayer */,
 				51B2CE0919FE29D600CCD69F /* BonjourServer */,
 				51B2CD9419FE23A000CCD69F /* BonjourClient */,
 				51B2CD9B19FE23A000CCD69F /* BonjourTransfer */,
@@ -217,6 +246,9 @@
 		51B2CE1F19FE420500CCD69F /* Resource */ = {
 			isa = PBXGroup;
 			children = (
+				511446E81A071B01007C83C1 /* audioplayer_pause.png */,
+				511446E91A071B01007C83C1 /* audioplayer_play.png */,
+				51F186751A0363E800EB1CF4 /* music.mp3 */,
 				5133F6091A0237050037DDAC /* exit.png */,
 				51FBB49D1A0213F7004CF5A4 /* test4.png */,
 				51FBB49E1A0213F7004CF5A4 /* test5.png */,
@@ -322,7 +354,10 @@
 				51FBB4A01A0213F7004CF5A4 /* test4.png in Resources */,
 				5128D4641A00FC420036C672 /* test3.png in Resources */,
 				51B2CD7B19FE239500CCD69F /* Images.xcassets in Resources */,
+				511446EB1A071B01007C83C1 /* audioplayer_play.png in Resources */,
 				51FBB4A21A0213F7004CF5A4 /* test6.png in Resources */,
+				51F186761A0363E800EB1CF4 /* music.mp3 in Resources */,
+				511446EA1A071B01007C83C1 /* audioplayer_pause.png in Resources */,
 				51B2CE2219FE420500CCD69F /* file.zip in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -344,14 +379,17 @@
 				51B2CDA219FE23A000CCD69F /* BonjourClient.m in Sources */,
 				51B2CE0F19FE29D600CCD69F /* BonjourServer.m in Sources */,
 				51B2CDA619FE23A000CCD69F /* BonjourResponse.m in Sources */,
+				511446EF1A0727F8007C83C1 /* GGAudioPlayer.m in Sources */,
 				51B2CDA519FE23A000CCD69F /* BonjourRequest.m in Sources */,
 				51B2CE1519FE2B5200CCD69F /* InfoServiceViewController.m in Sources */,
 				51B2CD7319FE239500CCD69F /* AppDelegate.m in Sources */,
 				51B2CE0E19FE29D600CCD69F /* BonjourConnection.m in Sources */,
+				511446F51A07393C007C83C1 /* GGAudioStream.m in Sources */,
 				51B2CE1B19FE2BDA00CCD69F /* ServerViewController.m in Sources */,
 				51B2CE1419FE2B5200CCD69F /* BrowserViewController.m in Sources */,
 				51B2CD7019FE239500CCD69F /* main.m in Sources */,
 				51B2CDA719FE23A000CCD69F /* Util.m in Sources */,
+				511446F21A0738BF007C83C1 /* GGAudioOutputStreamer.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -478,6 +516,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
 			};
 			name = Debug;
 		};
@@ -490,6 +529,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
 			};
 			name = Release;
 		};

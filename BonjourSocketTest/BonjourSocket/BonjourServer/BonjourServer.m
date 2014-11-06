@@ -248,7 +248,7 @@ static void BonjourServerAcceptCallback(CFSocketRef socket,CFSocketCallBackType 
         [connection openStreams];
         [(NSNotificationCenter *)[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(echoConnectionDidOpenNotification:) name:EchoConnectionDidOpenNotification object:connection];
 
-        NSLog(@"Added connection %@",connection);
+        NSLog(@"SERVER:Open stream to add new connection");
     }
     else
     {

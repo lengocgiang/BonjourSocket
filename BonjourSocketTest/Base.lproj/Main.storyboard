@@ -108,10 +108,6 @@
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" fixedFrame="YES" editable="NO" text="info" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="2ln-XO-cdW">
-                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
-                            </textView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Tap send image to Server" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="VkE-LU-hce">
                                 <rect key="frame" x="62" y="68" width="196" height="21"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
@@ -126,7 +122,7 @@
                                 </connections>
                             </button>
                             <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="L7e-8u-SWJ">
-                                <rect key="frame" x="0.0" y="106" width="320" height="462"/>
+                                <rect key="frame" x="-1" y="106" width="320" height="462"/>
                                 <subviews>
                                     <imageView userInteractionEnabled="NO" tag="1001" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="test1.png" translatesAutoresizingMaskIntoConstraints="NO" id="Yvg-vT-kBb">
                                         <rect key="frame" x="16" y="19" width="90" height="90"/>
@@ -140,29 +136,75 @@
                                     <imageView userInteractionEnabled="NO" tag="1006" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="test6.png" translatesAutoresizingMaskIntoConstraints="NO" id="jF3-zd-yh7">
                                         <rect key="frame" x="230" y="135" width="90" height="90"/>
                                     </imageView>
-                                    <imageView userInteractionEnabled="NO" tag="1005" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="test5.png" translatesAutoresizingMaskIntoConstraints="NO" id="fur-zJ-UdP">
-                                        <rect key="frame" x="123" y="135" width="90" height="90"/>
-                                    </imageView>
                                     <imageView userInteractionEnabled="NO" tag="1004" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="test4.png" translatesAutoresizingMaskIntoConstraints="NO" id="9pd-Um-iB8">
                                         <rect key="frame" x="16" y="135" width="90" height="90"/>
                                     </imageView>
-                                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="x5V-Qa-cJC">
-                                        <rect key="frame" x="16" y="278" width="126" height="30"/>
-                                        <state key="normal" title="Tap to send music">
-                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                        </state>
-                                    </button>
+                                    <imageView userInteractionEnabled="NO" tag="1005" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="test5.png" translatesAutoresizingMaskIntoConstraints="NO" id="fur-zJ-UdP">
+                                        <rect key="frame" x="123" y="135" width="90" height="90"/>
+                                    </imageView>
+                                    <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="fZv-Ex-78Z">
+                                        <rect key="frame" x="0.0" y="352" width="320" height="30"/>
+                                        <subviews>
+                                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="iWb-0Z-R10">
+                                                <rect key="frame" x="0.0" y="-6" width="40" height="41"/>
+                                                <state key="normal" backgroundImage="audioplayer_play.png">
+                                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                                </state>
+                                                <connections>
+                                                    <action selector="playAudioPressed:" destination="XSA-q8-4BU" eventType="touchUpInside" id="6UT-29-1db"/>
+                                                </connections>
+                                            </button>
+                                            <slider opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="0.5" minValue="0.0" maxValue="1" translatesAutoresizingMaskIntoConstraints="NO" id="mVo-qA-btC" userLabel="audioSlider">
+                                                <rect key="frame" x="82" y="0.0" width="203" height="31"/>
+                                                <connections>
+                                                    <action selector="setCurrentTime:" destination="XSA-q8-4BU" eventType="touchUpInside" id="ShV-wn-LR9"/>
+                                                    <action selector="userIsScrubbing:" destination="XSA-q8-4BU" eventType="touchDragInside" id="XPP-r5-ndr"/>
+                                                </connections>
+                                            </slider>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="2:56" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="glH-pU-ygT" userLabel="timeElapsed">
+                                                <rect key="frame" x="48" y="4" width="34" height="21"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="12"/>
+                                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="2:56" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="m91-2r-66q" userLabel="timeDuration">
+                                                <rect key="frame" x="286" y="4" width="34" height="21"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="12"/>
+                                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                        </subviews>
+                                        <color key="backgroundColor" red="0.47816511623656144" green="0.53083720022375891" blue="0.66666666666666663" alpha="1" colorSpace="calibratedRGB"/>
+                                    </view>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Audio Player via Stream" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vfK-gT-JNS">
+                                        <rect key="frame" x="8" y="323" width="183" height="21"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
                                 </subviews>
                                 <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                 <gestureRecognizers/>
                             </view>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="x5V-Qa-cJC">
+                                <rect key="frame" x="229" y="20" width="75" height="30"/>
+                                <state key="normal" title="Pick music">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="pickMusic:" destination="XSA-q8-4BU" eventType="touchUpInside" id="vSJ-ga-iTk"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
                     <navigationItem key="navigationItem" id="BEo-8a-OkU"/>
                     <connections>
+                        <outlet property="currentTimeSlider" destination="mVo-qA-btC" id="wak-My-Jxv"/>
+                        <outlet property="playButton" destination="iWb-0Z-R10" id="8kc-ge-xLv"/>
                         <outlet property="sendView" destination="L7e-8u-SWJ" id="GgI-Mr-34i"/>
-                        <outlet property="serverInfoTextView" destination="2ln-XO-cdW" id="q5m-aN-eM0"/>
+                        <outlet property="timeDurationLabel" destination="m91-2r-66q" id="W1w-Nd-MCj"/>
+                        <outlet property="timeElapsedLabel" destination="glH-pU-ygT" id="Eom-0S-ycG"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="3oC-HS-U95" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -189,6 +231,7 @@
         </scene>
     </scenes>
     <resources>
+        <image name="audioplayer_play.png" width="66" height="65"/>
         <image name="exit.png" width="128" height="128"/>
         <image name="test1.png" width="620" height="270"/>
         <image name="test2.png" width="500" height="333"/>

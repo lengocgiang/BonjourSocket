@@ -46,7 +46,7 @@
 }
 - (void)dealloc
 {
-    [[BonjourClient sharedBrowser]stopBrowserSearchForServer];
+    //[[BonjourClient sharedBrowser]stopBrowserSearchForServer];
     
 }
 - (void)viewDidLoad {

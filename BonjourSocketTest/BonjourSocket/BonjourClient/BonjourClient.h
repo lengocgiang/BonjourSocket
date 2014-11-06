@@ -11,9 +11,10 @@
 
 
 typedef NS_ENUM(NSUInteger, BonjourClientSendData) {
-    BonjourClientSendDataDidFinished,
-    BonjourClientSendDataDidCanceled,
-    BonjourClientSendDataError
+    BonjourClientBeginSendData,
+    BonjourClientFinishedSendingData,
+    BonjourClientCanceledSendingData,
+    BonjourClientErrorSendingData
 };
 
 #define kEchoClientOpenStreamSuccess                            @"EchoClientOpenStreamSuccess"
@@ -24,11 +25,11 @@ typedef NS_ENUM(NSUInteger, BonjourClientSendData) {
 #define kBonjourClientBrowserSearchErrorNotification            @"EchoClientBrowserSearchErrorNotification"
 #define kBonjourClientBrowserStopSearchNotification             @"EchoClientBrowserStopSearchNotification"
 
-#define kBonjourClientStartSendDataNotification                 @"BonjourClientStartSendDataNotification"
-#define kBonjoutClientSendingDataNotification                   @"BonjoutClientSendingDataNotification"
-#define kBonjourClientSendDataDidFinishedNotification           @"BonjourClientSendDataDidFinishedNotification"
-#define kBonjourClientSendDataWithErrorNotification             @"BonjourClientSendDataWithErrorNotification"
-#define kBonjourClientSendDataDidCanceledNotification           @"BonjourClientSendDataDidCanceledNotification"
+#define kBonjourClientBeginSendDataNotification                 @"BonjourClientBeginSendDataNotification"
+#define kBonjourClientFinishedSendingData                       @"BonjourClientFinishedSendingData"
+#define kBonjourClientCanceledSendingData                       @"BonjourClientCanceledSendingData"
+#define kBonjourClientErrorSendingData                          @"BonjourClientErrorSendingData"
+
 
 @interface BonjourClient : NSObject
 
@@ -38,11 +39,11 @@ typedef NS_ENUM(NSUInteger, BonjourClientSendData) {
 - (void)browserForServerWithType:(NSString *)serverType;
 - (void)stopBrowserSearchForServer;
 - (NSArray *)availableService;
-
-- (void)openStreamToConnectNetService:(NSNetService *)netService;
-- (void)openStreamToConnectNetService:(NSNetService *)netService withName:(NSString *)name;
 - (void)closeStreams;
-- (void)dataSending:(NSData *)dataSending;
+
+// Open stream with service
+- (void)openStreamToConnectNetService:(NSNetService *)netService;
+- (void)openStreamToConnectNetService:(NSNetService *)netService withFilePath:(NSString *)path;
 
 
 @end
