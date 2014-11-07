@@ -26,6 +26,9 @@
                                 <state key="normal" title="Start server">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
+                                <connections>
+                                    <action selector="startServerAction:" destination="tKH-jo-bof" eventType="touchUpInside" id="OpQ-tn-9hq"/>
+                                </connections>
                             </button>
                             <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" text="Server log" translatesAutoresizingMaskIntoConstraints="NO" id="c5t-94-J9G">
                                 <rect key="frame" x="16" y="115" width="288" height="129"/>
@@ -106,8 +109,11 @@
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Tap send image to Server" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="VkE-LU-hce">
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Tap send image to Server" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="VkE-LU-hce">
                                 <rect key="frame" x="62" y="68" width="196" height="21"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="21" id="o65-YN-Lgt"/>
+                                </constraints>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                 <nil key="highlightedColor"/>
@@ -119,7 +125,7 @@
                                     <action selector="tapToExit:" destination="XSA-q8-4BU" eventType="touchUpInside" id="Gaz-5s-Pkq"/>
                                 </connections>
                             </button>
-                            <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="L7e-8u-SWJ">
+                            <view contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="L7e-8u-SWJ">
                                 <rect key="frame" x="-1" y="106" width="320" height="462"/>
                                 <subviews>
                                     <imageView userInteractionEnabled="NO" tag="1001" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="test1.png" translatesAutoresizingMaskIntoConstraints="NO" id="Yvg-vT-kBb">
@@ -183,18 +189,46 @@
                                 </subviews>
                                 <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                 <gestureRecognizers/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="462" id="EpT-lx-CCj"/>
+                                </constraints>
                             </view>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="x5V-Qa-cJC">
-                                <rect key="frame" x="229" y="20" width="75" height="30"/>
-                                <state key="normal" title="Pick music">
+                            <button opaque="NO" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="xFH-El-CaI">
+                                <rect key="frame" x="111" y="19" width="96" height="30"/>
+                                <state key="normal" title="Receiver Data">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                                 <connections>
-                                    <action selector="pickMusic:" destination="XSA-q8-4BU" eventType="touchUpInside" id="vSJ-ga-iTk"/>
+                                    <action selector="sentToServer:" destination="XSA-q8-4BU" eventType="touchUpInside" id="lcI-ma-D9q"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="bR4-fC-Mu6">
+                                <rect key="frame" x="256" y="20" width="48" height="30"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="48" id="IwG-Kp-KYL"/>
+                                    <constraint firstAttribute="height" constant="30" id="RBp-U6-6Mx"/>
+                                </constraints>
+                                <state key="normal" title="Cancel">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="cancelAction:" destination="XSA-q8-4BU" eventType="touchUpInside" id="Mjm-cI-jPj"/>
                                 </connections>
                             </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstAttribute="trailing" secondItem="VkE-LU-hce" secondAttribute="trailing" constant="62" id="6P5-xX-1Zo"/>
+                            <constraint firstAttribute="trailing" secondItem="L7e-8u-SWJ" secondAttribute="trailing" constant="1" id="6hQ-rt-urn"/>
+                            <constraint firstItem="L7e-8u-SWJ" firstAttribute="leading" secondItem="RAy-J5-UaN" secondAttribute="leading" constant="1" id="WwK-SK-qrf"/>
+                            <constraint firstItem="VkE-LU-hce" firstAttribute="leading" secondItem="RAy-J5-UaN" secondAttribute="leading" constant="62" id="Ze3-8a-ZBQ"/>
+                            <constraint firstAttribute="trailing" secondItem="bR4-fC-Mu6" secondAttribute="trailing" constant="16" id="Zz6-VL-TEv"/>
+                            <constraint firstItem="bR4-fC-Mu6" firstAttribute="top" secondItem="xwb-uE-TNN" secondAttribute="bottom" id="dnF-9k-CY4"/>
+                            <constraint firstItem="bR4-fC-Mu6" firstAttribute="leading" secondItem="xFH-El-CaI" secondAttribute="trailing" constant="49" id="gNt-nC-1rd"/>
+                            <constraint firstItem="L7e-8u-SWJ" firstAttribute="top" secondItem="VkE-LU-hce" secondAttribute="bottom" constant="17" id="qhO-Nk-Uuk"/>
+                            <constraint firstItem="L7e-8u-SWJ" firstAttribute="top" secondItem="bR4-fC-Mu6" secondAttribute="bottom" constant="56" id="sdQ-48-4ph"/>
+                            <constraint firstItem="L7e-8u-SWJ" firstAttribute="top" secondItem="VkE-LU-hce" secondAttribute="bottom" constant="17" id="yfx-jh-LHv"/>
+                        </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="BEo-8a-OkU"/>
                     <connections>

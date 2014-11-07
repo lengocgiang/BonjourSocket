@@ -51,17 +51,18 @@
 }
 - (void)viewDidLoad {
     [super viewDidLoad];
-    NSLog(@"servertype %@",self.serverType);
+    //NSLog(@"servertype %@",self.serverType);
     [self.tableView reloadData];
-    if ([self.serverType isEqualToString:@"All server"])
-    {
-        NSString *serverType = @"_services._dns-sd._udp.";
-        [[BonjourClient sharedBrowser]browserForServerWithType:serverType];
-    }
-    else
-    {
-        [[BonjourClient sharedBrowser]browserForServer];
-    }
+//    if ([self.serverType isEqualToString:@"All server"])
+//    {
+//        NSString *serverType = @"_services._dns-sd._udp.";
+//        [[BonjourClient sharedBrowser]browserForServerWithType:serverType];
+//    }
+//    else
+//    {
+//        [[BonjourClient sharedBrowser]browserForServer];
+//    }
+    [[BonjourClient sharedBrowser]browserForServer];
     //[[EchoClient sharedBrowser]browserForServer];
 }
 

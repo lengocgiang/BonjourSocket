@@ -23,75 +23,31 @@ NSString * EchoConnectionDidOpenNotification        = @"EchoConnectionDidOpenNot
 NSString * EchoConnectionDidCloseNotification       = @"EchoConnectionDidCloseNotification";
 NSString * EchoConnectionDidRequestedNotification   = @"EchoConnectionDidRequestedNotification";
 
-const unsigned int kNumAQBufs = 3;			// number of audio queue buffers we allocate
-const size_t kAQBufSize = 128 * 1024;		// number of bytes in each audio queue buffer
-const size_t kAQMaxPacketDescs = 512;		// number of packet descriptions in our array
-
-struct MyData
-{
-    AudioFileStreamID audioFileStream;	// the audio file stream parser
-    
-    AudioQueueRef audioQueue;								// the audio queue
-    AudioQueueBufferRef audioQueueBuffer[kNumAQBufs];		// audio queue buffers
-    
-    AudioStreamPacketDescription packetDescs[kAQMaxPacketDescs];	// packet descriptions for enqueuing audio
-    
-    unsigned int fillBufferIndex;	// the index of the audioQueueBuffer that is being filled
-    size_t bytesFilled;				// how many bytes have been filled
-    size_t packetsFilled;			// how many packets have been filled
-    
-    bool inuse[kNumAQBufs];			// flags to indicate that a buffer is still in use
-    bool started;					// flag to indicate that the queue has been started
-    bool failed;					// flag to indicate an error occurred
-    
-    pthread_mutex_t mutex;			// a mutex to protect the inuse flags
-    pthread_cond_t cond;			// a condition varable for handling the inuse flags
-    pthread_cond_t done;			// a condition varable for handling the inuse flags
-};
-
-typedef struct MyData MyData;
-
-void MyAudioQueueOutputCallback(void* inClientData, AudioQueueRef inAQ, AudioQueueBufferRef inBuffer);
-void MyAudioQueueIsRunningCallback(void *inUserData, AudioQueueRef inAQ, AudioQueuePropertyID inID);
-
-void MyPropertyListenerProc(	void *							inClientData,
-                            AudioFileStreamID				inAudioFileStream,
-                            AudioFileStreamPropertyID		inPropertyID,
-                            UInt32 *						ioFlags);
-
-void MyPacketsProc(				void *							inClientData,
-                   UInt32							inNumberBytes,
-                   UInt32							inNumberPackets,
-                   const void *					inInputData,
-                   AudioStreamPacketDescription	*inPacketDescriptions);
-
-OSStatus MyEnqueueBuffer(MyData* myData);
-void WaitForFreeBuffer(MyData* myData);
-
-
 @interface BonjourConnection()
 <
     NSStreamDelegate
 >
+enum {
+    kSendBufferSize = 32768
+};
+
+
 @property (strong, nonatomic, readwrite) NSInputStream          *inputStream;
 @property (strong, nonatomic, readwrite) NSOutputStream         *outputStream;
 
-@property (strong, nonatomic) NSNumber                          *bytesRead;
-@property (strong, nonatomic) NSNumber                          *bytesWritten;
-
 @property (strong, nonatomic) NSString                          *filePath;
-// Audio Stream
-@property (strong, nonatomic) AVAudioPlayer                     *audioPlayer;
-@property (assign, nonatomic) UInt32 audioStreamReadMaxLength;
-@property (assign, nonatomic) UInt32 audioQueueBufferSize;
-@property (assign, nonatomic) UInt32 audioQueueBufferCount;
+
+@property (nonatomic, assign, readonly ) uint8_t                        *buffer;
+@property (nonatomic, assign, readwrite) size_t                         bufferOffset;
+@property (nonatomic, assign, readwrite) size_t                         bufferLimit;
+
 
 @end
 
 @implementation BonjourConnection
-@synthesize audioQueueBufferCount = _audioQueueBufferCount;
-@synthesize audioQueueBufferSize = _audioQueueBufferSize;
-@synthesize audioStreamReadMaxLength = _audioStreamReadMaxLength;
+{
+    uint8_t             _buffer[kSendBufferSize];
+}
 
 - (id)initWithInputStream:(NSInputStream *)inputStream outputStream:(NSOutputStream *)outputStream
 {
@@ -105,11 +61,18 @@ void WaitForFreeBuffer(MyData* myData);
     return self;
     
 }
+- (uint8_t *)buffer
+{
+    return self->_buffer;
+}
 
 - (BOOL)openStreams
 {
     NSLog(@"SERVER: Open stream");
- 
+    NSString *path = [[NSBundle mainBundle]pathForResource:@"music2" ofType:@"mp3"];
+
+    self.inputStream = [NSInputStream inputStreamWithFileAtPath:path];
+
     [self.inputStream setDelegate:self];
     [self.outputStream setDelegate:self];
     
@@ -183,6 +146,7 @@ void WaitForFreeBuffer(MyData* myData);
     }
 }
 
+
 #pragma mark - NSStreamDelegate
 /**
     Trạng thái trả về NSStreamStatus là một hằng chỉ ra "Stream" đang được mở, ghi
@@ -220,7 +184,10 @@ void WaitForFreeBuffer(MyData* myData);
         }break;
             
         case NSStreamEventHasSpaceAvailable:
-        {}break;
+        {
+            [self sendData];
+            
+        }break;
             
         case NSStreamEventOpenCompleted:
         {}break;
@@ -238,6 +205,48 @@ void WaitForFreeBuffer(MyData* myData);
         {
             // do nothing
         }break;
+    }
+}
+- (void)sendingMusicData
+{
+    
+}
+- (void)sendData
+{
+    if (self.bufferOffset == self.bufferLimit)
+    {
+        NSInteger bytesRead = [self.inputStream read:self.buffer maxLength:kSendBufferSize];
+        if (bytesRead == -1)
+        {
+            NSLog(@"Server : File read error");
+            [self closeStreamsWithStatus:@"File read error"];
+        }
+        else if (bytesRead ==0)
+        {
+            NSLog(@"Server: Sending data successful");
+            [self closeStreamsWithStatus:nil];
+        }
+        else
+        {
+            self.bufferOffset = 0;
+            self.bufferLimit = bytesRead;
+        }   
+    }
+    if (self.bufferOffset != self.bufferLimit)
+    {
+        NSInteger bytesWritten;
+        bytesWritten = [self.outputStream write:&self.buffer[self.bufferOffset] maxLength:self.bufferLimit - self.bufferOffset];
+        assert(bytesWritten != 0);
+        if (bytesWritten == -1)
+        {
+            NSLog(@"Network write error");
+            [self closeStreamsWithStatus:@"Network write error"];
+        }
+        else
+        {
+            self.bufferOffset += bytesWritten;
+        }
+        NSLog(@"bytesWritten %zd",bytesWritten);
     }
 }
 

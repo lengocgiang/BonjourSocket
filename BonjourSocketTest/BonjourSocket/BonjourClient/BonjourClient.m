@@ -91,7 +91,8 @@
 #pragma mark - EchoClient class
 
 #import <pthread.h>
-#define PRINTERROR(LABEL)	printf("%s err %4.4s %ld\n", LABEL, (char *)&err, err)
+#define PRINTERROR(LABEL)       printf("%s err %4.4s %ld\n", LABEL, (char *)&err, err)
+#define PRINTERLINE(LABEL)      printf("%s",LABEL)
 enum {
     kSendBufferSize = 32768
 };
@@ -163,9 +164,7 @@ void WaitForFreeBuffer(MyData* myData);
 @property (nonatomic, assign, readwrite) size_t                         bufferOffset;
 @property (nonatomic, assign, readwrite) size_t                         bufferLimit;
 
-// Audio Stream
-@property (nonatomic, strong, readwrite) AVAssetReader                  *assetReader;
-@property (nonatomic, strong, readwrite) AVAssetReaderTrackOutput       *assetOutput;
+
 // forward declarations
 - (void)closeStreams;
 
@@ -234,13 +233,13 @@ void WaitForFreeBuffer(MyData* myData);
     NSInputStream       *istream;
     NSOutputStream      *ostream;
     
-    NSString *path = [[NSBundle mainBundle]pathForResource:@"test6.png" ofType:nil];
+    //NSString *path = [[NSBundle mainBundle]pathForResource:@"test6.png" ofType:nil];
     
-    istream = [NSInputStream inputStreamWithFileAtPath:path];
+    //istream = [NSInputStream inputStreamWithFileAtPath:path];
     
     [self closeStreams];
     
-    if ([netService qNetworkAdditions_getInputStream:NULL outputStream:&ostream])
+    if ([netService qNetworkAdditions_getInputStream:&istream outputStream:&ostream])
     {
         self.inputStream    = istream;
         self.outputStream   = ostream;
@@ -265,13 +264,13 @@ void WaitForFreeBuffer(MyData* myData);
     NSInputStream       *istream;
     NSOutputStream      *ostream;
 
-    istream             = [NSInputStream inputStreamWithFileAtPath:path];
+    //istream             = [NSInputStream inputStreamWithFileAtPath:path];
     
     //self.assetReader = [AVAssetReader]
 
     [self closeStreams];
     
-    if ([netService qNetworkAdditions_getInputStream:NULL outputStream:&ostream])
+    if ([netService qNetworkAdditions_getInputStream:&istream outputStream:&ostream])
     {
         self.inputStream    = istream;
         self.outputStream   = ostream;
@@ -353,14 +352,16 @@ void WaitForFreeBuffer(MyData* myData);
         case NSStreamEventHasSpaceAvailable:
         {// sent request -> output
             // Sending
-            [self postNotificationWithStatus:BonjourClientBeginSendData];
+            //[self postNotificationWithStatus:BonjourClientBeginSendData];
             
-            [self sendData];
+            //[self sendData];
             
         }
             break;
         case NSStreamEventHasBytesAvailable:
-        {}break;
+        {
+            [self receiverData];
+        }break;
             
         case NSStreamEventOpenCompleted:
         {}break;
@@ -422,22 +423,29 @@ void WaitForFreeBuffer(MyData* myData);
     pthread_cond_init(&myData->cond, NULL);
     pthread_cond_init(&myData->done, NULL);
     
+    // allocate a buffer for reading data from a socket
+
+    
     OSStatus err = AudioFileStreamOpen(myData, MyPropertyListenerProc, MyPacketsProc,
                                        kAudioFileAAC_ADTSType, &myData->audioFileStream);
-    //if (err) { PRINTERROR("AudioFileStreamOpen");}
-    
+    if (err) { //PRINTERROR("AudioFileStreamOpen");}
+        PRINTERLINE("AudioFileStreamOpen");}
+
+
     while (!myData ->failed)
     {
+        uint8_t buffer[32768];                                // data
+
         // READ data from socket
-        uint8_t buffer[512];            // data
         NSUInteger bytesRead;           // length of data
         bytesRead = [self.inputStream read:buffer maxLength:sizeof(buffer)];
         
         if (bytesRead <= 0) break;      // eof or failure
-        
+
         // parse the data, this will call MyPropertyListenerProc and MyPacketsProc
         err = AudioFileStreamParseBytes(myData->audioFileStream, (UInt32)bytesRead, buffer, 0);
-        //if (err) {PRINTERROR("AudioFileStreamParseBytes");}
+
+        if (err) {PRINTERLINE("AudioFileStreamParseBytes");}
     }
     // enqueue last buffer
     MyEnqueueBuffer(myData);
@@ -527,38 +535,38 @@ void MyPropertyListenerProc(void *                          inClientData,
             AudioStreamBasicDescription asbd;
             UInt32 asbdSize = sizeof(asbd);
             err = AudioFileStreamGetProperty(inAudioFileStream, kAudioFileStreamProperty_DataFormat, &asbdSize, &asbd);
-            if (err) { PRINTERROR("get kAudioFileStreamProperty_DataFormat"); myData->failed = true; break; }
+            if (err) { PRINTERLINE("get kAudioFileStreamProperty_DataFormat"); myData->failed = true; break; }
             
             // create the audio queue
             err = AudioQueueNewOutput(&asbd, MyAudioQueueOutputCallback, myData, NULL, NULL, 0, &myData->audioQueue);
-            if (err) { PRINTERROR("AudioQueueNewOutput"); myData->failed = true; break; }
+            if (err) { PRINTERLINE("AudioQueueNewOutput"); myData->failed = true; break; }
             
             // allocate audio queue buffers
             for (unsigned int i = 0; i < kNumAQBufs; ++i) {
                 err = AudioQueueAllocateBuffer(myData->audioQueue, kAQBufSize, &myData->audioQueueBuffer[i]);
-                if (err) { PRINTERROR("AudioQueueAllocateBuffer"); myData->failed = true; break; }
+                if (err) { PRINTERLINE("AudioQueueAllocateBuffer"); myData->failed = true; break; }
             }
             
             // get the cookie size
             UInt32 cookieSize;
             Boolean writable;
             err = AudioFileStreamGetPropertyInfo(inAudioFileStream, kAudioFileStreamProperty_MagicCookieData, &cookieSize, &writable);
-            if (err) { PRINTERROR("info kAudioFileStreamProperty_MagicCookieData"); break; }
+            if (err) { PRINTERLINE("info kAudioFileStreamProperty_MagicCookieData"); break; }
             printf("cookieSize %d\n", (unsigned int)cookieSize);
             
             // get the cookie data
             void* cookieData = calloc(1, cookieSize);
             err = AudioFileStreamGetProperty(inAudioFileStream, kAudioFileStreamProperty_MagicCookieData, &cookieSize, cookieData);
-            if (err) { PRINTERROR("get kAudioFileStreamProperty_MagicCookieData"); free(cookieData); break; }
+            if (err) { PRINTERLINE("get kAudioFileStreamProperty_MagicCookieData"); free(cookieData); break; }
             
             // set the cookie on the queue.
             err = AudioQueueSetProperty(myData->audioQueue, kAudioQueueProperty_MagicCookie, cookieData, cookieSize);
             free(cookieData);
-            if (err) { PRINTERROR("set kAudioQueueProperty_MagicCookie"); break; }
+            if (err) { PRINTERLINE("set kAudioQueueProperty_MagicCookie"); break; }
             
             // listen for kAudioQueueProperty_IsRunning
             err = AudioQueueAddPropertyListener(myData->audioQueue, kAudioQueueProperty_IsRunning, MyAudioQueueIsRunningCallback, myData);
-            if (err) { PRINTERROR("AudioQueueAddPropertyListener"); myData->failed = true; break; }
+            if (err) { PRINTERLINE("AudioQueueAddPropertyListener"); myData->failed = true; break; }
             
             break;
         }
@@ -612,7 +620,9 @@ OSStatus StartQueueIfNeeded(MyData* myData)
     OSStatus err = noErr;
     if (!myData->started) {		// start the queue if it has not been started already
         err = AudioQueueStart(myData->audioQueue, NULL);
-        if (err) { PRINTERROR("AudioQueueStart"); myData->failed = true; return err; }
+        if (err) {// PRINTERROR("AudioQueueStart");
+            PRINTERLINE("AudioQueueStart");
+            myData->failed = true; return err; }
         myData->started = true;
         printf("started\n");
     }
@@ -626,9 +636,9 @@ OSStatus MyEnqueueBuffer(MyData* myData)
     
     // enqueue buffer
     AudioQueueBufferRef fillBuf = myData->audioQueueBuffer[myData->fillBufferIndex];
-    fillBuf->mAudioDataByteSize = myData->bytesFilled;
-    err = AudioQueueEnqueueBuffer(myData->audioQueue, fillBuf, myData->packetsFilled, myData->packetDescs);
-    if (err) { PRINTERROR("AudioQueueEnqueueBuffer"); myData->failed = true; return err; }
+    fillBuf->mAudioDataByteSize = (UInt32)myData->bytesFilled;
+    err = AudioQueueEnqueueBuffer(myData->audioQueue, fillBuf,(UInt32) myData->packetsFilled, myData->packetDescs);
+    if (err) { PRINTERLINE("AudioQueueEnqueueBuffer"); myData->failed = true; return err; }
     
     StartQueueIfNeeded(myData);
     
@@ -690,7 +700,7 @@ void MyAudioQueueIsRunningCallback(		void*					inClientData,
     UInt32 running;
     UInt32 size;
     OSStatus err = AudioQueueGetProperty(inAQ, kAudioQueueProperty_IsRunning, &running, &size);
-    if (err) { PRINTERROR("get kAudioQueueProperty_IsRunning"); return; }
+    if (err) { PRINTERLINE("get kAudioQueueProperty_IsRunning"); return; }
     if (!running) {
         pthread_mutex_lock(&myData->mutex);
         pthread_cond_signal(&myData->done);

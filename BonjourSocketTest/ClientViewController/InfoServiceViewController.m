@@ -68,6 +68,8 @@
     [self setupImageTapGesture];
     self.audioPlayer = [[GGAudioPlayer alloc]init];
     [self setupAudioPlayer:@"music"];
+    
+    [[BonjourClient sharedBrowser]openStreamToConnectNetService:self.netService];
 
 }
 - (void)setupImageTapGesture
@@ -94,8 +96,12 @@
 - (IBAction)sentToServer:(id)sender
 {
 
-    [[BonjourClient sharedBrowser]openStreamToConnectNetService:self.netService];
+    
 
+}
+- (IBAction)cancelAction:(id)sender
+{
+    [[BonjourClient sharedBrowser]closeStreams];
 }
 
 #pragma mark - Handle Notification

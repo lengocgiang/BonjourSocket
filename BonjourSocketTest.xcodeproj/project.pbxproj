@@ -18,6 +18,7 @@
 		516322DC1A0B58CE007FF96E /* ServerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 516322DB1A0B58CE007FF96E /* ServerViewController.m */; };
 		516322E21A0B58EA007FF96E /* BrowserViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 516322DF1A0B58EA007FF96E /* BrowserViewController.m */; };
 		516322E31A0B58EA007FF96E /* InfoServiceViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 516322E11A0B58EA007FF96E /* InfoServiceViewController.m */; };
+		516C52681A0B7F650020A845 /* music2.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 516C52671A0B7F650020A845 /* music2.mp3 */; };
 		51B2CD7019FE239500CCD69F /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 51B2CD6F19FE239500CCD69F /* main.m */; };
 		51B2CD7319FE239500CCD69F /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 51B2CD7219FE239500CCD69F /* AppDelegate.m */; };
 		51B2CD7919FE239500CCD69F /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 51B2CD7719FE239500CCD69F /* Main.storyboard */; };
@@ -71,6 +72,7 @@
 		516322DF1A0B58EA007FF96E /* BrowserViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BrowserViewController.m; sourceTree = "<group>"; };
 		516322E01A0B58EA007FF96E /* InfoServiceViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InfoServiceViewController.h; sourceTree = "<group>"; };
 		516322E11A0B58EA007FF96E /* InfoServiceViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InfoServiceViewController.m; sourceTree = "<group>"; };
+		516C52671A0B7F650020A845 /* music2.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = music2.mp3; sourceTree = "<group>"; };
 		51B2CD6A19FE239500CCD69F /* BonjourSocketTest.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BonjourSocketTest.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		51B2CD6E19FE239500CCD69F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		51B2CD6F19FE239500CCD69F /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -274,6 +276,7 @@
 				51FBB49D1A0213F7004CF5A4 /* test4.png */,
 				51FBB49E1A0213F7004CF5A4 /* test5.png */,
 				51FBB49F1A0213F7004CF5A4 /* test6.png */,
+				516C52671A0B7F650020A845 /* music2.mp3 */,
 				51FBB49B1A021394004CF5A4 /* test7.png */,
 				51FBB4951A01EB42004CF5A4 /* test1.png */,
 				51FBB4991A021374004CF5A4 /* test2.png */,
@@ -368,6 +371,7 @@
 				51B2CE2319FE420500CCD69F /* readme.txt in Resources */,
 				51FBB49A1A021374004CF5A4 /* test2.png in Resources */,
 				51B2CD7919FE239500CCD69F /* Main.storyboard in Resources */,
+				516C52681A0B7F650020A845 /* music2.mp3 in Resources */,
 				51B2CD7E19FE239500CCD69F /* LaunchScreen.xib in Resources */,
 				51FBB49C1A021394004CF5A4 /* test7.png in Resources */,
 				5133F60A1A0237050037DDAC /* exit.png in Resources */,
