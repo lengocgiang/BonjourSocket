@@ -81,7 +81,8 @@ enum {
     
     [self.inputStream open];
     [self.outputStream open];
-    [(NSNotificationCenter*)[NSNotificationCenter defaultCenter]postNotificationName:EchoConnectionDidOpenNotification object:self];
+    
+    //[(NSNotificationCenter*)[NSNotificationCenter defaultCenter]postNotificationName:EchoConnectionDidOpenNotification object:self];
     
     return YES;
 }

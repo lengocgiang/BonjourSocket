@@ -7,6 +7,7 @@
 //
 
 #import "ServerViewController.h"
+#import "RootViewController.h"
 #import "BrowserViewController.h"
 
 #import "BonjourServer.h"
@@ -29,7 +30,6 @@
     self = [super initWithCoder:aDecoder];
     if (self)
     {
-//        [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(handleRequestNotification:) name:EchoConnectionDidRequestedNotification object:nil];
         [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(handleEchoServerOpenConnectionNotification:) name:EchoConnectionDidOpenNotification object:nil];
         [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(handleEchoServerCloseConnectionNotification:) name:EchoConnectionDidCloseNotification object:nil];
     }
@@ -44,6 +44,14 @@
     [self.startServerBtn setTitle:@"Start Server" forState:UIControlStateNormal];
     [self.startServerBtn setTitle:@"Stop Server" forState:UIControlStateSelected];
     
+//    UIBarButtonItem *rootBack = [[UIBarButtonItem alloc]initWithTitle:@"Exit" style:UIBarButtonItemStylePlain target:self action:@selector(exitServerView)];
+//    self.navigationItem.leftBarButtonItem = rootBack;
+    
+}
+- (void)dealloc
+{
+    [[BonjourServer sharedPublisher]stopServer];
+
 }
 
 - (void)didReceiveMemoryWarning {
@@ -85,6 +93,10 @@
     self.logTextView.text = [self.logTextView.text stringByAppendingString:@"\n Close connection"];
 }
 
+- (IBAction)exitServerView:(id)sender
+{
+        [self.delegate dismissServerViewController:self];
+}
          
 
 

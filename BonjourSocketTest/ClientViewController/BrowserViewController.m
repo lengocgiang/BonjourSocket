@@ -46,24 +46,16 @@
 }
 - (void)dealloc
 {
-    //[[BonjourClient sharedBrowser]stopBrowserSearchForServer];
+    [[BonjourClient sharedBrowser]stopBrowserSearchForServer];
     
 }
 - (void)viewDidLoad {
     [super viewDidLoad];
-    //NSLog(@"servertype %@",self.serverType);
+
     [self.tableView reloadData];
-//    if ([self.serverType isEqualToString:@"All server"])
-//    {
-//        NSString *serverType = @"_services._dns-sd._udp.";
-//        [[BonjourClient sharedBrowser]browserForServerWithType:serverType];
-//    }
-//    else
-//    {
-//        [[BonjourClient sharedBrowser]browserForServer];
-//    }
+
     [[BonjourClient sharedBrowser]browserForServer];
-    //[[EchoClient sharedBrowser]browserForServer];
+
 }
 
 - (void)didReceiveMemoryWarning {
@@ -74,7 +66,7 @@
 #pragma mark - Table view data source
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-//#warning Potentially incomplete method implementation.
+
     // Return the number of sections.
     return 1;
 }
@@ -100,16 +92,6 @@
     [cell.textLabel setFont:[UIFont fontWithName:@"Helvetica" size:12]];
     
     return cell;
-}
-
-#pragma mark - Table view delegate
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    //[self.tableView deselectRowAtIndexPath:indexPath animated:NO];
-//    _netServiceSelected = [[[EchoClient sharedBrowser]availableService]objectAtIndex:indexPath.row];
-//    NSLog(@"1 _netServiceSelected %@",_netServiceSelected);
-//    [self performSegueWithIdentifier:@"infoSegue" sender:nil];
-
 }
 
 #pragma mark - Utilities

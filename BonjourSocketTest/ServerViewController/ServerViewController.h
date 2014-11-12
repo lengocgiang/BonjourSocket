@@ -8,6 +8,13 @@
 
 #import <UIKit/UIKit.h>
 
-@interface ServerViewController : UIViewController
+@class ServerViewController;
 
+@protocol ServerViewControllerDelegate <NSObject>
+
+- (void)dismissServerViewController:(ServerViewController*)controller;
+@end
+
+@interface ServerViewController : UIViewController
+@property (assign, nonatomic)id<ServerViewControllerDelegate>delegate;
 @end
