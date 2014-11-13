@@ -7,19 +7,23 @@
 //
 
 #import "RootViewController.h"
-#import "ServerViewController.h"
+#import "BrowserViewController.h"
+#import "Util.h"
 @interface RootViewController ()
 <
-ServerViewControllerDelegate
+    UITextFieldDelegate
 >
+@property (weak, nonatomic) IBOutlet UITextField *nameTxtField;
 
 @end
 
 @implementation RootViewController
 
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+    self.nameTxtField.delegate = self;
     
 }
 
@@ -28,24 +32,18 @@ ServerViewControllerDelegate
     // Dispose of any resources that can be recreated.
 }
 
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-
-*/
-- (void)dismissServerViewController:(ServerViewController *)controller
+- (BOOL)textFieldShouldReturn:(UITextField *)textField
 {
-    [self dismissViewControllerAnimated:YES completion:nil];
-}
+    [textField resignFirstResponder];
 
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+    [[Util sharedInstance] setName:self.nameTxtField.text];
+    BrowserViewController *browserVC = [self.storyboard instantiateViewControllerWithIdentifier:@"BrowserViewController"];
+    [self presentViewController:browserVC animated:YES completion:nil];
+    
+    return NO;
+}
+- (void)dealloc
 {
-    if ([segue.identifier isEqualToString:@"serverModal"])
-    {
-        ServerViewController *serverVC = segue.destinationViewController;
-        serverVC.delegate = self;
-    }
+    NSLog(@"dealoc BrowserVC");
 }
-
 @end

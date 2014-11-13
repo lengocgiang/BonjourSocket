@@ -9,8 +9,16 @@
 #import "Util.h"
 
 @implementation Util
-
-+ (Util *)sharesInstance
+- (id)init
+{
+    self.name = @"unknow";
+    return self;
+}
+- (void)dealloc
+{
+    self.name = nil;
+}
++ (Util *)sharedInstance
 {
     static Util *_sharedInstance = nil;
     static dispatch_once_t onceToken;
@@ -47,4 +55,5 @@
         [[NSNotificationCenter defaultCenter]postNotificationName:notification object:nil];
     });
 }
+
 @end

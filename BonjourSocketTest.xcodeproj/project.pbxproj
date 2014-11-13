@@ -10,14 +10,17 @@
 		511446EA1A071B01007C83C1 /* audioplayer_pause.png in Resources */ = {isa = PBXBuildFile; fileRef = 511446E81A071B01007C83C1 /* audioplayer_pause.png */; };
 		511446EB1A071B01007C83C1 /* audioplayer_play.png in Resources */ = {isa = PBXBuildFile; fileRef = 511446E91A071B01007C83C1 /* audioplayer_play.png */; };
 		511446EF1A0727F8007C83C1 /* GGAudioPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 511446EE1A0727F8007C83C1 /* GGAudioPlayer.m */; };
-		511446F21A0738BF007C83C1 /* GGAudioOutputStreamer.m in Sources */ = {isa = PBXBuildFile; fileRef = 511446F11A0738BF007C83C1 /* GGAudioOutputStreamer.m */; };
-		511446F51A07393C007C83C1 /* GGAudioStream.m in Sources */ = {isa = PBXBuildFile; fileRef = 511446F41A07393C007C83C1 /* GGAudioStream.m */; };
+		512567FC1A136DAF00133F49 /* BonjourConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = 512567F81A136DAF00133F49 /* BonjourConnection.m */; };
+		512567FD1A136DAF00133F49 /* BonjourServer.m in Sources */ = {isa = PBXBuildFile; fileRef = 512567FA1A136DAF00133F49 /* BonjourServer.m */; };
 		5128D4641A00FC420036C672 /* test3.png in Resources */ = {isa = PBXBuildFile; fileRef = 5128D4631A00FC420036C672 /* test3.png */; };
 		5133F60A1A0237050037DDAC /* exit.png in Resources */ = {isa = PBXBuildFile; fileRef = 5133F6091A0237050037DDAC /* exit.png */; };
+		5162287B1A14865700A03A0C /* BonjourBrowser.m in Sources */ = {isa = PBXBuildFile; fileRef = 5162287A1A14865700A03A0C /* BonjourBrowser.m */; };
+		5162287E1A148F6A00A03A0C /* BrowserViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5162287D1A148F6A00A03A0C /* BrowserViewController.m */; };
+		516228811A14989700A03A0C /* PlaygroundViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 516228801A14989700A03A0C /* PlaygroundViewController.m */; };
+		516228851A14A7DD00A03A0C /* Chanel.m in Sources */ = {isa = PBXBuildFile; fileRef = 516228841A14A7DD00A03A0C /* Chanel.m */; };
+		516228881A14A94E00A03A0C /* LocalChanel.m in Sources */ = {isa = PBXBuildFile; fileRef = 516228871A14A94E00A03A0C /* LocalChanel.m */; };
+		5162288B1A14AF8A00A03A0C /* RemoteChanel.m in Sources */ = {isa = PBXBuildFile; fileRef = 5162288A1A14AF8A00A03A0C /* RemoteChanel.m */; };
 		516322D81A0B5863007FF96E /* RootViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 516322D71A0B5863007FF96E /* RootViewController.m */; };
-		516322DC1A0B58CE007FF96E /* ServerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 516322DB1A0B58CE007FF96E /* ServerViewController.m */; };
-		516322E21A0B58EA007FF96E /* BrowserViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 516322DF1A0B58EA007FF96E /* BrowserViewController.m */; };
-		516322E31A0B58EA007FF96E /* InfoServiceViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 516322E11A0B58EA007FF96E /* InfoServiceViewController.m */; };
 		516C52681A0B7F650020A845 /* music2.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 516C52671A0B7F650020A845 /* music2.mp3 */; };
 		51B2CD7019FE239500CCD69F /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 51B2CD6F19FE239500CCD69F /* main.m */; };
 		51B2CD7319FE239500CCD69F /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 51B2CD7219FE239500CCD69F /* AppDelegate.m */; };
@@ -25,12 +28,9 @@
 		51B2CD7B19FE239500CCD69F /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 51B2CD7A19FE239500CCD69F /* Images.xcassets */; };
 		51B2CD7E19FE239500CCD69F /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 51B2CD7C19FE239500CCD69F /* LaunchScreen.xib */; };
 		51B2CD8A19FE239500CCD69F /* BonjourSocketTestTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 51B2CD8919FE239500CCD69F /* BonjourSocketTestTests.m */; };
-		51B2CDA219FE23A000CCD69F /* BonjourClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 51B2CD9619FE23A000CCD69F /* BonjourClient.m */; };
 		51B2CDA519FE23A000CCD69F /* BonjourRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 51B2CD9D19FE23A000CCD69F /* BonjourRequest.m */; };
 		51B2CDA619FE23A000CCD69F /* BonjourResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = 51B2CD9F19FE23A000CCD69F /* BonjourResponse.m */; };
 		51B2CDA719FE23A000CCD69F /* Util.m in Sources */ = {isa = PBXBuildFile; fileRef = 51B2CDA119FE23A000CCD69F /* Util.m */; };
-		51B2CE0E19FE29D600CCD69F /* BonjourConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = 51B2CE0B19FE29D600CCD69F /* BonjourConnection.m */; };
-		51B2CE0F19FE29D600CCD69F /* BonjourServer.m in Sources */ = {isa = PBXBuildFile; fileRef = 51B2CE0D19FE29D600CCD69F /* BonjourServer.m */; };
 		51B2CE2219FE420500CCD69F /* file.zip in Resources */ = {isa = PBXBuildFile; fileRef = 51B2CE2019FE420500CCD69F /* file.zip */; };
 		51B2CE2319FE420500CCD69F /* readme.txt in Resources */ = {isa = PBXBuildFile; fileRef = 51B2CE2119FE420500CCD69F /* readme.txt */; };
 		51F186761A0363E800EB1CF4 /* music.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 51F186751A0363E800EB1CF4 /* music.mp3 */; };
@@ -57,21 +57,27 @@
 		511446E91A071B01007C83C1 /* audioplayer_play.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = audioplayer_play.png; sourceTree = "<group>"; };
 		511446ED1A0727F8007C83C1 /* GGAudioPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GGAudioPlayer.h; sourceTree = "<group>"; };
 		511446EE1A0727F8007C83C1 /* GGAudioPlayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GGAudioPlayer.m; sourceTree = "<group>"; };
-		511446F01A0738BF007C83C1 /* GGAudioOutputStreamer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GGAudioOutputStreamer.h; sourceTree = "<group>"; };
-		511446F11A0738BF007C83C1 /* GGAudioOutputStreamer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GGAudioOutputStreamer.m; sourceTree = "<group>"; };
-		511446F31A07393C007C83C1 /* GGAudioStream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GGAudioStream.h; sourceTree = "<group>"; };
-		511446F41A07393C007C83C1 /* GGAudioStream.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GGAudioStream.m; sourceTree = "<group>"; };
+		512567F71A136DAF00133F49 /* BonjourConnection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BonjourConnection.h; sourceTree = "<group>"; };
+		512567F81A136DAF00133F49 /* BonjourConnection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BonjourConnection.m; sourceTree = "<group>"; };
+		512567F91A136DAF00133F49 /* BonjourServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BonjourServer.h; sourceTree = "<group>"; };
+		512567FA1A136DAF00133F49 /* BonjourServer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BonjourServer.m; sourceTree = "<group>"; };
 		5128D4621A00F11B0036C672 /* BonjourConfig.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = BonjourConfig.h; path = BonjourSocketTest/BonjourSocket/BonjourConfig.h; sourceTree = SOURCE_ROOT; };
 		5128D4631A00FC420036C672 /* test3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = test3.png; sourceTree = "<group>"; };
 		5133F6091A0237050037DDAC /* exit.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = exit.png; sourceTree = "<group>"; };
+		516228791A14865700A03A0C /* BonjourBrowser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BonjourBrowser.h; sourceTree = "<group>"; };
+		5162287A1A14865700A03A0C /* BonjourBrowser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BonjourBrowser.m; sourceTree = "<group>"; };
+		5162287C1A148F6A00A03A0C /* BrowserViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BrowserViewController.h; sourceTree = "<group>"; };
+		5162287D1A148F6A00A03A0C /* BrowserViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BrowserViewController.m; sourceTree = "<group>"; };
+		5162287F1A14989700A03A0C /* PlaygroundViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlaygroundViewController.h; sourceTree = "<group>"; };
+		516228801A14989700A03A0C /* PlaygroundViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlaygroundViewController.m; sourceTree = "<group>"; };
+		516228831A14A7DD00A03A0C /* Chanel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Chanel.h; sourceTree = "<group>"; };
+		516228841A14A7DD00A03A0C /* Chanel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Chanel.m; sourceTree = "<group>"; };
+		516228861A14A94E00A03A0C /* LocalChanel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LocalChanel.h; sourceTree = "<group>"; };
+		516228871A14A94E00A03A0C /* LocalChanel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LocalChanel.m; sourceTree = "<group>"; };
+		516228891A14AF8A00A03A0C /* RemoteChanel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RemoteChanel.h; sourceTree = "<group>"; };
+		5162288A1A14AF8A00A03A0C /* RemoteChanel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RemoteChanel.m; sourceTree = "<group>"; };
 		516322D61A0B5863007FF96E /* RootViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RootViewController.h; sourceTree = "<group>"; };
 		516322D71A0B5863007FF96E /* RootViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RootViewController.m; sourceTree = "<group>"; };
-		516322DA1A0B58CE007FF96E /* ServerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ServerViewController.h; sourceTree = "<group>"; };
-		516322DB1A0B58CE007FF96E /* ServerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ServerViewController.m; sourceTree = "<group>"; };
-		516322DE1A0B58EA007FF96E /* BrowserViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BrowserViewController.h; sourceTree = "<group>"; };
-		516322DF1A0B58EA007FF96E /* BrowserViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BrowserViewController.m; sourceTree = "<group>"; };
-		516322E01A0B58EA007FF96E /* InfoServiceViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InfoServiceViewController.h; sourceTree = "<group>"; };
-		516322E11A0B58EA007FF96E /* InfoServiceViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InfoServiceViewController.m; sourceTree = "<group>"; };
 		516C52671A0B7F650020A845 /* music2.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = music2.mp3; sourceTree = "<group>"; };
 		51B2CD6A19FE239500CCD69F /* BonjourSocketTest.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BonjourSocketTest.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		51B2CD6E19FE239500CCD69F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -84,18 +90,12 @@
 		51B2CD8319FE239500CCD69F /* BonjourSocketTestTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BonjourSocketTestTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		51B2CD8819FE239500CCD69F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		51B2CD8919FE239500CCD69F /* BonjourSocketTestTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BonjourSocketTestTests.m; sourceTree = "<group>"; };
-		51B2CD9519FE23A000CCD69F /* BonjourClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BonjourClient.h; sourceTree = "<group>"; };
-		51B2CD9619FE23A000CCD69F /* BonjourClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BonjourClient.m; sourceTree = "<group>"; };
 		51B2CD9C19FE23A000CCD69F /* BonjourRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BonjourRequest.h; sourceTree = "<group>"; };
 		51B2CD9D19FE23A000CCD69F /* BonjourRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BonjourRequest.m; sourceTree = "<group>"; };
 		51B2CD9E19FE23A000CCD69F /* BonjourResponse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BonjourResponse.h; sourceTree = "<group>"; };
 		51B2CD9F19FE23A000CCD69F /* BonjourResponse.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BonjourResponse.m; sourceTree = "<group>"; };
 		51B2CDA019FE23A000CCD69F /* Util.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Util.h; sourceTree = "<group>"; };
 		51B2CDA119FE23A000CCD69F /* Util.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Util.m; sourceTree = "<group>"; };
-		51B2CE0A19FE29D600CCD69F /* BonjourConnection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BonjourConnection.h; sourceTree = "<group>"; };
-		51B2CE0B19FE29D600CCD69F /* BonjourConnection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BonjourConnection.m; sourceTree = "<group>"; };
-		51B2CE0C19FE29D600CCD69F /* BonjourServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BonjourServer.h; sourceTree = "<group>"; };
-		51B2CE0D19FE29D600CCD69F /* BonjourServer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BonjourServer.m; sourceTree = "<group>"; };
 		51B2CE2019FE420500CCD69F /* file.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; path = file.zip; sourceTree = "<group>"; };
 		51B2CE2119FE420500CCD69F /* readme.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = readme.txt; sourceTree = "<group>"; };
 		51F186751A0363E800EB1CF4 /* music.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = music.mp3; sourceTree = "<group>"; };
@@ -130,32 +130,21 @@
 			children = (
 				511446ED1A0727F8007C83C1 /* GGAudioPlayer.h */,
 				511446EE1A0727F8007C83C1 /* GGAudioPlayer.m */,
-				511446F01A0738BF007C83C1 /* GGAudioOutputStreamer.h */,
-				511446F11A0738BF007C83C1 /* GGAudioOutputStreamer.m */,
-				511446F31A07393C007C83C1 /* GGAudioStream.h */,
-				511446F41A07393C007C83C1 /* GGAudioStream.m */,
 			);
 			path = GGAudioPlayer;
 			sourceTree = "<group>";
 		};
-		516322D91A0B58CE007FF96E /* ServerViewController */ = {
+		516228821A14A7BE00A03A0C /* Playground */ = {
 			isa = PBXGroup;
 			children = (
-				516322DA1A0B58CE007FF96E /* ServerViewController.h */,
-				516322DB1A0B58CE007FF96E /* ServerViewController.m */,
+				516228831A14A7DD00A03A0C /* Chanel.h */,
+				516228841A14A7DD00A03A0C /* Chanel.m */,
+				516228861A14A94E00A03A0C /* LocalChanel.h */,
+				516228871A14A94E00A03A0C /* LocalChanel.m */,
+				516228891A14AF8A00A03A0C /* RemoteChanel.h */,
+				5162288A1A14AF8A00A03A0C /* RemoteChanel.m */,
 			);
-			path = ServerViewController;
-			sourceTree = "<group>";
-		};
-		516322DD1A0B58EA007FF96E /* ClientViewController */ = {
-			isa = PBXGroup;
-			children = (
-				516322DE1A0B58EA007FF96E /* BrowserViewController.h */,
-				516322DF1A0B58EA007FF96E /* BrowserViewController.m */,
-				516322E01A0B58EA007FF96E /* InfoServiceViewController.h */,
-				516322E11A0B58EA007FF96E /* InfoServiceViewController.m */,
-			);
-			path = ClientViewController;
+			path = Playground;
 			sourceTree = "<group>";
 		};
 		51B2CD6119FE239500CCD69F = {
@@ -184,8 +173,10 @@
 				51B2CD7219FE239500CCD69F /* AppDelegate.m */,
 				516322D61A0B5863007FF96E /* RootViewController.h */,
 				516322D71A0B5863007FF96E /* RootViewController.m */,
-				516322D91A0B58CE007FF96E /* ServerViewController */,
-				516322DD1A0B58EA007FF96E /* ClientViewController */,
+				5162287C1A148F6A00A03A0C /* BrowserViewController.h */,
+				5162287D1A148F6A00A03A0C /* BrowserViewController.m */,
+				5162287F1A14989700A03A0C /* PlaygroundViewController.h */,
+				516228801A14989700A03A0C /* PlaygroundViewController.m */,
 				51B2CD7719FE239500CCD69F /* Main.storyboard */,
 				51B2CD7A19FE239500CCD69F /* Images.xcassets */,
 				51B2CD7C19FE239500CCD69F /* LaunchScreen.xib */,
@@ -224,23 +215,19 @@
 		51B2CD9319FE23A000CCD69F /* BonjourSocket */ = {
 			isa = PBXGroup;
 			children = (
+				516228821A14A7BE00A03A0C /* Playground */,
+				512567F91A136DAF00133F49 /* BonjourServer.h */,
+				512567FA1A136DAF00133F49 /* BonjourServer.m */,
+				512567F71A136DAF00133F49 /* BonjourConnection.h */,
+				512567F81A136DAF00133F49 /* BonjourConnection.m */,
+				516228791A14865700A03A0C /* BonjourBrowser.h */,
+				5162287A1A14865700A03A0C /* BonjourBrowser.m */,
 				511446EC1A0727DA007C83C1 /* GGAudioPlayer */,
-				51B2CE0919FE29D600CCD69F /* BonjourServer */,
-				51B2CD9419FE23A000CCD69F /* BonjourClient */,
 				51B2CD9B19FE23A000CCD69F /* BonjourTransfer */,
 				51B2CDA019FE23A000CCD69F /* Util.h */,
 				51B2CDA119FE23A000CCD69F /* Util.m */,
 			);
 			path = BonjourSocket;
-			sourceTree = "<group>";
-		};
-		51B2CD9419FE23A000CCD69F /* BonjourClient */ = {
-			isa = PBXGroup;
-			children = (
-				51B2CD9519FE23A000CCD69F /* BonjourClient.h */,
-				51B2CD9619FE23A000CCD69F /* BonjourClient.m */,
-			);
-			path = BonjourClient;
 			sourceTree = "<group>";
 		};
 		51B2CD9B19FE23A000CCD69F /* BonjourTransfer */ = {
@@ -253,17 +240,6 @@
 				5128D4621A00F11B0036C672 /* BonjourConfig.h */,
 			);
 			path = BonjourTransfer;
-			sourceTree = "<group>";
-		};
-		51B2CE0919FE29D600CCD69F /* BonjourServer */ = {
-			isa = PBXGroup;
-			children = (
-				51B2CE0A19FE29D600CCD69F /* BonjourConnection.h */,
-				51B2CE0B19FE29D600CCD69F /* BonjourConnection.m */,
-				51B2CE0C19FE29D600CCD69F /* BonjourServer.h */,
-				51B2CE0D19FE29D600CCD69F /* BonjourServer.m */,
-			);
-			path = BonjourServer;
 			sourceTree = "<group>";
 		};
 		51B2CE1F19FE420500CCD69F /* Resource */ = {
@@ -401,21 +377,21 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				51B2CDA219FE23A000CCD69F /* BonjourClient.m in Sources */,
-				51B2CE0F19FE29D600CCD69F /* BonjourServer.m in Sources */,
 				51B2CDA619FE23A000CCD69F /* BonjourResponse.m in Sources */,
 				511446EF1A0727F8007C83C1 /* GGAudioPlayer.m in Sources */,
 				51B2CDA519FE23A000CCD69F /* BonjourRequest.m in Sources */,
 				51B2CD7319FE239500CCD69F /* AppDelegate.m in Sources */,
-				51B2CE0E19FE29D600CCD69F /* BonjourConnection.m in Sources */,
-				511446F51A07393C007C83C1 /* GGAudioStream.m in Sources */,
-				516322DC1A0B58CE007FF96E /* ServerViewController.m in Sources */,
 				51B2CD7019FE239500CCD69F /* main.m in Sources */,
+				516228811A14989700A03A0C /* PlaygroundViewController.m in Sources */,
+				5162287E1A148F6A00A03A0C /* BrowserViewController.m in Sources */,
 				51B2CDA719FE23A000CCD69F /* Util.m in Sources */,
-				516322E21A0B58EA007FF96E /* BrowserViewController.m in Sources */,
-				511446F21A0738BF007C83C1 /* GGAudioOutputStreamer.m in Sources */,
-				516322E31A0B58EA007FF96E /* InfoServiceViewController.m in Sources */,
+				516228851A14A7DD00A03A0C /* Chanel.m in Sources */,
+				512567FC1A136DAF00133F49 /* BonjourConnection.m in Sources */,
+				512567FD1A136DAF00133F49 /* BonjourServer.m in Sources */,
 				516322D81A0B5863007FF96E /* RootViewController.m in Sources */,
+				516228881A14A94E00A03A0C /* LocalChanel.m in Sources */,
+				5162288B1A14AF8A00A03A0C /* RemoteChanel.m in Sources */,
+				5162287B1A14865700A03A0C /* BonjourBrowser.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -9,8 +9,9 @@
 #import <Foundation/Foundation.h>
 
 @interface Util : NSObject
+@property (strong, nonatomic) NSString *name;
 
-+ (Util *)sharesInstance;
++ (Util *)sharedInstance;
 - (NSString *)pathForTemporaryFileWithPrefix:(NSString *)prefix;
 
 
