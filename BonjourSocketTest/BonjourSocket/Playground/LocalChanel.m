@@ -50,7 +50,8 @@
     [clients makeObjectsPerformSelector:@selector(close)];
 }
 
-- (void)broadcastChatMessage:(NSString*)message fromUser:(NSString*)name
+
+- (void)boardcastChatMessage:(NSString *)message fromUser:(NSString *)name
 {
     [self.delegate displayChatMessage:message fromUser:name];
     
@@ -58,10 +59,8 @@
     
     // send it out
     [clients makeObjectsPerformSelector:@selector(sendNetworkPackage:) withObject:packet];
-    
 }
-
-#pragma mark - 
+#pragma mark -
 #pragma mark ServerDelegate methods 
 // Server has failed ,stop the world
 - (void)serverFailed:(BonjourServer *)server reason:(NSString *)reason
@@ -73,8 +72,10 @@
 // new client connected to our server, add it =))
 - (void)handleNewConnection:(BonjourConnection *)connection
 {
+    NSLog(@"Server:Add new connection!");
     connection.delegate = self;
     [clients addObject:connection];
+
 }
 - (void)connectionAttemptFailed:(BonjourConnection *)connection
 {
@@ -86,6 +87,7 @@
 }
 - (void)receivedNetworkPacket:(NSDictionary *)message viaConnection:(BonjourConnection *)connection
 {
+    NSLog(@"message %@",[message objectForKey:@"message"]);
     // display message locally
     [self.delegate displayChatMessage:[message objectForKey:@"message"] fromUser:[message objectForKey:@"from"]];
     

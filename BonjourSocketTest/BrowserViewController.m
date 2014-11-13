@@ -13,12 +13,14 @@
 #import "BonjourBrowser.h"
 
 #import "LocalChanel.h"
-
+#import "RemoteChanel.h"
 @interface BrowserViewController ()
 <
     UITableViewDataSource,
     UITableViewDelegate,
-    BonjourBrowserDelegate
+    BonjourBrowserDelegate,
+    PlaygroundViewControllerDelegate
+
 >
 @property (weak, nonatomic) IBOutlet UITableView *serverList;
 @property (strong, nonatomic)BonjourBrowser *serverBrowser;
@@ -58,7 +60,14 @@
         [alertView show];
     }
     NSNetService *netServiceSelected = [serverBrowser.servers objectAtIndex:indexPath.row];
+    RemoteChanel *chanel = [[RemoteChanel alloc]initWithNetService:netServiceSelected];
+    [serverBrowser stop];
     
+    PlaygroundViewController *playVC = [self.storyboard instantiateViewControllerWithIdentifier:@"PlaygroundViewController"];
+    playVC.chanel = chanel;
+    playVC.delegate = self;
+    [playVC active];
+    [self presentViewController:playVC animated:NO completion:nil];
 }
 
 #pragma mark - UITableViewDataSource
@@ -88,16 +97,23 @@
 {
     [serverList reloadData];
 }
+#pragma mark - PlayVCDelegate
+- (void)dismissPlayViewController:(PlaygroundViewController *)controller
+{
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
 
 #pragma mark Segue
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
-    if ([segue.identifier isEqualToString:@"playgroundSegue"])
+    if ([segue.identifier isEqualToString:@"playgroundModal"])
     {
         [serverBrowser stop];
+        PlaygroundViewController *playVC = segue.destinationViewController;
+        playVC.delegate = self;
         LocalChanel *chanel = [[LocalChanel alloc]init];
-        
-        
+        playVC.chanel = chanel;
+        [playVC active];
     }
 
 }

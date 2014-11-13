@@ -149,7 +149,7 @@
         <!--Playground View Controller-->
         <scene sceneID="OfE-kv-eNW">
             <objects>
-                <viewController id="Oup-h1-Jz1" customClass="PlaygroundViewController" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="PlaygroundViewController" id="Oup-h1-Jz1" customClass="PlaygroundViewController" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="73A-nf-qwD"/>
                         <viewControllerLayoutGuide type="bottom" id="1fd-km-LmK"/>
@@ -158,31 +158,51 @@
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="g3f-6Q-Fgv">
-                                <rect key="frame" x="53" y="111" width="33" height="30"/>
-                                <state key="normal" title="Start">
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="43c-ho-6gg">
+                                <rect key="frame" x="0.0" y="68" width="320" height="209"/>
+                                <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                            </textView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Ax3-JZ-DDS">
+                                <rect key="frame" x="0.0" y="20" width="320" height="30"/>
+                                <color key="backgroundColor" red="1" green="0.29008843702696929" blue="0.20909877206192018" alpha="1" colorSpace="calibratedRGB"/>
+                                <state key="normal" title="Exit">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                                 <connections>
-                                    <action selector="startServer:" destination="Oup-h1-Jz1" eventType="touchUpInside" id="0hL-fD-vZr"/>
+                                    <action selector="exitAction:" destination="Oup-h1-Jz1" eventType="touchUpInside" id="ZgN-PW-bs8"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="UqK-iC-3DX">
-                                <rect key="frame" x="219" y="111" width="33" height="30"/>
-                                <state key="normal" title="Stop">
-                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                </state>
-                                <connections>
-                                    <action selector="stopServer:" destination="Oup-h1-Jz1" eventType="touchUpInside" id="R0f-x1-yQQ"/>
-                                </connections>
-                            </button>
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="HJH-uB-xCD">
+                                <rect key="frame" x="0.0" y="294" width="320" height="30"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits"/>
+                            </textField>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstAttribute="trailing" secondItem="Ax3-JZ-DDS" secondAttribute="trailing" id="5w7-9O-EQe"/>
+                            <constraint firstAttribute="trailing" secondItem="HJH-uB-xCD" secondAttribute="trailing" id="6cw-4m-Tot"/>
+                            <constraint firstItem="43c-ho-6gg" firstAttribute="leading" secondItem="toB-IT-H1P" secondAttribute="leading" id="HVK-Oh-Fio"/>
+                            <constraint firstItem="HJH-uB-xCD" firstAttribute="top" secondItem="43c-ho-6gg" secondAttribute="bottom" constant="17" id="Xbj-Ok-h27"/>
+                            <constraint firstItem="Ax3-JZ-DDS" firstAttribute="top" secondItem="73A-nf-qwD" secondAttribute="bottom" id="d3Y-5x-1sO"/>
+                            <constraint firstAttribute="trailing" secondItem="43c-ho-6gg" secondAttribute="trailing" id="fX7-Wy-Kf7"/>
+                            <constraint firstItem="HJH-uB-xCD" firstAttribute="top" secondItem="43c-ho-6gg" secondAttribute="bottom" constant="17" id="gnI-lw-8Lr"/>
+                            <constraint firstItem="Ax3-JZ-DDS" firstAttribute="leading" secondItem="toB-IT-H1P" secondAttribute="leading" id="goK-Le-SKU"/>
+                            <constraint firstItem="43c-ho-6gg" firstAttribute="top" secondItem="Ax3-JZ-DDS" secondAttribute="bottom" constant="18" id="h4Y-Hs-kWc"/>
+                            <constraint firstItem="HJH-uB-xCD" firstAttribute="leading" secondItem="toB-IT-H1P" secondAttribute="leading" id="u7u-ad-JIr"/>
+                        </constraints>
                     </view>
+                    <connections>
+                        <outlet property="chatView" destination="43c-ho-6gg" id="2PK-RI-vBE"/>
+                        <outlet property="input" destination="HJH-uB-xCD" id="1S5-mA-mmH"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="C3d-Zq-mGr" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1007" y="1551"/>
+            <point key="canvasLocation" x="1000" y="1551"/>
         </scene>
     </scenes>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">

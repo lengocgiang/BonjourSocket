@@ -7,7 +7,20 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "Chanel.h"
 
+@class PlaygroundViewController;
+
+@protocol PlaygroundViewControllerDelegate <NSObject>
+- (void)dismissPlayViewController:(PlaygroundViewController *)controller;
+@end
 @interface PlaygroundViewController : UIViewController
+<
+    UITextFieldDelegate,
+    ChanelDelegate
+>
+@property (strong, nonatomic) Chanel *chanel;
+@property (assign, nonatomic) id<PlaygroundViewControllerDelegate>delegate;
+- (void)active;
 
 @end

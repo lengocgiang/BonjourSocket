@@ -20,6 +20,7 @@
 		516228851A14A7DD00A03A0C /* Chanel.m in Sources */ = {isa = PBXBuildFile; fileRef = 516228841A14A7DD00A03A0C /* Chanel.m */; };
 		516228881A14A94E00A03A0C /* LocalChanel.m in Sources */ = {isa = PBXBuildFile; fileRef = 516228871A14A94E00A03A0C /* LocalChanel.m */; };
 		5162288B1A14AF8A00A03A0C /* RemoteChanel.m in Sources */ = {isa = PBXBuildFile; fileRef = 5162288A1A14AF8A00A03A0C /* RemoteChanel.m */; };
+		5162288E1A14BA0E00A03A0C /* UITextView+Utils.m in Sources */ = {isa = PBXBuildFile; fileRef = 5162288D1A14BA0E00A03A0C /* UITextView+Utils.m */; };
 		516322D81A0B5863007FF96E /* RootViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 516322D71A0B5863007FF96E /* RootViewController.m */; };
 		516C52681A0B7F650020A845 /* music2.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 516C52671A0B7F650020A845 /* music2.mp3 */; };
 		51B2CD7019FE239500CCD69F /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 51B2CD6F19FE239500CCD69F /* main.m */; };
@@ -76,6 +77,8 @@
 		516228871A14A94E00A03A0C /* LocalChanel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LocalChanel.m; sourceTree = "<group>"; };
 		516228891A14AF8A00A03A0C /* RemoteChanel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RemoteChanel.h; sourceTree = "<group>"; };
 		5162288A1A14AF8A00A03A0C /* RemoteChanel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RemoteChanel.m; sourceTree = "<group>"; };
+		5162288C1A14BA0E00A03A0C /* UITextView+Utils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UITextView+Utils.h"; sourceTree = "<group>"; };
+		5162288D1A14BA0E00A03A0C /* UITextView+Utils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UITextView+Utils.m"; sourceTree = "<group>"; };
 		516322D61A0B5863007FF96E /* RootViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RootViewController.h; sourceTree = "<group>"; };
 		516322D71A0B5863007FF96E /* RootViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RootViewController.m; sourceTree = "<group>"; };
 		516C52671A0B7F650020A845 /* music2.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = music2.mp3; sourceTree = "<group>"; };
@@ -215,6 +218,8 @@
 		51B2CD9319FE23A000CCD69F /* BonjourSocket */ = {
 			isa = PBXGroup;
 			children = (
+				5162288C1A14BA0E00A03A0C /* UITextView+Utils.h */,
+				5162288D1A14BA0E00A03A0C /* UITextView+Utils.m */,
 				516228821A14A7BE00A03A0C /* Playground */,
 				512567F91A136DAF00133F49 /* BonjourServer.h */,
 				512567FA1A136DAF00133F49 /* BonjourServer.m */,
@@ -384,6 +389,7 @@
 				51B2CD7019FE239500CCD69F /* main.m in Sources */,
 				516228811A14989700A03A0C /* PlaygroundViewController.m in Sources */,
 				5162287E1A148F6A00A03A0C /* BrowserViewController.m in Sources */,
+				5162288E1A14BA0E00A03A0C /* UITextView+Utils.m in Sources */,
 				51B2CDA719FE23A000CCD69F /* Util.m in Sources */,
 				516228851A14A7DD00A03A0C /* Chanel.m in Sources */,
 				512567FC1A136DAF00133F49 /* BonjourConnection.m in Sources */,
