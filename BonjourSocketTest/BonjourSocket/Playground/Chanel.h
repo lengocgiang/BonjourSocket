@@ -21,5 +21,6 @@
 
 - (BOOL) start;
 - (void) stop;
-- (void) boardcastChatMessage:(NSString *)message fromUser:(NSString *)name;
+- (void) broadcastChatMessage:(NSString *)message fromUser:(NSString *)name;
+- (void) broadcastData:(NSData *)data fromUser:(NSString *)name;
 @end

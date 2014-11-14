@@ -61,4 +61,7 @@
 // Send network message
 - (void)sendNetworkPackage:(NSDictionary *)packet;
 
+// Send network data
+- (void)sendNetworkData:(NSData *)data;
+
 @end

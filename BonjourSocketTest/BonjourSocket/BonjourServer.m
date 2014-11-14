@@ -62,6 +62,7 @@
         return NO;
     }
     NSLog(@"SERVER: Start done");
+    
     return YES;
 }
 - (void)stopServer
@@ -79,6 +80,11 @@
     if (connection == nil)
     {
         close(nativeSocketHandle);
+        return;
+    }
+    // finish connecting
+    if ( ! [connection connect] ) {
+        [connection close];
         return;
     }
     

@@ -51,7 +51,7 @@
 }
 
 
-- (void)boardcastChatMessage:(NSString *)message fromUser:(NSString *)name
+- (void)broadcastChatMessage:(NSString *)message fromUser:(NSString *)name
 {
     [self.delegate displayChatMessage:message fromUser:name];
     

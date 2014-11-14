@@ -58,8 +58,7 @@
 - (BOOL)textFieldShouldReturn:(UITextField *)textField
 {
     if (textField == input) {
-        NSLog(@"vao ko em");
-            [chanel boardcastChatMessage:input.text fromUser:[[Util sharedInstance]name]];
+            [chanel broadcastChatMessage:input.text fromUser:[[Util sharedInstance]name]];
         [input setText:@""];
         
         [input resignFirstResponder];

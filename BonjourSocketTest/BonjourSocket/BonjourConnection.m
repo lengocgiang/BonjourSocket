@@ -242,6 +242,22 @@ void writeStreamEventHandler(CFWriteStreamRef stream,CFStreamEventType eventType
     [self writeOutgoingBufferToStream];
 }
 
+// Send network data
+- (void)sendNetworkData:(NSData *)data
+{
+    NSData *rawData = [NSKeyedArchiver archivedDataWithRootObject:data];
+    
+    // Write header: length of raw data
+    int dataLength = (int)[rawData length];
+    [outgoingDataBuffer appendBytes:&dataLength length:sizeof(int)];
+    
+    // Write body:
+    [outgoingDataBuffer appendData:rawData];
+    
+    // Try to write to stream
+    [self writeOutgoingBufferToStream];
+}
+
 #pragma mark Read stream methods
 
 // dispatch readStream events
@@ -340,6 +356,7 @@ void readStreamEventHandler(CFReadStreamRef stream,CFStreamEventType eventType,v
             NSDictionary *packet= [NSKeyedUnarchiver unarchiveObjectWithData:raw];
             
             // Tell our delegate about it
+            NSLog(@"Server:packet %@",packet);
             [delegate receivedNetworkPacket:packet viaConnection:self];
             
             // Remove that chunk from buffer

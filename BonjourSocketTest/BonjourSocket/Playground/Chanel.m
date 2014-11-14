@@ -28,7 +28,11 @@
 {
     [self doesNotRecognizeSelector:_cmd];
 }
-- (void)boardcastChatMessage:(NSString *)message fromUser:(NSString *)name
+- (void)broadcastChatMessage:(NSString *)message fromUser:(NSString *)name
+{
+    [self doesNotRecognizeSelector:_cmd];
+}
+- (void)broadcastData:(NSData *)data fromUser:(NSString *)name
 {
     [self doesNotRecognizeSelector:_cmd];
 }

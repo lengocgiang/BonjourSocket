@@ -35,6 +35,7 @@
 }
 - (BOOL)start
 {
+    NSLog(@"In remote chanel");
     if (connection == nil) {
         return NO;
     }
@@ -53,10 +54,10 @@
 }
 
 // Send chat message to the server
-- (void)boardcastChatMessage:(NSString *)message fromUser:(NSString *)name
+- (void)broadcastChatMessage:(NSString *)message fromUser:(NSString *)name
 {
     NSDictionary *packet = [NSDictionary dictionaryWithObjectsAndKeys:message,@"message",name,@"from", nil];
-    
+    NSLog(@"Remote:packet %@",packet);
     // send it out
     [connection sendNetworkPackage:packet];
 }
