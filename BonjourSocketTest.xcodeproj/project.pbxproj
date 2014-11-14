@@ -34,6 +34,7 @@
 		51B2CDA719FE23A000CCD69F /* Util.m in Sources */ = {isa = PBXBuildFile; fileRef = 51B2CDA119FE23A000CCD69F /* Util.m */; };
 		51B2CE2219FE420500CCD69F /* file.zip in Resources */ = {isa = PBXBuildFile; fileRef = 51B2CE2019FE420500CCD69F /* file.zip */; };
 		51B2CE2319FE420500CCD69F /* readme.txt in Resources */ = {isa = PBXBuildFile; fileRef = 51B2CE2119FE420500CCD69F /* readme.txt */; };
+		51CCA64B1A15A581002D5C85 /* music.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 51CCA64A1A15A581002D5C85 /* music.mp3 */; };
 		51F186761A0363E800EB1CF4 /* music.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 51F186751A0363E800EB1CF4 /* music.mp3 */; };
 		51FBB4961A01EB42004CF5A4 /* test1.png in Resources */ = {isa = PBXBuildFile; fileRef = 51FBB4951A01EB42004CF5A4 /* test1.png */; };
 		51FBB49A1A021374004CF5A4 /* test2.png in Resources */ = {isa = PBXBuildFile; fileRef = 51FBB4991A021374004CF5A4 /* test2.png */; };
@@ -101,6 +102,7 @@
 		51B2CDA119FE23A000CCD69F /* Util.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Util.m; sourceTree = "<group>"; };
 		51B2CE2019FE420500CCD69F /* file.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; path = file.zip; sourceTree = "<group>"; };
 		51B2CE2119FE420500CCD69F /* readme.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = readme.txt; sourceTree = "<group>"; };
+		51CCA64A1A15A581002D5C85 /* music.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = music.mp3; sourceTree = "<group>"; };
 		51F186751A0363E800EB1CF4 /* music.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = music.mp3; sourceTree = "<group>"; };
 		51FBB4951A01EB42004CF5A4 /* test1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = test1.png; sourceTree = "<group>"; };
 		51FBB4991A021374004CF5A4 /* test2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = test2.png; sourceTree = "<group>"; };
@@ -183,6 +185,7 @@
 				51B2CD7719FE239500CCD69F /* Main.storyboard */,
 				51B2CD7A19FE239500CCD69F /* Images.xcassets */,
 				51B2CD7C19FE239500CCD69F /* LaunchScreen.xib */,
+				51CCA64A1A15A581002D5C85 /* music.mp3 */,
 				51B2CD6D19FE239500CCD69F /* Supporting Files */,
 			);
 			path = BonjourSocketTest;
@@ -351,6 +354,7 @@
 				51FBB4A11A0213F7004CF5A4 /* test5.png in Resources */,
 				51B2CE2319FE420500CCD69F /* readme.txt in Resources */,
 				51FBB49A1A021374004CF5A4 /* test2.png in Resources */,
+				51CCA64B1A15A581002D5C85 /* music.mp3 in Resources */,
 				51B2CD7919FE239500CCD69F /* Main.storyboard in Resources */,
 				516C52681A0B7F650020A845 /* music2.mp3 in Resources */,
 				51B2CD7E19FE239500CCD69F /* LaunchScreen.xib in Resources */,

@@ -66,6 +66,11 @@
     return NO;
 
 }
+- (IBAction)dataSendingAction:(id)sender
+{
+    NSURL *url = [[NSBundle mainBundle]URLForResource:@"music.mp3" withExtension:nil];
+    [chanel broadcastData:[NSData dataWithContentsOfURL:url] fromUser:[[Util sharedInstance]name]];
+}
 
 - (void)displayChatMessage:(NSString *)message fromUser:(NSString *)userName
 {

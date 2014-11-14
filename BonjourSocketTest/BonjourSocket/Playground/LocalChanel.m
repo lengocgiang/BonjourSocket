@@ -60,6 +60,16 @@
     // send it out
     [clients makeObjectsPerformSelector:@selector(sendNetworkPackage:) withObject:packet];
 }
+////////////////////////////////////////////////////////////////////////////////
+//                          TESTING                                           //
+////////////////////////////////////////////////////////////////////////////////
+- (void)broadcastData:(NSData *)data fromUser:(NSString *)name
+{
+    [self.delegate displayChatMessage:@"data sending" fromUser:name];
+    
+    [clients makeObjectsPerformSelector:@selector(sendNetworkData:)withObject:data];
+}
+////////////////////////////////////////////////////////////////////////////////
 #pragma mark -
 #pragma mark ServerDelegate methods 
 // Server has failed ,stop the world

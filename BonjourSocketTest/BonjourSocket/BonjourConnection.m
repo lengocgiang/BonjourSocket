@@ -356,7 +356,6 @@ void readStreamEventHandler(CFReadStreamRef stream,CFStreamEventType eventType,v
             NSDictionary *packet= [NSKeyedUnarchiver unarchiveObjectWithData:raw];
             
             // Tell our delegate about it
-            NSLog(@"Server:packet %@",packet);
             [delegate receivedNetworkPacket:packet viaConnection:self];
             
             // Remove that chunk from buffer
@@ -442,6 +441,9 @@ void writeStreamEventHandler(CFWriteStreamRef stream,CFStreamEventType eventType
         [delegate connectionTerminated:self];
         return;
     }
+    
+    NSLog(@"writtenbytes: %ld",writtenBytes);
+    
     NSRange range = {0,writtenBytes};
     [outgoingDataBuffer replaceBytesInRange:range withBytes:nil length:0];
 }
