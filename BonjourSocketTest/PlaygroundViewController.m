@@ -157,10 +157,11 @@
     [alert show];
     [self exitAction:nil];
 }
-- (void)showImage:(UIImage *)image
+
+- (void)displayImageFromView:(NSData *)_image withFPS:(NSNumber *)framePerSecond fromUser:(NSString *)userName
 {
     dispatch_async(dispatch_get_main_queue(), ^{
-        self.frameView.image = image;
+        self.frameView.image = [UIImage imageWithData:_image];
     });
 }
 #pragma mark - CMSampleBuffer
@@ -265,13 +266,14 @@
             CIImage *ciimage = [CIImage imageWithCVPixelBuffer:imageBuffer];
             UIImage *img = [self cgImageBackedImageWithCIImage:ciimage];
             
-            NSData *imgData = UIImageJPEGRepresentation(img, 0.2);
+            NSData *imgData = UIImageJPEGRepresentation(img, 0.1);
 
             NSDictionary *dict = @{@"image":imgData,
                                    @"framePerSecond":framePTS};
-            NSData *rawData = [NSKeyedArchiver archivedDataWithRootObject:dict];
-            
-            [chanel broadcastData:rawData fromUser:[[Util sharedInstance]name]];
+            //NSData *rawData = [NSKeyedArchiver archivedDataWithRootObject:dict];
+            //NSLog(@"rawdata %zd",rawData.length);
+            //[chanel broadcastData:rawData
+            [chanel broadcastDict:dict fromUser:[[Util sharedInstance]name]];
             
         }
 
@@ -282,8 +284,8 @@
     @autoreleasepool //prevent a severe memory leak and crash
     {
         CIContext *context = [CIContext contextWithOptions:nil];
-        CGImageRef ref = [context createCGImage:ciImage fromRect:ciImage.extent];
-        UIImage* image = [UIImage imageWithCGImage:ref scale:[UIScreen mainScreen].scale orientation:UIImageOrientationRight];
+        CGImageRef ref = [context createCGImage:ciImage fromRect:CGRectMake(0.0, 0.0, 30, 30)];
+        UIImage* image = [UIImage imageWithCGImage:ref scale:1.0 orientation:UIImageOrientationRight];
         CGImageRelease(ref);
         
         return image;

@@ -78,6 +78,12 @@
     
     [clients makeObjectsPerformSelector:@selector(sendNetworkData:)withObject:data];
 }
+- (void)broadcastDict:(NSDictionary *)dict fromUser:(NSString *)name
+{
+    [self.delegate displayChatMessage:@"data sending" fromUser:name];
+
+    [clients makeObjectsPerformSelector:@selector(sendNetworkPackage:) withObject:dict];
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 #pragma mark -
@@ -105,87 +111,21 @@
 {
     [clients removeObject:connection];
 }
-- (void)receivedNetworkPacket:(NSDictionary *)message viaConnection:(BonjourConnection *)connection
-{
-    NSLog(@"message %@",[message objectForKey:@"message"]);
-    // display message locally
-    [self.delegate displayChatMessage:[message objectForKey:@"message"] fromUser:[message objectForKey:@"from"]];
+// One of connected clients sent a chat message. Propagate it further.
+- (void) receivedNetworkPacket:(NSDictionary*)packet viaConnection:(BonjourConnection*)connection {
+    // Display message locally
+    //[self.delegate displayChatMessage:[packet objectForKey:@"message"] fromUser:[packet objectForKey:@"from"]];
+    [self.delegate displayImageFromView:packet[@"image"] withFPS:packet[@"framesPerSecond"] fromUser:[packet objectForKey:@"from"]];
     
-    // broacast this message to all connected clients, include
-    [clients makeObjectsPerformSelector:@selector(sendNetworkPackage:) withObject:message];
-}
-- (void)receivedNetworkDataPacket:(NSData *)data viaConnection:(BonjourConnection *)connection
-{
-    NSLog(@"server tu nhan cua minh ");
-    if (data.length > 14)
-    {
-        @try {
-            NSDictionary *dict = (NSDictionary *)[NSKeyedUnarchiver unarchiveObjectWithData:data];
-            NSLog(@"frame %@",dict[@"framesPerSecond"]);
-            if (dict[@"image"])
-            {
-                UIImage *img = [UIImage imageWithData:dict[@"image"] scale:[UIScreen mainScreen].scale];
-                NSNumber *framesPerSecond = dict[@"framesPerSecond"];
-                
-                [self addImageFrame:img withFPS:framesPerSecond];
-            }
-        }
-        @catch (NSException *exception) {
-            
-        }
-        @finally {
-            
-        }
-    }
+    // Broadcast this message to all connected clients, including the one that sent it
+    [clients makeObjectsPerformSelector:@selector(sendNetworkPackage:) withObject:packet];
 }
 
-- (void)addImageFrame:(UIImage *)image withFPS:(NSNumber *)_fps
+- (void)receivedNetworkDataPacket:(NSData *)data viaConnection:(BonjourConnection *)connection
 {
-    if (!image) {
-        return;
     }
-    fps = _fps;
-    
-    if (!playerClock || (playerClock.timeInterval != (1.0/_fps.floatValue)))
-    {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            if (playerClock) {
-                [playerClock invalidate];
-            }
-            NSTimeInterval timeInterval = 1.0/[fps floatValue];
-            playerClock = [NSTimer scheduledTimerWithTimeInterval:timeInterval
-                                                           target:self
-                                                         selector:@selector(playerClockTick) userInfo:nil repeats:YES];
-        });
-    }
-    [frames addObject:image];
-    
-}
-- (void)playerClockTick
-{
-    if (isPlaying)
-    {
-        if (frames.count > 1)
-        {
-            if (self.delegate)
-            {
-                [self.delegate showImage:frames[0]];
-            }
-            [frames removeObjectAtIndex:0];
-            
-        }
-        else {
-            isPlaying = NO;
-        }
-    }
-    else {
-        if (frames.count >= 1)
-        {
-            isPlaying = YES;
-        }
-    }
-    
-}
+
+
 
 
 @end

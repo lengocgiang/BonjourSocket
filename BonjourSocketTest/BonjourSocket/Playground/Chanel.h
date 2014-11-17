@@ -12,8 +12,8 @@
 @protocol ChanelDelegate <NSObject>
 - (void)displayChatMessage:(NSString *)message fromUser:(NSString *)userName;
 - (void)chanelTerminated:(id)chanel reason:(NSString *)string;
-// new function
-- (void)showImage:(UIImage *)image;
+- (void)displayImageFromView:(NSData *)imageData withFPS:(NSNumber *)framePerSecond fromUser:(NSString *)userName;
+
 @end
 
 @interface Chanel : NSObject
@@ -26,5 +26,6 @@
 - (void) stop;
 - (void) broadcastChatMessage:(NSString *)message fromUser:(NSString *)name;
 - (void) broadcastData:(NSData *)data fromUser:(NSString *)name;
+- (void) broadcastDict:(NSDictionary *)dict fromUser:(NSString *)name;
 
 @end

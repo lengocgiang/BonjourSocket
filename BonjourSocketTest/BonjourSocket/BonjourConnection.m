@@ -9,6 +9,19 @@
 #import "BonjourConnection.h"
 #import "Util.h"
 
+enum
+{
+    kFileSendOperationStateStart,
+    kFileSendOperationStateHeader,
+    kFileSendOperationStateBody,
+    kFileSendOperationStateTrailer
+};
+
+enum
+{
+    kFileSendOperationBufferSize = 32768
+};
+
 // Declare C callback functions
 void readStreamEventHandler(CFReadStreamRef stream,CFStreamEventType eventType,void *info);
 void writeStreamEventHandler(CFWriteStreamRef stream,CFStreamEventType eventType,void *info);
@@ -231,12 +244,18 @@ void writeStreamEventHandler(CFWriteStreamRef stream,CFStreamEventType eventType
 {
     NSData *rawPacket = [NSKeyedArchiver archivedDataWithRootObject:packet];
     
+    //NSLog(@"rawdata %zd",rawPacket.length);
+    
     // Write header: lengh of raw packet
     int packetLength = (int)[rawPacket length];
+    
+    NSLog(@"packetLength %d and sizeof %zu",packetLength,sizeof(int));
+
     [outgoingDataBuffer appendBytes:&packetLength length:sizeof(int)];
     
     // Write body: encoded NSDictionary
     [outgoingDataBuffer appendData:rawPacket];
+
     
     // Try to write to steam
     [self writeOutgoingBufferToStream];
@@ -248,8 +267,8 @@ void writeStreamEventHandler(CFWriteStreamRef stream,CFStreamEventType eventType
     NSData *rawData = [NSKeyedArchiver archivedDataWithRootObject:data];
     
     // Write header: length of raw data
-    int dataLength = (int)[rawData length];
-    [outgoingDataBuffer appendBytes:&dataLength length:sizeof(int)];
+    uint8_t dataLength = (uint8_t)[rawData length];
+    [outgoingDataBuffer appendBytes:&dataLength length:sizeof(uint8_t)];
     
     // Write body:
     [outgoingDataBuffer appendData:rawData];
@@ -299,77 +318,69 @@ void readStreamEventHandler(CFReadStreamRef stream,CFStreamEventType eventType,v
     }
 }
 
-//Read as many bytes from the streams as posible and try to extract meaningful packets
-- (void)readFromStreamIntoIncomingBuffer
-{
+// Read as many bytes from the stream as possible and try to extract meaningful packets
+- (void)readFromStreamIntoIncomingBuffer {
     // Temporary buffer to read data into
-    UInt8 buffer[1024];
+    UInt8 buf[1024];
     
-    // try reading while there is data
-    while (CFReadStreamHasBytesAvailable(readStream))
-    {
-        CFIndex len = CFReadStreamRead(readStream, buffer, sizeof(buffer));
-        if (len <=0) {
-            // Either stream was closed or error occured. Close everything up and treat this
-            // as 'connection terminated'
+    // Try reading while there is data
+    while( CFReadStreamHasBytesAvailable(readStream) ) {
+        CFIndex len = CFReadStreamRead(readStream, buf, sizeof(buf));
+        if ( len <= 0 ) {
+            // Either stream was closed or error occurred. Close everything up and treat this as "connection terminated"
             [self close];
             [delegate connectionTerminated:self];
             return;
         }
-        [incomingDataBuffer appendBytes:buffer length:len];
+        
+        [incomingDataBuffer appendBytes:buf length:len];
     }
     
+    // Try to extract packets from the buffer.
+    //
+    // Protocol: header + body
+    //  header: an integer that indicates length of the body
+    //  body: bytes that represent encoded NSDictionary
     
-    // Try to extract packets from the buffer
-    /**
-     Protocol = header + body
-     HEADER  : an integer that indicates length of the body
-     BODY    : bytes that represent encoded NSDictionary
-     */
-    // We might have more than one message in the buffer - that's why we'll be reading
-    // it inside the while loop
-    while (YES)
-    {
+    // We might have more than one message in the buffer - that's why we'll be reading it inside the while loop
+    while( YES ) {
         // Did we read the header yet?
-        if (packetBodySize == -1)
-        {
-            // Do we have enought bytes in the buffer to read the header?
-            if ([incomingDataBuffer length] > sizeof(int))
-            {
+        if ( packetBodySize == -1 ) {
+            // Do we have enough bytes in the buffer to read the header?
+            if ( [incomingDataBuffer length] >= sizeof(int) ) {
                 // extract length
                 memcpy(&packetBodySize, [incomingDataBuffer bytes], sizeof(int));
                 
                 // remove that chunk from buffer
-                NSRange rangeToDelete  = {0,sizeof(int)};
-                [incomingDataBuffer replaceBytesInRange:rangeToDelete withBytes:nil length:0]
-                ;
+                NSRange rangeToDelete = {0, sizeof(int)};
+                [incomingDataBuffer replaceBytesInRange:rangeToDelete withBytes:NULL length:0];
+            }
+            else {
+                // We don't have enough yet. Will wait for more data.
+                break;
             }
         }
-        else{
-            // we don't have enough yet, wi'' wait for more detail
-            break;
-        }
-        // We should now have the header. Time to extract the body
-        if ([incomingDataBuffer length] >= packetBodySize)
-        {
-            // We now have enough data to extract a meaningful packets31Q
-            NSData *raw = [NSData dataWithBytes:[incomingDataBuffer bytes] length:packetBodySize];
-            NSDictionary *packet= [NSKeyedUnarchiver unarchiveObjectWithData:raw];
-            NSLog(@"packet %@",packet);
+        
+        // We should now have the header. Time to extract the body.
+        if ( [incomingDataBuffer length] >= packetBodySize ) {
+            // We now have enough data to extract a meaningful packet.
+            NSData* raw = [NSData dataWithBytes:[incomingDataBuffer bytes] length:packetBodySize];
+            NSDictionary* packet = [NSKeyedUnarchiver unarchiveObjectWithData:raw];
+            
             // Tell our delegate about it
+            //[delegate receivedNetworkPacket:packet viaConnection:self];
             [delegate receivedNetworkPacket:packet viaConnection:self];
-            //[delegate receivedNetworkDataPacket:raw viaConnection:self];
             
             // Remove that chunk from buffer
-            NSRange rangeToDelete = {0,packetBodySize};
-            [incomingDataBuffer replaceBytesInRange:rangeToDelete withBytes:nil length:0];
+            NSRange rangeToDelete = {0, packetBodySize};
+            [incomingDataBuffer replaceBytesInRange:rangeToDelete withBytes:NULL length:0];
             
-            // We have processed the packet, resetting the state
+            // We have processed the packet. Resetting the state.
             packetBodySize = -1;
         }
-        else
-        {
-            // Not enough data yet, will wait
+        else {
+            // Not enough data yet. Will wait.
+            NSLog(@"incoming data %zd packetbodysize %d",[incomingDataBuffer length],packetBodySize);
             break;
         }
     }

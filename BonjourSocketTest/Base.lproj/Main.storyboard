@@ -189,18 +189,16 @@
                                     <action selector="dataSendingAction:" destination="Oup-h1-Jz1" eventType="touchUpInside" id="O4e-a0-XVP"/>
                                 </connections>
                             </button>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" image="test1.png" translatesAutoresizingMaskIntoConstraints="NO" id="Z1j-Fv-GI9">
-                                <rect key="frame" x="40" y="377" width="240" height="160"/>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="test1.png" translatesAutoresizingMaskIntoConstraints="NO" id="Z1j-Fv-GI9">
+                                <rect key="frame" x="80" y="377" width="160" height="160"/>
                             </imageView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstAttribute="trailing" secondItem="Ax3-JZ-DDS" secondAttribute="trailing" id="5w7-9O-EQe"/>
                             <constraint firstAttribute="trailing" secondItem="HJH-uB-xCD" secondAttribute="trailing" id="6cw-4m-Tot"/>
-                            <constraint firstItem="Z1j-Fv-GI9" firstAttribute="leading" secondItem="toB-IT-H1P" secondAttribute="leading" constant="40" id="GEN-Z2-Ir1"/>
                             <constraint firstItem="43c-ho-6gg" firstAttribute="leading" secondItem="toB-IT-H1P" secondAttribute="leading" id="HVK-Oh-Fio"/>
                             <constraint firstItem="HJH-uB-xCD" firstAttribute="top" secondItem="43c-ho-6gg" secondAttribute="bottom" constant="17" id="Xbj-Ok-h27"/>
-                            <constraint firstAttribute="trailing" secondItem="Z1j-Fv-GI9" secondAttribute="trailing" constant="40" id="Y77-gZ-ZCL"/>
                             <constraint firstItem="Ax3-JZ-DDS" firstAttribute="top" secondItem="73A-nf-qwD" secondAttribute="bottom" id="d3Y-5x-1sO"/>
                             <constraint firstAttribute="trailing" secondItem="43c-ho-6gg" secondAttribute="trailing" id="fX7-Wy-Kf7"/>
                             <constraint firstItem="HJH-uB-xCD" firstAttribute="top" secondItem="43c-ho-6gg" secondAttribute="bottom" constant="17" id="gnI-lw-8Lr"/>

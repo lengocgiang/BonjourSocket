@@ -36,7 +36,7 @@
 {
     [self doesNotRecognizeSelector:_cmd];
 }
-- (void)broadcastPixelBuffer:(CIImage*)ciImage withPTS:(NSNumber *)framePTS fromUser:(NSString *)name
+- (void)broadcastDict:(NSDictionary *)dict fromUser:(NSString *)name
 {
     [self doesNotRecognizeSelector:_cmd];
 }
