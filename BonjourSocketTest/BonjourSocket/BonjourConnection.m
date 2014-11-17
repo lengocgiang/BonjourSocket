@@ -319,6 +319,7 @@ void readStreamEventHandler(CFReadStreamRef stream,CFStreamEventType eventType,v
         [incomingDataBuffer appendBytes:buffer length:len];
     }
     
+    
     // Try to extract packets from the buffer
     /**
      Protocol = header + body
@@ -354,9 +355,10 @@ void readStreamEventHandler(CFReadStreamRef stream,CFStreamEventType eventType,v
             // We now have enough data to extract a meaningful packets31Q
             NSData *raw = [NSData dataWithBytes:[incomingDataBuffer bytes] length:packetBodySize];
             NSDictionary *packet= [NSKeyedUnarchiver unarchiveObjectWithData:raw];
-            
+            NSLog(@"packet %@",packet);
             // Tell our delegate about it
             [delegate receivedNetworkPacket:packet viaConnection:self];
+            //[delegate receivedNetworkDataPacket:raw viaConnection:self];
             
             // Remove that chunk from buffer
             NSRange rangeToDelete = {0,packetBodySize};

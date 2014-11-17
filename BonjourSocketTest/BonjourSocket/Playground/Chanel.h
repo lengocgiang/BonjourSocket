@@ -7,10 +7,13 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <UIKit/UIKit.h>
 
 @protocol ChanelDelegate <NSObject>
 - (void)displayChatMessage:(NSString *)message fromUser:(NSString *)userName;
 - (void)chanelTerminated:(id)chanel reason:(NSString *)string;
+// new function
+- (void)showImage:(UIImage *)image;
 @end
 
 @interface Chanel : NSObject
@@ -23,4 +26,5 @@
 - (void) stop;
 - (void) broadcastChatMessage:(NSString *)message fromUser:(NSString *)name;
 - (void) broadcastData:(NSData *)data fromUser:(NSString *)name;
+
 @end

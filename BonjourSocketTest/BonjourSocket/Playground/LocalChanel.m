@@ -12,11 +12,20 @@
 @interface LocalChanel()
 @property(nonatomic, strong,readwrite) BonjourServer      *server;
 @property(nonatomic, strong,readwrite) NSMutableSet       *clients;
+
+
+// Setup video
+@property (strong, nonatomic) NSMutableArray    *frames;
+@property (assign, nonatomic) NSNumber          *fps;
+@property (assign, nonatomic) NSTimer           *playerClock;
+@property (assign, nonatomic) NSInteger         numberOfFrameAtLastTick;
+@property (assign, nonatomic) NSInteger         numberOfTicksWithFullBuffer;
+@property (assign, nonatomic) BOOL              isPlaying;
 @end
 
 @implementation LocalChanel
 @synthesize server,clients;
-
+@synthesize fps,frames,playerClock,numberOfFrameAtLastTick,numberOfTicksWithFullBuffer,isPlaying;
 
 - (id)init
 {
@@ -69,6 +78,7 @@
     
     [clients makeObjectsPerformSelector:@selector(sendNetworkData:)withObject:data];
 }
+
 ////////////////////////////////////////////////////////////////////////////////
 #pragma mark -
 #pragma mark ServerDelegate methods 
@@ -104,5 +114,78 @@
     // broacast this message to all connected clients, include
     [clients makeObjectsPerformSelector:@selector(sendNetworkPackage:) withObject:message];
 }
+- (void)receivedNetworkDataPacket:(NSData *)data viaConnection:(BonjourConnection *)connection
+{
+    NSLog(@"server tu nhan cua minh ");
+    if (data.length > 14)
+    {
+        @try {
+            NSDictionary *dict = (NSDictionary *)[NSKeyedUnarchiver unarchiveObjectWithData:data];
+            NSLog(@"frame %@",dict[@"framesPerSecond"]);
+            if (dict[@"image"])
+            {
+                UIImage *img = [UIImage imageWithData:dict[@"image"] scale:[UIScreen mainScreen].scale];
+                NSNumber *framesPerSecond = dict[@"framesPerSecond"];
+                
+                [self addImageFrame:img withFPS:framesPerSecond];
+            }
+        }
+        @catch (NSException *exception) {
+            
+        }
+        @finally {
+            
+        }
+    }
+}
+
+- (void)addImageFrame:(UIImage *)image withFPS:(NSNumber *)_fps
+{
+    if (!image) {
+        return;
+    }
+    fps = _fps;
+    
+    if (!playerClock || (playerClock.timeInterval != (1.0/_fps.floatValue)))
+    {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (playerClock) {
+                [playerClock invalidate];
+            }
+            NSTimeInterval timeInterval = 1.0/[fps floatValue];
+            playerClock = [NSTimer scheduledTimerWithTimeInterval:timeInterval
+                                                           target:self
+                                                         selector:@selector(playerClockTick) userInfo:nil repeats:YES];
+        });
+    }
+    [frames addObject:image];
+    
+}
+- (void)playerClockTick
+{
+    if (isPlaying)
+    {
+        if (frames.count > 1)
+        {
+            if (self.delegate)
+            {
+                [self.delegate showImage:frames[0]];
+            }
+            [frames removeObjectAtIndex:0];
+            
+        }
+        else {
+            isPlaying = NO;
+        }
+    }
+    else {
+        if (frames.count >= 1)
+        {
+            isPlaying = YES;
+        }
+    }
+    
+}
+
 
 @end

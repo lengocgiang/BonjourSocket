@@ -7,14 +7,21 @@
 //
 
 #import "RemoteChanel.h"
-
+#import "Util.h"
 @interface RemoteChanel()
 @property (strong, nonatomic) BonjourConnection *connection;
+// Setup video
+@property (strong, nonatomic) NSMutableArray    *frames;
+@property (assign, nonatomic) NSNumber          *fps;
+@property (assign, nonatomic) NSTimer           *playerClock;
+@property (assign, nonatomic) NSInteger         numberOfFrameAtLastTick;
+@property (assign, nonatomic) NSInteger         numberOfTicksWithFullBuffer;
+@property (assign, nonatomic) BOOL              isPlaying;
 @end
 
 @implementation RemoteChanel
 @synthesize connection;
-
+@synthesize fps,frames,playerClock,numberOfFrameAtLastTick,numberOfTicksWithFullBuffer,isPlaying;
 // Setup connection but don't connect yet
 - (id)initWithHost:(NSString *)host andPort:(int)port
 {
@@ -28,18 +35,24 @@
     connection = [[BonjourConnection alloc]initWithNetService:netService];
     return self;
 }
-
+- (void)initialization
+{
+    frames = @[].mutableCopy;
+    isPlaying = NO;
+    numberOfTicksWithFullBuffer = 0;
+}
 - (void)dealloc
 {
     self.connection = nil;
 }
 - (BOOL)start
 {
-    NSLog(@"In remote chanel");
     if (connection == nil) {
         return NO;
     }
     connection.delegate = self;
+    
+    [self initialization];
     
     return [connection connect];
 }
@@ -75,5 +88,79 @@
 {
     [self.delegate displayChatMessage:[message objectForKey:@"message"] fromUser:[message objectForKey:@"from"]];
 }
+
+- (void)receivedNetworkDataPacket:(NSData *)data viaConnection:(BonjourConnection *)connection
+{
+    if (data.length > 14)
+    {
+        @try {
+            NSDictionary *dict = (NSDictionary *)[NSKeyedUnarchiver unarchiveObjectWithData:data];
+            NSLog(@"dict %@",dict);
+            if (dict[@"image"])
+            {
+                UIImage *img = [UIImage imageWithData:dict[@"image"] scale:[UIScreen mainScreen].scale];
+                NSNumber *framesPerSecond = dict[@"framesPerSecond"];
+                
+                [self addImageFrame:img withFPS:framesPerSecond];
+            }
+        }
+        @catch (NSException *exception) {
+            
+        }
+        @finally {
+            
+        }
+    }
+}
+
+- (void)addImageFrame:(UIImage *)image withFPS:(NSNumber *)_fps
+{
+    if (!image) {
+        return;
+    }
+    fps = _fps;
+    
+    if (!playerClock || (playerClock.timeInterval != (1.0/_fps.floatValue)))
+    {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (playerClock) {
+                [playerClock invalidate];
+            }
+            NSTimeInterval timeInterval = 1.0/[fps floatValue];
+            playerClock = [NSTimer scheduledTimerWithTimeInterval:timeInterval
+                                                           target:self
+                                                         selector:@selector(playerClockTick) userInfo:nil repeats:YES];
+        });
+    }
+    [frames addObject:image];
+    
+}
+- (void)playerClockTick
+{
+    if (isPlaying)
+    {
+        if (frames.count > 1)
+        {
+            if (self.delegate)
+            {
+                [self.delegate showImage:frames[0]];
+            }
+            [frames removeObjectAtIndex:0];
+            
+        }
+        else {
+            isPlaying = NO;
+        }
+    }
+    else {
+        if (frames.count >= 1)
+        {
+            isPlaying = YES;
+        }
+    }
+    
+}
+
+
 
 @end

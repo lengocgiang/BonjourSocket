@@ -34,7 +34,9 @@
 		51B2CDA719FE23A000CCD69F /* Util.m in Sources */ = {isa = PBXBuildFile; fileRef = 51B2CDA119FE23A000CCD69F /* Util.m */; };
 		51B2CE2219FE420500CCD69F /* file.zip in Resources */ = {isa = PBXBuildFile; fileRef = 51B2CE2019FE420500CCD69F /* file.zip */; };
 		51B2CE2319FE420500CCD69F /* readme.txt in Resources */ = {isa = PBXBuildFile; fileRef = 51B2CE2119FE420500CCD69F /* readme.txt */; };
+		51C7FF841A1993C800590B7C /* AAPLEAGLLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 51C7FF831A1993C800590B7C /* AAPLEAGLLayer.m */; };
 		51CCA64B1A15A581002D5C85 /* music.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 51CCA64A1A15A581002D5C85 /* music.mp3 */; };
+		51CCA64D1A15AE56002D5C85 /* video.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 51CCA64C1A15AE56002D5C85 /* video.mp4 */; };
 		51F186761A0363E800EB1CF4 /* music.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 51F186751A0363E800EB1CF4 /* music.mp3 */; };
 		51FBB4961A01EB42004CF5A4 /* test1.png in Resources */ = {isa = PBXBuildFile; fileRef = 51FBB4951A01EB42004CF5A4 /* test1.png */; };
 		51FBB49A1A021374004CF5A4 /* test2.png in Resources */ = {isa = PBXBuildFile; fileRef = 51FBB4991A021374004CF5A4 /* test2.png */; };
@@ -102,7 +104,12 @@
 		51B2CDA119FE23A000CCD69F /* Util.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Util.m; sourceTree = "<group>"; };
 		51B2CE2019FE420500CCD69F /* file.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; path = file.zip; sourceTree = "<group>"; };
 		51B2CE2119FE420500CCD69F /* readme.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = readme.txt; sourceTree = "<group>"; };
+		51C7FF821A1993C800590B7C /* AAPLEAGLLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AAPLEAGLLayer.h; sourceTree = "<group>"; };
+		51C7FF831A1993C800590B7C /* AAPLEAGLLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AAPLEAGLLayer.m; sourceTree = "<group>"; };
 		51CCA64A1A15A581002D5C85 /* music.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = music.mp3; sourceTree = "<group>"; };
+		51CCA64C1A15AE56002D5C85 /* video.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = video.mp4; sourceTree = "<group>"; };
+		51CCA65E1A15BC10002D5C85 /* CoreAudio.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudio.framework; path = System/Library/Frameworks/CoreAudio.framework; sourceTree = SDKROOT; };
+		51CCA6601A15BC18002D5C85 /* CoreAudioKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudioKit.framework; path = System/Library/Frameworks/CoreAudioKit.framework; sourceTree = SDKROOT; };
 		51F186751A0363E800EB1CF4 /* music.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = music.mp3; sourceTree = "<group>"; };
 		51FBB4951A01EB42004CF5A4 /* test1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = test1.png; sourceTree = "<group>"; };
 		51FBB4991A021374004CF5A4 /* test2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = test2.png; sourceTree = "<group>"; };
@@ -133,6 +140,8 @@
 		511446EC1A0727DA007C83C1 /* GGAudioPlayer */ = {
 			isa = PBXGroup;
 			children = (
+				51C7FF821A1993C800590B7C /* AAPLEAGLLayer.h */,
+				51C7FF831A1993C800590B7C /* AAPLEAGLLayer.m */,
 				511446ED1A0727F8007C83C1 /* GGAudioPlayer.h */,
 				511446EE1A0727F8007C83C1 /* GGAudioPlayer.m */,
 			);
@@ -155,6 +164,8 @@
 		51B2CD6119FE239500CCD69F = {
 			isa = PBXGroup;
 			children = (
+				51CCA6601A15BC18002D5C85 /* CoreAudioKit.framework */,
+				51CCA65E1A15BC10002D5C85 /* CoreAudio.framework */,
 				51B2CD6C19FE239500CCD69F /* BonjourSocketTest */,
 				51B2CD8619FE239500CCD69F /* BonjourSocketTestTests */,
 				51B2CD6B19FE239500CCD69F /* Products */,
@@ -185,6 +196,7 @@
 				51B2CD7719FE239500CCD69F /* Main.storyboard */,
 				51B2CD7A19FE239500CCD69F /* Images.xcassets */,
 				51B2CD7C19FE239500CCD69F /* LaunchScreen.xib */,
+				51CCA64C1A15AE56002D5C85 /* video.mp4 */,
 				51CCA64A1A15A581002D5C85 /* music.mp3 */,
 				51B2CD6D19FE239500CCD69F /* Supporting Files */,
 			);
@@ -366,6 +378,7 @@
 				51B2CD7B19FE239500CCD69F /* Images.xcassets in Resources */,
 				511446EB1A071B01007C83C1 /* audioplayer_play.png in Resources */,
 				51FBB4A21A0213F7004CF5A4 /* test6.png in Resources */,
+				51CCA64D1A15AE56002D5C85 /* video.mp4 in Resources */,
 				51F186761A0363E800EB1CF4 /* music.mp3 in Resources */,
 				511446EA1A071B01007C83C1 /* audioplayer_pause.png in Resources */,
 				51B2CE2219FE420500CCD69F /* file.zip in Resources */,
@@ -398,6 +411,7 @@
 				516228851A14A7DD00A03A0C /* Chanel.m in Sources */,
 				512567FC1A136DAF00133F49 /* BonjourConnection.m in Sources */,
 				512567FD1A136DAF00133F49 /* BonjourServer.m in Sources */,
+				51C7FF841A1993C800590B7C /* AAPLEAGLLayer.m in Sources */,
 				516322D81A0B5863007FF96E /* RootViewController.m in Sources */,
 				516228881A14A94E00A03A0C /* LocalChanel.m in Sources */,
 				5162288B1A14AF8A00A03A0C /* RemoteChanel.m in Sources */,
@@ -524,6 +538,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				GCC_INPUT_FILETYPE = automatic;
 				INFOPLIST_FILE = BonjourSocketTest/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -537,6 +552,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				GCC_INPUT_FILETYPE = automatic;
 				INFOPLIST_FILE = BonjourSocketTest/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";

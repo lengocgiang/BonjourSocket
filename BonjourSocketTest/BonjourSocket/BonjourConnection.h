@@ -15,6 +15,9 @@
 - (void)connectionAttemptFailed:(BonjourConnection *)connection;
 - (void)connectionTerminated:(BonjourConnection *)connection;
 - (void)receivedNetworkPacket:(NSDictionary *)message viaConnection:(BonjourConnection *)connection;
+
+// add new method
+- (void)receivedNetworkDataPacket:(NSData *)data viaConnection:(BonjourConnection *)connection;
 @end
 
 @interface BonjourConnection : NSObject

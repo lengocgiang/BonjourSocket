@@ -8,10 +8,12 @@
 
 #import "Chanel.h"
 #import "BonjourConnection.h"
+
 @interface RemoteChanel : Chanel
 <
 BonjourConnectionDelegate
 >
+
 - (id)initWithHost:(NSString *)host andPort:(int)port;
 - (id)initWithNetService:(NSNetService *)netService;
 
