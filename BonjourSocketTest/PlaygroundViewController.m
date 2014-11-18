@@ -46,7 +46,7 @@
 @property NSMutableArray                *presentationTimes;
 @property NSMutableArray                *outputFrames;
 @property CFTimeInterval                lastCallbackTime;
-@property CADisplayLink                 *displayLink;
+@property (strong, nonatomic)CADisplayLink                 *displayLink;
 @property (strong, nonatomic)UIImagePickerController *picker;
 
 @end
@@ -266,26 +266,30 @@
             CIImage *ciimage = [CIImage imageWithCVPixelBuffer:imageBuffer];
             UIImage *img = [self cgImageBackedImageWithCIImage:ciimage];
             
-            NSData *imgData = UIImageJPEGRepresentation(img, 0.1);
-
+            NSData *imgData = UIImageJPEGRepresentation(img, 0.2);
             NSDictionary *dict = @{@"image":imgData,
                                    @"framePerSecond":framePTS};
-            //NSData *rawData = [NSKeyedArchiver archivedDataWithRootObject:dict];
-            //NSLog(@"rawdata %zd",rawData.length);
-            //[chanel broadcastData:rawData
+
             [chanel broadcastDict:dict fromUser:[[Util sharedInstance]name]];
             
         }
 
     }
 }
+- (void)showme:(NSData *)data
+{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        self.frameView.image = [UIImage imageWithData:data];
+    });
+}
 
 - (UIImage*) cgImageBackedImageWithCIImage:(CIImage*) ciImage {
     @autoreleasepool //prevent a severe memory leak and crash
     {
         CIContext *context = [CIContext contextWithOptions:nil];
-        CGImageRef ref = [context createCGImage:ciImage fromRect:CGRectMake(0.0, 0.0, 30, 30)];
+        CGImageRef ref = [context createCGImage:ciImage fromRect:ciImage.extent];
         UIImage* image = [UIImage imageWithCGImage:ref scale:1.0 orientation:UIImageOrientationRight];
+        
         CGImageRelease(ref);
         
         return image;

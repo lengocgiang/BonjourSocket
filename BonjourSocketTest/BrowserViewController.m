@@ -34,6 +34,12 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+
+    
+}
+- (void)viewWillAppear:(BOOL)animated
+{
+    NSLog(@"call me!!!");
     serverBrowser = [[BonjourBrowser alloc]init];
     serverBrowser.delegate = self;
     [serverBrowser start];

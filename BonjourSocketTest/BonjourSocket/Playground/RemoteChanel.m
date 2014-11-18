@@ -96,6 +96,8 @@
 }
 - (void)receivedNetworkPacket:(NSDictionary *)message viaConnection:(BonjourConnection *)connection
 {
+    //[self.delegate displayChatMessage:[message objectForKey:@"message"] fromUser:[message objectForKey:@"from"]];
+    NSLog(@"adad");
     [self.delegate displayImageFromView:message[@"image"] withFPS:message[@"framesPerSecond"] fromUser:[message objectForKey:@"from"]];
 }
 

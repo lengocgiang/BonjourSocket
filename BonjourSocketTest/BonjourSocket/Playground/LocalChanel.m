@@ -114,8 +114,8 @@
 // One of connected clients sent a chat message. Propagate it further.
 - (void) receivedNetworkPacket:(NSDictionary*)packet viaConnection:(BonjourConnection*)connection {
     // Display message locally
-    //[self.delegate displayChatMessage:[packet objectForKey:@"message"] fromUser:[packet objectForKey:@"from"]];
-    [self.delegate displayImageFromView:packet[@"image"] withFPS:packet[@"framesPerSecond"] fromUser:[packet objectForKey:@"from"]];
+    [self.delegate displayChatMessage:[packet objectForKey:@"message"] fromUser:[packet objectForKey:@"from"]];
+    //[self.delegate displayImageFromView:packet[@"image"] withFPS:packet[@"framesPerSecond"] fromUser:[packet objectForKey:@"from"]];
     
     // Broadcast this message to all connected clients, including the one that sent it
     [clients makeObjectsPerformSelector:@selector(sendNetworkPackage:) withObject:packet];

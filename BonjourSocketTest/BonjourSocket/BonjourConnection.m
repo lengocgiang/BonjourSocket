@@ -245,7 +245,6 @@ void writeStreamEventHandler(CFWriteStreamRef stream,CFStreamEventType eventType
     NSData *rawPacket = [NSKeyedArchiver archivedDataWithRootObject:packet];
     
     //NSLog(@"rawdata %zd",rawPacket.length);
-    
     // Write header: lengh of raw packet
     int packetLength = (int)[rawPacket length];
     
@@ -265,7 +264,6 @@ void writeStreamEventHandler(CFWriteStreamRef stream,CFStreamEventType eventType
 - (void)sendNetworkData:(NSData *)data
 {
     NSData *rawData = [NSKeyedArchiver archivedDataWithRootObject:data];
-    
     // Write header: length of raw data
     uint8_t dataLength = (uint8_t)[rawData length];
     [outgoingDataBuffer appendBytes:&dataLength length:sizeof(uint8_t)];
@@ -332,7 +330,6 @@ void readStreamEventHandler(CFReadStreamRef stream,CFStreamEventType eventType,v
             [delegate connectionTerminated:self];
             return;
         }
-        
         [incomingDataBuffer appendBytes:buf length:len];
     }
     
@@ -357,6 +354,7 @@ void readStreamEventHandler(CFReadStreamRef stream,CFStreamEventType eventType,v
             }
             else {
                 // We don't have enough yet. Will wait for more data.
+                NSLog(@"packetsize %d ",packetBodySize);
                 break;
             }
         }
@@ -445,6 +443,8 @@ void writeStreamEventHandler(CFWriteStreamRef stream,CFStreamEventType eventType
         return;
     }
     // Write as much as we can
+    NSLog(@"length %zd",[outgoingDataBuffer length]);
+    
     CFIndex writtenBytes = CFWriteStreamWrite(writeStream, [outgoingDataBuffer bytes], [outgoingDataBuffer length]);
     
     if (writtenBytes == -1)
