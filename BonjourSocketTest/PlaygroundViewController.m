@@ -17,13 +17,6 @@
 #import "UITextView+Utils.h"
 #import "AAPLEAGLLayer.h"
 
-@interface BonjourImagePickerController : UIImagePickerController
-
-@end
-
-@implementation BonjourImagePickerController
-
-@end
 
 @interface PlaygroundViewController ()
 <
@@ -117,16 +110,16 @@
     [self presentViewController:videoPicker animated:YES completion:nil];
     
 }
-- (IBAction)playAction:(id)sender
+- (IBAction)playAction:(UIButton *)sender
 {
     BOOL isPlaying = self.displayLink.isPaused;
     
     if (isPlaying == NO) {
         [self.displayLink setPaused:YES];
-        [sender setTitle:@"Play"];
+        [sender setTitle:@"Play" forState:UIControlStateNormal];
     } else{
         [self.displayLink setPaused:NO];
-        [sender setTitle:@"Pause"];
+        [sender setTitle:@"Pause" forState:UIControlStateNormal];
         
     }
 
@@ -158,6 +151,7 @@
 {
     self.popover.delegate = nil;
 }
+#pragma mark - ChanelDelegate
 - (void)displayChatMessage:(NSString *)message fromUser:(NSString *)userName
 {
     [chatView appendTextAfterLinebreak:[NSString stringWithFormat:@"%@: %@", userName, message]];
@@ -275,7 +269,6 @@ bail:
         }
         
         if (imageBuffer) {
-            NSLog(@"done");
             CIImage *ciimage = [CIImage imageWithCVPixelBuffer:imageBuffer];
             UIImage *img = [self cgImageBackedImageWithCIImage:ciimage];
             
@@ -290,7 +283,7 @@ bail:
     }
     else
     {
-        NSLog(@"end");
+
         if (!self.displayLink.isPaused)
         {
             [self.displayLink setPaused:YES];
