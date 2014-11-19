@@ -15,7 +15,7 @@
 
 #import "Util.h"
 #import "UITextView+Utils.h"
-#import "AAPLEAGLLayer.h"
+#import "VideoFrameExtractor.h"
 
 
 @interface PlaygroundViewController ()
@@ -24,22 +24,17 @@
     UINavigationControllerDelegate,
     UIPopoverControllerDelegate
 >
-@property (weak, nonatomic) IBOutlet UIButton *playBtn;
+@property (weak, nonatomic) IBOutlet UIButton       *playBtn;
 @property (weak, nonatomic) IBOutlet UITextView     *chatView;
 @property (weak, nonatomic) IBOutlet UITextField    *input;
 @property (weak, nonatomic) IBOutlet UIImageView    *frameView;
 
 // AVAsset
-@property UIPopoverController           *popover;
-@property dispatch_queue_t              backgroundQueue;
-@property dispatch_semaphore_t          bufferSemaphore;
-@property AVAssetReader                 *assetReader;
-@property CGAffineTransform             videoPreferredTransform;
-@property VTDecompressionSessionRef     decompressionSession;
-@property NSMutableArray                *presentationTimes;
-@property NSMutableArray                *outputFrames;
-@property CFTimeInterval                lastCallbackTime;
-@property (strong, nonatomic)CADisplayLink                 *displayLink;
+
+
+@property AVAssetReader                             *assetReader;
+@property (strong, nonatomic)VideoFrameExtractor    *video;
+@property float lastFrameTime;
 @property (strong, nonatomic)UIImagePickerController *picker;
 
 @end
@@ -59,14 +54,6 @@
     //server.delegate = self;
     input.delegate = self;
     
-    self.backgroundQueue = dispatch_queue_create("com.giangln.backgroundQueue", NULL);
-    self.outputFrames = [[NSMutableArray alloc] init];
-    self.presentationTimes = [[NSMutableArray alloc] init];
-    self.displayLink = [CADisplayLink displayLinkWithTarget:self selector:@selector(displayLinkCallback:)];
-    [self.displayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
-    [self.displayLink setPaused:YES];
-    self.lastCallbackTime = 0.0;
-    self.bufferSemaphore = dispatch_semaphore_create(0);
 }
 
 - (void)didReceiveMemoryWarning {
@@ -112,45 +99,32 @@
 }
 - (IBAction)playAction:(UIButton *)sender
 {
-    BOOL isPlaying = self.displayLink.isPaused;
-    
-    if (isPlaying == NO) {
-        [self.displayLink setPaused:YES];
-        [sender setTitle:@"Play" forState:UIControlStateNormal];
-    } else{
-        [self.displayLink setPaused:NO];
-        [sender setTitle:@"Pause" forState:UIControlStateNormal];
-        
-    }
+    self.lastFrameTime = -1;
 
+    // seek to 0.0 second
+    [self.video seekTime:0.0];
+    
+    [NSTimer scheduledTimerWithTimeInterval:1.0/30 target:self
+                                   selector:@selector(displayNextFrame:)
+                                   userInfo:nil repeats:YES];
 }
 
 #pragma mark - ImagePickerControllerDelegate
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info
 {
-    [self.displayLink setPaused:YES];
-    self.lastCallbackTime = 0.0;
-    [self.popover dismissPopoverAnimated:YES];
-    [self.outputFrames removeAllObjects];
-    [self.presentationTimes removeAllObjects];
-    AVAsset *asset = [AVAsset assetWithURL:info[UIImagePickerControllerMediaURL]];
-    if (self.assetReader.status == AVAssetReaderStatusReading) {
-        dispatch_semaphore_signal(self.bufferSemaphore);
-        [self.assetReader cancelReading];
-    }
-    dispatch_async(self.backgroundQueue, ^{
-        [self readSampleBuffersFromAsset:asset];
-    });
     
+    //AVAsset *asset = [AVAsset assetWithURL:info[UIImagePickerControllerMediaURL]];
+    self.video = [[VideoFrameExtractor alloc]initWithVideo:[info[UIImagePickerControllerMediaURL] absoluteString]];
+    // print some info about the video
+    NSLog(@"video duration: %f",self.video.duration);
+    NSLog(@"video size: %d x %d", self.video.sourceWidth, self.video.sourceHeight);
+    [self.frameView setTransform:CGAffineTransformMakeRotation(M_PI_2)];
     [picker dismissViewControllerAnimated:YES completion:nil];
     
     picker.delegate = nil;
 
 }
-- (void)popoverControllerDidDismissPopover:(UIPopoverController *)popoverController
-{
-    self.popover.delegate = nil;
-}
+
 #pragma mark - ChanelDelegate
 - (void)displayChatMessage:(NSString *)message fromUser:(NSString *)userName
 {
@@ -174,204 +148,30 @@
     });
 }
 
-#pragma mark - CMSampleBuffer
-- (void)readSampleBuffersFromAsset:(AVAsset *)asset{
-    NSError *error = nil;
-    self.assetReader = [AVAssetReader assetReaderWithAsset:asset error:&error];
-    
-    if (error) {
-        NSLog(@"Error creating Asset Reader: %@", [error description]);
-    }
-    NSArray *videoTracks = [asset tracksWithMediaType:AVMediaTypeVideo];
-    
-    __block AVAssetTrack *videoTrack = (AVAssetTrack *)[videoTracks firstObject];
-    [self createDecompressionSessionFromAssetTrack:videoTrack];
-    AVAssetReaderTrackOutput *videoTrackOutput = [AVAssetReaderTrackOutput assetReaderTrackOutputWithTrack:videoTrack outputSettings:nil];
-    
-    if ([self.assetReader canAddOutput:videoTrackOutput]) {
-        [self.assetReader addOutput:videoTrackOutput];
-    }
-    
-    BOOL didStart = [self.assetReader startReading];
-    if (!didStart) {
-        goto bail;
-    }
-    
-    while (self.assetReader.status == AVAssetReaderStatusReading) {
-        CMSampleBufferRef sampleBuffer = [videoTrackOutput copyNextSampleBuffer];
-        if (sampleBuffer) {
-            VTDecodeFrameFlags flags = kVTDecodeFrame_EnableAsynchronousDecompression;
-            VTDecodeInfoFlags flagOut;
-            VTDecompressionSessionDecodeFrame(_decompressionSession, sampleBuffer, flags, NULL, &flagOut);
-            
-            CFRelease(sampleBuffer);
-            if ([self.presentationTimes count] >= 5) {
-                dispatch_semaphore_wait(self.bufferSemaphore, DISPATCH_TIME_FOREVER);
-            }
-        }
-        else if (self.assetReader.status == AVAssetReaderStatusFailed){
-            NSLog(@"Asset Reader failed with error: %@", [[self.assetReader error] description]);
-        } else if (self.assetReader.status == AVAssetReaderStatusCompleted){
-            NSLog(@"Reached the end of the video.");
-        }
-    }
-    
-bail:
-    ;
-}
-
-#pragma mark - CADisplayLink Callback
-
-- (void)displayLinkCallback:(CADisplayLink *)sender
+#define LERP(A,B,C) ((A)*(1.0-C)+(B)*C)
+- (void)displayNextFrame:(NSTimer *)timer
 {
-    /*
-     The callback gets called once every Vsync.
-     Using the display link's timestamp and duration we can compute the next time the screen will be refreshed, get the imagebuffer from our queue and render it on screen at the right time
-     */
-    
-    // if we haven't had a callback yet, we can set the last call back time to the CADisplayLink time
-    if (self.lastCallbackTime == 0.0f) {
-        self.lastCallbackTime = [sender timestamp];
+    NSTimeInterval startTime = [NSDate timeIntervalSinceReferenceDate];
+    if (![self.video stepFrame]) {
+        [timer invalidate];
+        return;
     }
-    CFTimeInterval timeSinceLastCallback = [sender timestamp] - self.lastCallbackTime;
+    float frameTime = 1.0/([NSDate timeIntervalSinceReferenceDate]-startTime);
     
-    if ([self.outputFrames count] && [self.presentationTimes count]) {
-        
-        CVImageBufferRef imageBuffer = NULL;
-        NSNumber *framePTS = nil;
-        id imageBufferObject = nil;
-        @synchronized(self){
-            
-            framePTS = [self.presentationTimes firstObject];
-            imageBufferObject = [self.outputFrames firstObject];
-            
-            imageBuffer = (__bridge CVImageBufferRef)imageBufferObject;
-        }
-        //check if the current time is greater than or equal to the presentation time of the sample buffer
-        if (timeSinceLastCallback >= [framePTS floatValue] ) {
-            
-            //draw the imagebuffer, move the time line, and update the queues
-            @synchronized(self){
-                if (imageBufferObject) {
-                    [self.outputFrames removeObjectAtIndex:0];
-                }
-                
-                if (framePTS) {
-                    [self.presentationTimes removeObjectAtIndex:0];
-                    
-                    if ([self.presentationTimes count] == 3) {
-                        dispatch_semaphore_signal(self.bufferSemaphore);
-                    }
-                }
-                
-            }
-            
-        }
-        
-        if (imageBuffer) {
-            CIImage *ciimage = [CIImage imageWithCVPixelBuffer:imageBuffer];
-            UIImage *img = [self cgImageBackedImageWithCIImage:ciimage];
-            
-            NSData *imgData = UIImageJPEGRepresentation(img, 0.2);
-            NSDictionary *dict = @{@"image":imgData,
-                                   @"framePerSecond":framePTS};
-            
-
-            [chanel broadcastDict:dict fromUser:[[Util sharedInstance]name]];
-            
-        }
-    }
-    else
-    {
-
-        if (!self.displayLink.isPaused)
-        {
-            [self.displayLink setPaused:YES];
-        }
-    }
-
-}
-- (void)showme:(NSData *)data
-{
-    dispatch_async(dispatch_get_main_queue(), ^{
-        self.frameView.image = [UIImage imageWithData:data];
-    });
-}
-
-- (UIImage*) cgImageBackedImageWithCIImage:(CIImage*) ciImage
-{
-
-    CIContext *context = [CIContext contextWithOptions:nil];
-    CGImageRef ref = [context createCGImage:ciImage fromRect:ciImage.extent];
-    UIImage* image = [UIImage imageWithCGImage:ref scale:1.0 orientation:UIImageOrientationRight];
+    NSData *data = UIImageJPEGRepresentation(self.video.currentImage, 0.2);
     
-    CGImageRelease(ref);
+    NSDictionary *dict = @{@"image":data,
+                           @"framePerSecond":[NSNumber numberWithFloat:frameTime]};
+    self.frameView.image = self.video.currentImage;
     
-    return image;
-
-}
-
-- (void)createDecompressionSessionFromAssetTrack:(AVAssetTrack *)track{
-    NSArray *formatDescriptions = [track formatDescriptions];
-    CMVideoFormatDescriptionRef formatDescription = (__bridge CMVideoFormatDescriptionRef)[formatDescriptions firstObject];
+    [chanel broadcastDict:dict fromUser:[[Util sharedInstance]name]];
     
-    self.videoPreferredTransform = track.preferredTransform;
-    _decompressionSession = NULL;
-    
-    VTDecompressionOutputCallbackRecord callBackRecord;
-    callBackRecord.decompressionOutputCallback = didDecompress;
-    callBackRecord.decompressionOutputRefCon = (__bridge void *)self;
-    VTDecompressionSessionCreate(kCFAllocatorDefault, formatDescription, NULL, NULL, &callBackRecord, &_decompressionSession);
-}
-
-#pragma mark - VideoToolBox Decompress Frame CallBack
-/*
- This callback gets called everytime the decompresssion session decodes a frame
- */
-void didDecompress( void *decompressionOutputRefCon, void *sourceFrameRefCon, OSStatus status, VTDecodeInfoFlags infoFlags, CVImageBufferRef imageBuffer, CMTime presentationTimeStamp, CMTime presentationDuration ){
-    
-    if (status == noErr) {
-        if (imageBuffer != NULL) {
-            __weak __block PlaygroundViewController *weakSelf = (__bridge PlaygroundViewController *)decompressionOutputRefCon;
-            NSNumber *framePTS = nil;
-            if (CMTIME_IS_VALID(presentationTimeStamp)) {
-                framePTS = [NSNumber numberWithDouble:CMTimeGetSeconds(presentationTimeStamp)];
-            } else{
-                NSLog(@"Not a valid time for image buffer: %@", imageBuffer);
-            }
-            
-            if (framePTS) { //find the correct position for this frame in the output frames array
-                @synchronized(weakSelf){
-                    id imageBufferObject = (__bridge id)imageBuffer;
-                    BOOL shouldStop = NO;
-                    NSInteger insertionIndex = [weakSelf.presentationTimes count] -1;
-                    while (insertionIndex >= 0 && shouldStop == NO) {
-                        NSNumber *aNumber = weakSelf.presentationTimes[insertionIndex];
-                        if ([aNumber floatValue] <= [framePTS floatValue]) {
-                            shouldStop = YES;
-                            break;
-                        }
-                        insertionIndex--;
-                    }
-                    if (insertionIndex + 1 == [weakSelf.presentationTimes count]) {
-                        [weakSelf.presentationTimes addObject:framePTS];
-                        [weakSelf.outputFrames addObject:imageBufferObject];
-                    } else{
-                        [weakSelf.presentationTimes insertObject:framePTS atIndex:insertionIndex + 1];
-                        [weakSelf.outputFrames insertObject:imageBufferObject atIndex:insertionIndex + 1];
-                    }
-                    
-                }
-                
-                
-            }
-        }
+    if (self.lastFrameTime<0) {
+        self.lastFrameTime = frameTime;
     } else {
-        NSLog(@"Error decompresssing frame at time: %.3f error: %d infoFlags: %u", (float)presentationTimeStamp.value/presentationTimeStamp.timescale, (int)status, (unsigned int)infoFlags);
+        self.lastFrameTime = LERP(frameTime, self.lastFrameTime, 0.8);
     }
-}
-- (void)dealloc{
-    CFRelease(_decompressionSession);
+
 }
      
 
