@@ -248,7 +248,7 @@ void writeStreamEventHandler(CFWriteStreamRef stream,CFStreamEventType eventType
     // Write header: lengh of raw packet
     int packetLength = (int)[rawPacket length];
     
-    NSLog(@"packetLength %d and sizeof %zu",packetLength,sizeof(int));
+    //NSLog(@"packetLength %d and sizeof %zu",packetLength,sizeof(int));
 
     [outgoingDataBuffer appendBytes:&packetLength length:sizeof(int)];
     

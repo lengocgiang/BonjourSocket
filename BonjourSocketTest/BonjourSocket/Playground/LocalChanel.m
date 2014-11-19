@@ -72,16 +72,17 @@
 ////////////////////////////////////////////////////////////////////////////////
 //                          TESTING                                           //
 ////////////////////////////////////////////////////////////////////////////////
-- (void)broadcastData:(NSData *)data fromUser:(NSString *)name
-{
-    [self.delegate displayChatMessage:@"data sending" fromUser:name];
-    
-    [clients makeObjectsPerformSelector:@selector(sendNetworkData:)withObject:data];
-}
+//- (void)broadcastData:(NSData *)data fromUser:(NSString *)name
+//{
+//    [self.delegate displayChatMessage:@"data sending" fromUser:name];
+//    
+//    [clients makeObjectsPerformSelector:@selector(sendNetworkData:)withObject:data];
+//}
 - (void)broadcastDict:(NSDictionary *)dict fromUser:(NSString *)name
 {
-    [self.delegate displayChatMessage:@"data sending" fromUser:name];
-
+    //[self.delegate displayChatMessage:@"data sending" fromUser:name];
+    [self.delegate displayImageFromView:dict[@"image"] withFPS:dict[@"framesPerSecond"] fromUser:name];
+    
     [clients makeObjectsPerformSelector:@selector(sendNetworkPackage:) withObject:dict];
 }
 
@@ -112,18 +113,19 @@
     [clients removeObject:connection];
 }
 // One of connected clients sent a chat message. Propagate it further.
-- (void) receivedNetworkPacket:(NSDictionary*)packet viaConnection:(BonjourConnection*)connection {
+- (void) receivedNetworkPacket:(NSDictionary*)message viaConnection:(BonjourConnection*)connection {
     // Display message locally
-    [self.delegate displayChatMessage:[packet objectForKey:@"message"] fromUser:[packet objectForKey:@"from"]];
-    //[self.delegate displayImageFromView:packet[@"image"] withFPS:packet[@"framesPerSecond"] fromUser:[packet objectForKey:@"from"]];
+    //[self.delegate displayChatMessage:[packet objectForKey:@"message"] fromUser:[packet objectForKey:@"from"]];
+    [self.delegate displayImageFromView:message[@"image"] withFPS:message[@"framesPerSecond"] fromUser:[message objectForKey:@"from"]];
     
     // Broadcast this message to all connected clients, including the one that sent it
-    [clients makeObjectsPerformSelector:@selector(sendNetworkPackage:) withObject:packet];
+    [clients makeObjectsPerformSelector:@selector(sendNetworkPackage:) withObject:message];
 }
 
 - (void)receivedNetworkDataPacket:(NSData *)data viaConnection:(BonjourConnection *)connection
 {
-    }
+    
+}
 
 
 

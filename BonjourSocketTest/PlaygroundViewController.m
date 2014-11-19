@@ -66,9 +66,9 @@
     //server.delegate = self;
     input.delegate = self;
     
-    self.backgroundQueue = dispatch_queue_create("com.giangln.backgroundQueue", nil);
-    self.outputFrames   = [[NSMutableArray alloc]init];
-    self.presentationTimes = [[NSMutableArray alloc]init];
+    self.backgroundQueue = dispatch_queue_create("com.giangln.backgroundQueue", NULL);
+    self.outputFrames = [[NSMutableArray alloc] init];
+    self.presentationTimes = [[NSMutableArray alloc] init];
     self.displayLink = [CADisplayLink displayLinkWithTarget:self selector:@selector(displayLinkCallback:)];
     [self.displayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
     [self.displayLink setPaused:YES];
@@ -117,6 +117,20 @@
     [self presentViewController:videoPicker animated:YES completion:nil];
     
 }
+- (IBAction)playAction:(id)sender
+{
+    BOOL isPlaying = self.displayLink.isPaused;
+    
+    if (isPlaying == NO) {
+        [self.displayLink setPaused:YES];
+        [sender setTitle:@"Play"];
+    } else{
+        [self.displayLink setPaused:NO];
+        [sender setTitle:@"Pause"];
+        
+    }
+
+}
 
 #pragma mark - ImagePickerControllerDelegate
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info
@@ -132,7 +146,7 @@
         [self.assetReader cancelReading];
     }
     dispatch_async(self.backgroundQueue, ^{
-        [self readSampleBufferFromAsset:asset];
+        [self readSampleBuffersFromAsset:asset];
     });
     
     [picker dismissViewControllerAnimated:YES completion:nil];
@@ -149,6 +163,7 @@
     [chatView appendTextAfterLinebreak:[NSString stringWithFormat:@"%@: %@", userName, message]];
     [chatView scrollToBottom];
 }
+
 - (void)chanelTerminated:(id)chanel reason:(NSString *)string
 {
     UIAlertView* alert = [[UIAlertView alloc] initWithTitle:@"Chanel terminated"
@@ -164,8 +179,9 @@
         self.frameView.image = [UIImage imageWithData:_image];
     });
 }
+
 #pragma mark - CMSampleBuffer
-- (void)readSampleBufferFromAsset:(AVAsset *)asset{
+- (void)readSampleBuffersFromAsset:(AVAsset *)asset{
     NSError *error = nil;
     self.assetReader = [AVAssetReader assetReaderWithAsset:asset error:&error];
     
@@ -183,35 +199,31 @@
     }
     
     BOOL didStart = [self.assetReader startReading];
-//    if (!didStart) {
-//        goto bail;
-//    }
+    if (!didStart) {
+        goto bail;
+    }
     
     while (self.assetReader.status == AVAssetReaderStatusReading) {
         CMSampleBufferRef sampleBuffer = [videoTrackOutput copyNextSampleBuffer];
         if (sampleBuffer) {
-        
             VTDecodeFrameFlags flags = kVTDecodeFrame_EnableAsynchronousDecompression;
             VTDecodeInfoFlags flagOut;
             VTDecompressionSessionDecodeFrame(_decompressionSession, sampleBuffer, flags, NULL, &flagOut);
             
             CFRelease(sampleBuffer);
             if ([self.presentationTimes count] >= 5) {
-                //dispatch_semaphore_wait(self.bufferSemaphore, DISPATCH_TIME_FOREVER);
+                dispatch_semaphore_wait(self.bufferSemaphore, DISPATCH_TIME_FOREVER);
             }
         }
         else if (self.assetReader.status == AVAssetReaderStatusFailed){
             NSLog(@"Asset Reader failed with error: %@", [[self.assetReader error] description]);
         } else if (self.assetReader.status == AVAssetReaderStatusCompleted){
             NSLog(@"Reached the end of the video.");
-            [self.displayLink setPaused:NO];
         }
     }
     
-//bail:
-//    ;
-    
-
+bail:
+    ;
 }
 
 #pragma mark - CADisplayLink Callback
@@ -254,7 +266,7 @@
                     [self.presentationTimes removeObjectAtIndex:0];
                     
                     if ([self.presentationTimes count] == 3) {
-                        //dispatch_semaphore_signal(self.bufferSemaphore);
+                        dispatch_semaphore_signal(self.bufferSemaphore);
                     }
                 }
                 
@@ -263,18 +275,28 @@
         }
         
         if (imageBuffer) {
+            NSLog(@"done");
             CIImage *ciimage = [CIImage imageWithCVPixelBuffer:imageBuffer];
             UIImage *img = [self cgImageBackedImageWithCIImage:ciimage];
             
             NSData *imgData = UIImageJPEGRepresentation(img, 0.2);
             NSDictionary *dict = @{@"image":imgData,
                                    @"framePerSecond":framePTS};
+            
 
             [chanel broadcastDict:dict fromUser:[[Util sharedInstance]name]];
             
         }
-
     }
+    else
+    {
+        NSLog(@"end");
+        if (!self.displayLink.isPaused)
+        {
+            [self.displayLink setPaused:YES];
+        }
+    }
+
 }
 - (void)showme:(NSData *)data
 {
@@ -283,27 +305,16 @@
     });
 }
 
-- (UIImage*) cgImageBackedImageWithCIImage:(CIImage*) ciImage {
-    @autoreleasepool //prevent a severe memory leak and crash
-    {
-        CIContext *context = [CIContext contextWithOptions:nil];
-        CGImageRef ref = [context createCGImage:ciImage fromRect:ciImage.extent];
-        UIImage* image = [UIImage imageWithCGImage:ref scale:1.0 orientation:UIImageOrientationRight];
-        
-        CGImageRelease(ref);
-        
-        return image;
-    }
-}
-- (void)showCIImage:(CIImage *)ciimage withPTS:(NSNumber *)framePTS
+- (UIImage*) cgImageBackedImageWithCIImage:(CIImage*) ciImage
 {
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        UIImage *img = [UIImage imageWithCIImage:ciimage];
-        dispatch_async(dispatch_get_main_queue(), ^{
-            
-            self.frameView.image = img;
-        });
-    });
+
+    CIContext *context = [CIContext contextWithOptions:nil];
+    CGImageRef ref = [context createCGImage:ciImage fromRect:ciImage.extent];
+    UIImage* image = [UIImage imageWithCGImage:ref scale:1.0 orientation:UIImageOrientationRight];
+    
+    CGImageRelease(ref);
+    
+    return image;
 
 }
 
@@ -356,7 +367,6 @@ void didDecompress( void *decompressionOutputRefCon, void *sourceFrameRefCon, OS
                         [weakSelf.presentationTimes insertObject:framePTS atIndex:insertionIndex + 1];
                         [weakSelf.outputFrames insertObject:imageBufferObject atIndex:insertionIndex + 1];
                     }
-                    
                     
                 }
                 
