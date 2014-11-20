@@ -32,10 +32,11 @@
 // AVAsset
 
 
-@property AVAssetReader                             *assetReader;
-@property (strong, nonatomic)VideoFrameExtractor    *video;
+@property AVAssetReader                                 *assetReader;
+@property (strong, nonatomic)VideoFrameExtractor        *video;
 @property float lastFrameTime;
-@property (strong, nonatomic)UIImagePickerController *picker;
+@property (strong, nonatomic)UIImagePickerController    *picker;
+@property (strong, nonatomic)CADisplayLink              *displayLink;
 
 @end
 
@@ -53,6 +54,10 @@
     //server = [[BonjourServer alloc]init];
     //server.delegate = self;
     input.delegate = self;
+    
+    self.displayLink = [CADisplayLink displayLinkWithTarget:self selector:@selector(displayNextFrame:)];
+    [self.displayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSRunLoopCommonModes];
+    [self.displayLink setPaused:YES];
     
 }
 
@@ -99,14 +104,24 @@
 }
 - (IBAction)playAction:(UIButton *)sender
 {
-    self.lastFrameTime = -1;
-
-    // seek to 0.0 second
-    [self.video seekTime:0.0];
-    
-    [NSTimer scheduledTimerWithTimeInterval:1.0/30 target:self
-                                   selector:@selector(displayNextFrame:)
-                                   userInfo:nil repeats:YES];
+//    self.lastFrameTime = -1;
+//
+//    // seek to 0.0 second
+//    [self.video seekTime:0.0];
+//    
+//    [NSTimer scheduledTimerWithTimeInterval:1.0/30 target:self
+//                                   selector:@selector(displayNextFrame:)
+//                                   userInfo:nil repeats:YES];
+    BOOL isPause = self.displayLink.isPaused;
+    if (isPause) {
+        [self.displayLink setPaused:NO];
+        [sender setTitle:@"Pause" forState:UIControlStateNormal];
+    }
+    else
+    {
+        [self.displayLink setPaused:YES];
+        [sender setTitle:@"Play" forState:UIControlStateNormal];
+    }
 }
 
 #pragma mark - ImagePickerControllerDelegate
@@ -151,26 +166,26 @@
 #define LERP(A,B,C) ((A)*(1.0-C)+(B)*C)
 - (void)displayNextFrame:(NSTimer *)timer
 {
+    
     NSTimeInterval startTime = [NSDate timeIntervalSinceReferenceDate];
     if (![self.video stepFrame]) {
-        [timer invalidate];
+        [self.displayLink setPaused:YES];
+        //[timer invalidate];
         return;
     }
     float frameTime = 1.0/([NSDate timeIntervalSinceReferenceDate]-startTime);
     
     NSData *data = UIImageJPEGRepresentation(self.video.currentImage, 0.2);
-    
+
     NSDictionary *dict = @{@"image":data,
                            @"framePerSecond":[NSNumber numberWithFloat:frameTime]};
-    self.frameView.image = self.video.currentImage;
-    
+
+    dispatch_async(dispatch_get_main_queue(), ^{
+            self.frameView.image = self.video.currentImage;
+    });
+
     [chanel broadcastDict:dict fromUser:[[Util sharedInstance]name]];
     
-    if (self.lastFrameTime<0) {
-        self.lastFrameTime = frameTime;
-    } else {
-        self.lastFrameTime = LERP(frameTime, self.lastFrameTime, 0.8);
-    }
 
 }
      
