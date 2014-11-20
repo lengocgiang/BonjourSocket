@@ -57,6 +57,7 @@
     
     self.displayLink = [CADisplayLink displayLinkWithTarget:self selector:@selector(displayNextFrame:)];
     [self.displayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSRunLoopCommonModes];
+    self.displayLink.frameInterval = 2;
     [self.displayLink setPaused:YES];
     
 }
@@ -104,24 +105,24 @@
 }
 - (IBAction)playAction:(UIButton *)sender
 {
-//    self.lastFrameTime = -1;
-//
-//    // seek to 0.0 second
-//    [self.video seekTime:0.0];
-//    
-//    [NSTimer scheduledTimerWithTimeInterval:1.0/30 target:self
-//                                   selector:@selector(displayNextFrame:)
-//                                   userInfo:nil repeats:YES];
-    BOOL isPause = self.displayLink.isPaused;
-    if (isPause) {
-        [self.displayLink setPaused:NO];
-        [sender setTitle:@"Pause" forState:UIControlStateNormal];
-    }
-    else
-    {
-        [self.displayLink setPaused:YES];
-        [sender setTitle:@"Play" forState:UIControlStateNormal];
-    }
+    self.lastFrameTime = -1;
+
+    // seek to 0.0 second
+    [self.video seekTime:0.0];
+    
+    [NSTimer scheduledTimerWithTimeInterval:1.0/30 target:self
+                                   selector:@selector(displayNextFrame:)
+                                   userInfo:nil repeats:YES];
+//    BOOL isPause = self.displayLink.isPaused;
+//    if (isPause) {
+//        [self.displayLink setPaused:NO];
+//        [sender setTitle:@"Pause" forState:UIControlStateNormal];
+//    }
+//    else
+//    {
+//        [self.displayLink setPaused:YES];
+//        [sender setTitle:@"Play" forState:UIControlStateNormal];
+//    }
 }
 
 #pragma mark - ImagePickerControllerDelegate
@@ -170,7 +171,7 @@
     NSTimeInterval startTime = [NSDate timeIntervalSinceReferenceDate];
     if (![self.video stepFrame]) {
         [self.displayLink setPaused:YES];
-        //[timer invalidate];
+        [timer invalidate];
         return;
     }
     float frameTime = 1.0/([NSDate timeIntervalSinceReferenceDate]-startTime);
@@ -180,13 +181,8 @@
     NSDictionary *dict = @{@"image":data,
                            @"framePerSecond":[NSNumber numberWithFloat:frameTime]};
 
-    dispatch_async(dispatch_get_main_queue(), ^{
-            self.frameView.image = self.video.currentImage;
-    });
-
     [chanel broadcastDict:dict fromUser:[[Util sharedInstance]name]];
     
-
 }
      
 
