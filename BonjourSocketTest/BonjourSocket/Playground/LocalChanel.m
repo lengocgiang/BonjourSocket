@@ -9,6 +9,7 @@
 #import "LocalChanel.h"
 #import "BonjourConnection.h"
 
+
 @interface LocalChanel()
 @property(nonatomic, strong,readwrite) BonjourServer      *server;
 @property(nonatomic, strong,readwrite) NSMutableSet       *clients;
@@ -49,6 +50,7 @@
         self.server =nil;
         return NO;
     }
+    
     return YES;
 }
 - (void)stop
@@ -57,6 +59,22 @@
     self.server = nil;
     
     [clients makeObjectsPerformSelector:@selector(close)];
+}
+
+- (void)setupAudio
+{
+    AVAudioSession *audioSession = [AVAudioSession sharedInstance];
+    [audioSession setDelegate:self];
+    [audioSession setActive: NO error: nil];
+    [audioSession setCategory:AVAudioSessionCategoryPlayAndRecord error:NULL];
+    [audioSession setMode: AVAudioSessionModeVoiceChat error:NULL];
+    UInt32 allowMixing = 1;
+    AudioSessionSetProperty(kAudioSessionProperty_OverrideCategoryMixWithOthers, sizeof(allowMixing), &allowMixing);
+    
+    [audioSession setActive: YES error: NULL];
+    
+    [GKVoiceChatService defaultVoiceChatService].client = self;
+
 }
 
 
@@ -69,15 +87,7 @@
     // send it out
     [clients makeObjectsPerformSelector:@selector(sendNetworkPackage:) withObject:packet];
 }
-////////////////////////////////////////////////////////////////////////////////
-//                          TESTING                                           //
-////////////////////////////////////////////////////////////////////////////////
-//- (void)broadcastData:(NSData *)data fromUser:(NSString *)name
-//{
-//    [self.delegate displayChatMessage:@"data sending" fromUser:name];
-//    
-//    [clients makeObjectsPerformSelector:@selector(sendNetworkData:)withObject:data];
-//}
+
 - (void)broadcastDict:(NSDictionary *)dict fromUser:(NSString *)name
 {
     //[self.delegate displayChatMessage:@"data sending" fromUser:name];

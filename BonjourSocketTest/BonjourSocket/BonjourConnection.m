@@ -366,7 +366,6 @@ void readStreamEventHandler(CFReadStreamRef stream,CFStreamEventType eventType,v
             NSDictionary* packet = [NSKeyedUnarchiver unarchiveObjectWithData:raw];
             
             // Tell our delegate about it
-            //[delegate receivedNetworkPacket:packet viaConnection:self];
             [delegate receivedNetworkPacket:packet viaConnection:self];
             
             // Remove that chunk from buffer

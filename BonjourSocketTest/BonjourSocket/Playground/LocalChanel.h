@@ -11,10 +11,15 @@
 #import "BonjourServer.h"
 #import "BonjourConnection.h"
 
+@import AVFoundation;
+@import GameKit;
+
 @interface LocalChanel : Chanel
 <
     BonjourConnectionDelegate,
-    BonjourServerDelegate
+    BonjourServerDelegate,
+    GKVoiceChatClient,
+    AVAudioSessionDelegate
 >
 
 @property (strong, nonatomic,readonly) BonjourServer         *server;

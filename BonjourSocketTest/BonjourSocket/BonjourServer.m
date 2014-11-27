@@ -61,7 +61,7 @@
         [self terminateServer];
         return NO;
     }
-    NSLog(@"SERVER: Start done");
+    //NSLog(@"SERVER: Start done");
     
     return YES;
 }
@@ -70,6 +70,8 @@
     [self terminateServer];
     [self unpublishService];
 }
+
+
 #pragma mark- Callbacks
 // Handle new connection
 - (void)handleNewNativeSocket:(CFSocketNativeHandle)nativeSocketHandle

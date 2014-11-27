@@ -38,6 +38,7 @@
 		51B2CDA519FE23A000CCD69F /* BonjourRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 51B2CD9D19FE23A000CCD69F /* BonjourRequest.m */; };
 		51B2CDA619FE23A000CCD69F /* BonjourResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = 51B2CD9F19FE23A000CCD69F /* BonjourResponse.m */; };
 		51B2CDA719FE23A000CCD69F /* Util.m in Sources */ = {isa = PBXBuildFile; fileRef = 51B2CDA119FE23A000CCD69F /* Util.m */; };
+		51DAECBC1A24739400D6CE84 /* AVCamPreview.m in Sources */ = {isa = PBXBuildFile; fileRef = 51DAECBB1A24739400D6CE84 /* AVCamPreview.m */; };
 		51F186761A0363E800EB1CF4 /* music.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 51F186751A0363E800EB1CF4 /* music.mp3 */; };
 /* End PBXBuildFile section */
 
@@ -107,6 +108,8 @@
 		51B2CDA119FE23A000CCD69F /* Util.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Util.m; sourceTree = "<group>"; };
 		51CCA65E1A15BC10002D5C85 /* CoreAudio.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudio.framework; path = System/Library/Frameworks/CoreAudio.framework; sourceTree = SDKROOT; };
 		51CCA6601A15BC18002D5C85 /* CoreAudioKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudioKit.framework; path = System/Library/Frameworks/CoreAudioKit.framework; sourceTree = SDKROOT; };
+		51DAECBA1A24739400D6CE84 /* AVCamPreview.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AVCamPreview.h; sourceTree = "<group>"; };
+		51DAECBB1A24739400D6CE84 /* AVCamPreview.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AVCamPreview.m; sourceTree = "<group>"; };
 		51F186751A0363E800EB1CF4 /* music.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = music.mp3; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -218,6 +221,7 @@
 				5162287D1A148F6A00A03A0C /* BrowserViewController.m */,
 				5162287F1A14989700A03A0C /* PlaygroundViewController.h */,
 				516228801A14989700A03A0C /* PlaygroundViewController.m */,
+				51DAECB91A24737E00D6CE84 /* AVCamPreview */,
 				51B2CD7719FE239500CCD69F /* Main.storyboard */,
 				51B2CD7A19FE239500CCD69F /* Images.xcassets */,
 				51B2CD7C19FE239500CCD69F /* LaunchScreen.xib */,
@@ -292,6 +296,15 @@
 				51F186751A0363E800EB1CF4 /* music.mp3 */,
 			);
 			path = Resource;
+			sourceTree = "<group>";
+		};
+		51DAECB91A24737E00D6CE84 /* AVCamPreview */ = {
+			isa = PBXGroup;
+			children = (
+				51DAECBA1A24739400D6CE84 /* AVCamPreview.h */,
+				51DAECBB1A24739400D6CE84 /* AVCamPreview.m */,
+			);
+			path = AVCamPreview;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -408,6 +421,7 @@
 				516228851A14A7DD00A03A0C /* Chanel.m in Sources */,
 				512567FC1A136DAF00133F49 /* BonjourConnection.m in Sources */,
 				512567FD1A136DAF00133F49 /* BonjourServer.m in Sources */,
+				51DAECBC1A24739400D6CE84 /* AVCamPreview.m in Sources */,
 				51180C971A1C5A4F005186E7 /* Utilities.m in Sources */,
 				516322D81A0B5863007FF96E /* RootViewController.m in Sources */,
 				516228881A14A94E00A03A0C /* LocalChanel.m in Sources */,

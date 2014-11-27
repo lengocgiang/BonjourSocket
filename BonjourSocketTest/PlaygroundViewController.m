@@ -16,27 +16,44 @@
 #import "Util.h"
 #import "UITextView+Utils.h"
 #import "VideoFrameExtractor.h"
+#import "AVCamPreview.h"
+
+static void *CapturingStillImageContext = &CapturingStillImageContext;
+static void *SessionRunningAndDeviceAuthorizedContext = &SessionRunningAndDeviceAuthorizedContext;
 
 
 @interface PlaygroundViewController ()
 <
     UIImagePickerControllerDelegate,
     UINavigationControllerDelegate,
-    UIPopoverControllerDelegate
+    UIPopoverControllerDelegate,
+    AVCaptureVideoDataOutputSampleBufferDelegate
 >
 @property (weak, nonatomic) IBOutlet UIButton       *playBtn;
 @property (weak, nonatomic) IBOutlet UITextView     *chatView;
 @property (weak, nonatomic) IBOutlet UITextField    *input;
 @property (weak, nonatomic) IBOutlet UIImageView    *frameView;
+@property (weak, nonatomic) IBOutlet AVCamPreview *previewView;
 
 // AVAsset
-
-
 @property AVAssetReader                                 *assetReader;
 @property (strong, nonatomic)VideoFrameExtractor        *video;
 @property float lastFrameTime;
 @property (strong, nonatomic)UIImagePickerController    *picker;
 @property (strong, nonatomic)CADisplayLink              *displayLink;
+
+// AVCaptureSession
+@property (strong, nonatomic) dispatch_queue_t          sessionQueue;
+@property (strong, nonatomic) AVCaptureSession          *session;
+@property (nonatomic) AVCaptureStillImageOutput         *stillImageOutput;
+@property (nonatomic) AVCaptureDeviceInput              *videoDeviceInput;
+@property (nonatomic) AVCaptureVideoDataOutput          *videoDataOutput;
+@property (nonatomic) AVCaptureVideoPreviewLayer        *videoPreviewLayer;
+// Ultilities
+@property (nonatomic) UIBackgroundTaskIdentifier backgroundRecordingID;
+@property (nonatomic, getter = isDeviceAuthorized) BOOL deviceAuthorized;
+@property (nonatomic, readonly, getter = isSessionRunningAndDeviceAuthorized) BOOL sessionRunningAndDeviceAuthorized;
+@property (nonatomic) id runtimeErrorHandlingObserver;
 
 @end
 
@@ -47,18 +64,71 @@
 
 
 //@synthesize server;
+- (BOOL)isSessionRunningAndDeviceAuthorized
+{
+    return [[self session]isRunning] && [self isDeviceAuthorized];
+}
+
++ (NSSet *)keyPathsForValuesAffectingDeviceAuthorized
+{
+    return [NSSet setWithObjects:@"session.running",@"deviceAuthorized",nil];
+}
+
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    //server = [[BonjourServer alloc]init];
-    //server.delegate = self;
-    input.delegate = self;
+    [self avCaptureSessionSetUp];
     
-    self.displayLink = [CADisplayLink displayLinkWithTarget:self selector:@selector(displayNextFrame:)];
-    [self.displayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSRunLoopCommonModes];
-    self.displayLink.frameInterval = 2;
-    [self.displayLink setPaused:YES];
+    [self.session startRunning];
+    
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    dispatch_async([self sessionQueue], ^{
+        
+        [self addObserver:self forKeyPath:@"sessionRunningAndDeviceAuthorized" options:(NSKeyValueObservingOptionOld | NSKeyValueObservingOptionNew) context:SessionRunningAndDeviceAuthorizedContext];
+        
+        [self addObserver:self forKeyPath:@"stillImageOutput.capturingStillImage" options:(NSKeyValueObservingOptionOld | NSKeyValueObservingOptionNew) context:CapturingStillImageContext];
+        
+        [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(subjectAreaDidChange:) name:AVCaptureDeviceSubjectAreaDidChangeNotification object:[[self videoDeviceInput]device]];
+        
+        
+        __weak PlaygroundViewController *weakSelf = self;
+        
+        [self setRuntimeErrorHandlingObserver:[[NSNotificationCenter defaultCenter]addObserverForName:AVCaptureSessionRuntimeErrorNotification object:[self session] queue:nil usingBlock:^(NSNotification *note) {
+            
+            PlaygroundViewController *strongSelf = weakSelf;
+            
+            dispatch_async([strongSelf sessionQueue], ^{
+                // Manual restaring the session since it must have been stopped due to an error
+                [[strongSelf session] startRunning];
+                
+            });
+            
+        }]];
+        [[self session] startRunning];
+        
+    });
+
+}
+- (void)viewDidDisappear:(BOOL)animated
+{
+    dispatch_async([self sessionQueue], ^{
+        
+        [[self session]stopRunning];
+        
+        // remove NSNotificatonCenter
+        [[NSNotificationCenter defaultCenter]removeObserver:self name:AVCaptureDeviceSubjectAreaDidChangeNotification object:[[self videoDeviceInput]device]];
+        
+        [[NSNotificationCenter defaultCenter]removeObserver:[self runtimeErrorHandlingObserver]];
+
+        
+        [self removeObserver:self forKeyPath:@"sessionRunningAndDeviceAuthorized" context:SessionRunningAndDeviceAuthorizedContext];
+        [self removeObserver:self forKeyPath:@"stillImageOutput.capturingStillImage" context:CapturingStillImageContext];
+        
+    });
     
 }
 
@@ -66,6 +136,261 @@
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
+- (void)subjectAreaDidChange:(NSNotification *)notification
+{
+    CGPoint devicePoint = CGPointMake(.5, .5);
+    [self focusWithMode:AVCaptureFocusModeAutoFocus exposeWithMode:AVCaptureExposureModeAutoExpose atDevicePoint:devicePoint monitorSubjectAreaChange:NO];
+}
+- (void)avCaptureSessionSetUp
+{
+    // Create the AVCaptureSession
+    AVCaptureSession *session = [[AVCaptureSession alloc]init];
+    
+    [[self session] setSessionPreset:AVCaptureSessionPresetLow];
+    
+    [self setSession:session];
+    
+    // Setup the preview view
+    [[self previewView] setSession:session];
+    
+    // Check for device authorized
+    [self checkDeviceAuthorizationStatus];
+    
+    // Dispatch session setup to the sessionQueue so that the main queue isn't blocked
+    
+    dispatch_queue_t sessionQueue = dispatch_queue_create("session queue", DISPATCH_QUEUE_SERIAL);
+    
+    [self setSessionQueue:sessionQueue];
+    
+    dispatch_async(sessionQueue, ^{
+        
+        [self setBackgroundRecordingID:UIBackgroundTaskInvalid];
+        
+        NSError *error = nil;
+        
+        AVCaptureDevice *videoDevice = [PlaygroundViewController deviceWithMediaType:AVMediaTypeVideo preferringPosition:AVCaptureDevicePositionFront];
+        
+        AVCaptureDeviceInput *videoDeviceInput = [AVCaptureDeviceInput deviceInputWithDevice:videoDevice error:&error];
+        
+        if (error)
+        {
+            NSLog(@"AVCaptureDeviceInput error %@,%@",error,[error localizedDescription]);
+        }
+        
+        if ([session canAddInput:videoDeviceInput])
+        {
+            [session addInput:videoDeviceInput];
+            
+            [self setVideoDeviceInput:videoDeviceInput];
+            
+            dispatch_async(dispatch_get_main_queue(), ^{
+                
+                [[(AVCaptureVideoPreviewLayer *)[[self previewView]layer]connection] setVideoOrientation:(AVCaptureVideoOrientation)[self interfaceOrientation]];
+            });
+        }
+        
+        
+        AVCaptureVideoDataOutput *videoDataOutput = [[AVCaptureVideoDataOutput alloc]init];
+       
+        if ([session canAddOutput:videoDataOutput])
+        {
+            [session addOutput:videoDataOutput];
+            
+            videoDataOutput.videoSettings =
+            [NSDictionary dictionaryWithObject:
+             [NSNumber numberWithInt:kCVPixelFormatType_32BGRA]
+                                        forKey:(id)kCVPixelBufferPixelFormatTypeKey];
+            
+            videoDataOutput.alwaysDiscardsLateVideoFrames = YES;
+            
+            [self setVideoDataOutput:videoDataOutput];
+            
+            [self.videoDataOutput setSampleBufferDelegate:self queue:self.sessionQueue];
+           
+            
+        }
+
+    
+    });
+    
+}
+- (void)focusWithMode:(AVCaptureFocusMode)focusMode exposeWithMode:(AVCaptureExposureMode)exposureMode atDevicePoint:(CGPoint)point monitorSubjectAreaChange:(BOOL)monitorSubjectAreaChange
+{
+    dispatch_async([self sessionQueue], ^{
+        
+        AVCaptureDevice *device = [[self videoDeviceInput]device];
+        
+        NSError *error = nil;
+        
+        if ([device lockForConfiguration:&error])
+        {
+            if ([device isFocusPointOfInterestSupported] && [device isFocusModeSupported:focusMode])
+            {
+                [device setFocusMode:focusMode];
+                [device setFocusPointOfInterest:point];
+            }
+            if ([device isExposurePointOfInterestSupported] && [device isExposureModeSupported:exposureMode])
+            {
+                [device setExposureMode:exposureMode];
+                [device setExposurePointOfInterest:point];
+            }
+            
+            [device setSubjectAreaChangeMonitoringEnabled:monitorSubjectAreaChange];
+            [device unlockForConfiguration];
+        }
+        else
+        {
+#ifdef DEBUG
+            NSLog(@"forcusWithMode error %@,%@",error,[error localizedDescription]);
+#endif
+        }
+        
+    });
+}
+
+
+- (void)captureOutput:(AVCaptureOutput *)captureOutput didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer fromConnection:(AVCaptureConnection *)connection
+{
+
+    @autoreleasepool {
+        if ([self.playBtn isSelected])
+        {
+            UIImage *image = [self imageFromSampleBuffer:sampleBuffer];
+            
+            NSData *imageData = UIImageJPEGRepresentation(image, 0.2);//max compression = 0, min compression:1.0
+            NSLog(@"length %f",(float)imageData.length/1024);
+            // maybe not always the correct input?  just using this to send current FPS...
+            NSNumber* timestamp = @(CMTimeGetSeconds(CMSampleBufferGetPresentationTimeStamp(sampleBuffer)));
+            
+            NSDictionary* dict = @{
+                                   @"image": imageData,
+                                   @"timestamp" : timestamp
+                                   };
+
+            [chanel broadcastDict:dict fromUser:[[Util sharedInstance]name]];
+        }
+
+        
+    }
+}
+//! Returns an image object from the buffer received from camera
+- (UIImage *) imageFromSampleBuffer:(CMSampleBufferRef) sampleBuffer
+{
+    //@autoreleasepool {
+    // Get a CMSampleBuffer's Core Video image buffer for the media data
+    CVImageBufferRef imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer);
+    // Lock the base address of the pixel buffer
+    CVPixelBufferLockBaseAddress(imageBuffer, 0);
+    
+    // Get the number of bytes per row for the pixel buffer
+    void *baseAddress = CVPixelBufferGetBaseAddress(imageBuffer);
+    
+    // Get the number of bytes per row for the pixel buffer
+    size_t bytesPerRow = CVPixelBufferGetBytesPerRow(imageBuffer);
+    // Get the pixel buffer width and height
+    size_t width = CVPixelBufferGetWidth(imageBuffer);
+    size_t height = CVPixelBufferGetHeight(imageBuffer);
+    
+    // Create a device-dependent RGB color space
+    CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
+    
+    // Create a bitmap graphics context with the sample buffer data
+    CGContextRef context = CGBitmapContextCreate(baseAddress,
+                                                 width,
+                                                 height,
+                                                 8,
+                                                 bytesPerRow,
+                                                 colorSpace,
+                                                 kCGBitmapByteOrder32Little | kCGImageAlphaPremultipliedFirst);
+    // Create a Quartz image from the pixel data in the bitmap graphics context
+    CGImageRef quartzImage = CGBitmapContextCreateImage(context);
+    // Unlock the pixel buffer
+    CVPixelBufferUnlockBaseAddress(imageBuffer,0);
+    
+    // Free up the context and color space
+    CGContextRelease(context);
+    CGColorSpaceRelease(colorSpace);
+    
+    // Create an image object from the Quartz image
+    //UIImage *image = [UIImage imageWithCGImage:quartzImage];
+    UIImage *image= [UIImage imageWithCGImage:quartzImage
+                                        scale:1.0 orientation:UIImageOrientationRight];
+    
+    // Release the Quartz image
+    CGImageRelease(quartzImage);
+    
+    return (image);
+    //}
+}
+
++ (void)setFlashMode:(AVCaptureFlashMode)flasMode forDevice:(AVCaptureDevice *)device
+{
+    if ([device hasFlash] && [device isFlashModeSupported:flasMode])
+    {
+        NSError *error = nil;
+        
+        if ([device lockForConfiguration:&error])
+        {
+            [device setFlashMode:flasMode];
+            [device unlockForConfiguration];
+        }
+        else
+        {
+#ifdef DEBUG
+            NSLog(@"FlashMode error %@,%@",error,[error localizedDescription]);
+#endif
+        }
+    }
+}
+
+- (void) setFrameRate:(NSInteger) framerate onDevice:(AVCaptureDevice*) videoDevice {
+    
+    if ([videoDevice lockForConfiguration:nil]) {
+        videoDevice.activeVideoMaxFrameDuration = CMTimeMake(1,(int32_t)framerate);
+        videoDevice.activeVideoMinFrameDuration = CMTimeMake(1,(int32_t)framerate);
+        [videoDevice unlockForConfiguration];
+    }
+}
++ (AVCaptureDevice *)deviceWithMediaType:(NSString *)mediaType preferringPosition:(AVCaptureDevicePosition)position
+{
+    NSArray *devices = [AVCaptureDevice devicesWithMediaType:mediaType];
+    
+    AVCaptureDevice *captureDevice = [devices firstObject];
+    
+    for (AVCaptureDevice *device in devices)
+    {
+        if ([device position] == position)
+        {
+            captureDevice = device;
+            break;
+        }
+    }
+    return captureDevice;
+}
+- (void)checkDeviceAuthorizationStatus
+{
+    NSString *mediaType = AVMediaTypeVideo;
+    
+    [AVCaptureDevice requestAccessForMediaType:mediaType completionHandler:^(BOOL granted) {
+        
+        if (granted)
+        {
+            [self setDeviceAuthorized:YES];
+        }
+        else
+        {
+            // not granted access to media type
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [[[UIAlertView alloc]initWithTitle:@"AVCaptureDevice"
+                                           message:@"AVCaptureDevice doesn't have permission to use Camera, please change privacy settings" delegate:self
+                                 cancelButtonTitle:@"OK"
+                                 otherButtonTitles:nil]show];
+            });
+        }
+    }];
+}
+
+
 
 #pragma mark - IBAction
 - (IBAction)exitAction:(id)sender
@@ -105,31 +430,14 @@
 }
 - (IBAction)playAction:(UIButton *)sender
 {
-    self.lastFrameTime = -1;
+    self.playBtn.selected = !self.playBtn.selected;
 
-    // seek to 0.0 second
-    [self.video seekTime:0.0];
-    
-    [NSTimer scheduledTimerWithTimeInterval:1.0/30 target:self
-                                   selector:@selector(displayNextFrame:)
-                                   userInfo:nil repeats:YES];
-//    BOOL isPause = self.displayLink.isPaused;
-//    if (isPause) {
-//        [self.displayLink setPaused:NO];
-//        [sender setTitle:@"Pause" forState:UIControlStateNormal];
-//    }
-//    else
-//    {
-//        [self.displayLink setPaused:YES];
-//        [sender setTitle:@"Play" forState:UIControlStateNormal];
-//    }
+
 }
 
 #pragma mark - ImagePickerControllerDelegate
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info
 {
-    
-    //AVAsset *asset = [AVAsset assetWithURL:info[UIImagePickerControllerMediaURL]];
     self.video = [[VideoFrameExtractor alloc]initWithVideo:[info[UIImagePickerControllerMediaURL] absoluteString]];
     // print some info about the video
     NSLog(@"video duration: %f",self.video.duration);
