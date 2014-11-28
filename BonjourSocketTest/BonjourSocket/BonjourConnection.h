@@ -17,7 +17,7 @@
 - (void)receivedNetworkPacket:(NSDictionary *)message viaConnection:(BonjourConnection *)connection;
 
 // add new method
-- (void)receivedNetworkDataPacket:(NSData *)data viaConnection:(BonjourConnection *)connection;
+//- (void)receivedNetworkDataPacket:(NSData *)data viaConnection:(BonjourConnection *)connection;
 @end
 
 @interface BonjourConnection : NSObject
@@ -63,8 +63,5 @@
 
 // Send network message
 - (void)sendNetworkPackage:(NSDictionary *)packet;
-
-// Send network data
-- (void)sendNetworkData:(NSData *)data;
 
 @end

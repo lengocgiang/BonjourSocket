@@ -103,13 +103,4 @@
     [self.delegate displayImageFromView:message[@"image"] withFPS:message[@"framesPerSecond"] fromUser:[message objectForKey:@"from"]];
 }
 
-- (void)receivedNetworkDataPacket:(NSData *)data viaConnection:(BonjourConnection *)connection
-{
-    
-}
-
-
-
-
-
 @end

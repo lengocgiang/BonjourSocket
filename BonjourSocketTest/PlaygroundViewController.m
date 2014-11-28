@@ -140,28 +140,22 @@ static void *SessionRunningAndDeviceAuthorizedContext = &SessionRunningAndDevice
 
 - (void)captureOutput:(AVCaptureOutput *)captureOutput didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer fromConnection:(AVCaptureConnection *)connection
 {
-
-//    dispatch_async(self.sessionQueue, ^{
-    //@autoreleasepool {
-
-        if ([self.playBtn isSelected])
-        {
-            UIImage *image = [self imageFromSampleBuffer:sampleBuffer];
-            
-            NSData *imageData = UIImageJPEGRepresentation(image, 0.2);//max compression = 0, min compression:1.0
-            NSLog(@"length %f",(float)imageData.length/1024);
-            // maybe not always the correct input?  just using this to send current FPS...
-            NSNumber* timestamp = @(CMTimeGetSeconds(CMSampleBufferGetPresentationTimeStamp(sampleBuffer)));
-            
-            NSDictionary* dict = @{
-                                   @"image": imageData,
-                                   @"timestamp" : timestamp
-                                   };
-            
-            [chanel broadcastDict:dict fromUser:[[Util sharedInstance]name]];
-        }
-
-  //  }
+    if ([self.playBtn isSelected])
+    {
+        UIImage *image = [self imageFromSampleBuffer:sampleBuffer];
+        
+        NSData *imageData = UIImageJPEGRepresentation(image, 0.2);//max compression = 0, min compression:1.0
+        //NSLog(@"length %f",(float)imageData.length/1024);
+        // maybe not always the correct input?  just using this to send current FPS...
+        NSNumber* timestamp = @(CMTimeGetSeconds(CMSampleBufferGetPresentationTimeStamp(sampleBuffer)));
+        
+        NSDictionary* dict = @{
+                               @"image": imageData,
+                               @"timestamp" : timestamp
+                               };
+        
+        [chanel broadcastDict:dict fromUser:[[Util sharedInstance]name]];
+    }
     
 }
 //! Returns an image object from the buffer received from camera

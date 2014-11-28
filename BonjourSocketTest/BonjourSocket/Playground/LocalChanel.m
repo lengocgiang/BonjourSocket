@@ -117,12 +117,6 @@
     //[clients makeObjectsPerformSelector:@selector(sendNetworkPackage:) withObject:message];
 }
 
-- (void)receivedNetworkDataPacket:(NSData *)data viaConnection:(BonjourConnection *)connection
-{
-    
-}
-
-
 
 
 @end

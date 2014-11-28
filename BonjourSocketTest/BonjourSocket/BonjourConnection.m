@@ -377,7 +377,7 @@ void readStreamEventHandler(CFReadStreamRef stream,CFStreamEventType eventType,v
         }
         else {
             // Not enough data yet. Will wait.
-            NSLog(@"incoming data %zd packetbodysize %d",[incomingDataBuffer length],packetBodySize);
+            //NSLog(@"incoming data %zd packetbodysize %d",[incomingDataBuffer length],packetBodySize);
             break;
         }
     }
@@ -445,7 +445,7 @@ void writeStreamEventHandler(CFWriteStreamRef stream,CFStreamEventType eventType
             return;
         }
         // Write as much as we can
-        NSLog(@"length %zd",[outgoingDataBuffer length]);
+        //NSLog(@"length %zd",[outgoingDataBuffer length]);
         
         CFIndex writtenBytes = CFWriteStreamWrite(writeStream, [outgoingDataBuffer bytes], [outgoingDataBuffer length]);
         
@@ -457,14 +457,11 @@ void writeStreamEventHandler(CFWriteStreamRef stream,CFStreamEventType eventType
             return;
         }
         
-        NSLog(@"writtenbytes: %ld",writtenBytes);
+        //NSLog(@"writtenbytes: %ld",writtenBytes);
         
         NSRange range = {0,writtenBytes};
         [outgoingDataBuffer replaceBytesInRange:range withBytes:nil length:0];
     });
-    
-
-   // });
 }
 
 #pragma mark - 
