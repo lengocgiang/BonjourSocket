@@ -318,7 +318,8 @@ void readStreamEventHandler(CFReadStreamRef stream,CFStreamEventType eventType,v
 
 // Read as many bytes from the stream as possible and try to extract meaningful packets
 - (void)readFromStreamIntoIncomingBuffer {
-    dispatch_async(dispatch_get_main_queue(), ^{
+    //dispatch_async(dispatch_get_main_queue(), ^{
+    
         // Temporary buffer to read data into
         UInt8 buf[1024];
         
@@ -355,7 +356,7 @@ void readStreamEventHandler(CFReadStreamRef stream,CFStreamEventType eventType,v
                 }
                 else {
                     // We don't have enough yet. Will wait for more data.
-                    NSLog(@"packetsize %d ",packetBodySize);
+                    //NSLog(@"packetsize %d ",packetBodySize);
                     break;
                 }
             }
@@ -383,7 +384,7 @@ void readStreamEventHandler(CFReadStreamRef stream,CFStreamEventType eventType,v
             }
         }
 
-    });
+    //});
 }
 
 #pragma mark Write stream methods

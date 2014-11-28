@@ -12,6 +12,8 @@
 @import VideoToolbox;
 @import QuartzCore;
 @import MobileCoreServices;
+@import AudioToolbox;
+@import GameKit;
 
 #import "Util.h"
 #import "UITextView+Utils.h"
@@ -27,7 +29,10 @@ static void *SessionRunningAndDeviceAuthorizedContext = &SessionRunningAndDevice
     UIImagePickerControllerDelegate,
     UINavigationControllerDelegate,
     UIPopoverControllerDelegate,
-    AVCaptureVideoDataOutputSampleBufferDelegate
+    AVCaptureVideoDataOutputSampleBufferDelegate,
+    AVAudioSessionDelegate,
+    AVCaptureAudioDataOutputSampleBufferDelegate
+
 >
 @property (weak, nonatomic) IBOutlet UIButton       *playBtn;
 @property (weak, nonatomic) IBOutlet UITextView     *chatView;
@@ -48,7 +53,24 @@ static void *SessionRunningAndDeviceAuthorizedContext = &SessionRunningAndDevice
 @property (nonatomic) AVCaptureStillImageOutput         *stillImageOutput;
 @property (nonatomic) AVCaptureDeviceInput              *videoDeviceInput;
 @property (nonatomic) AVCaptureVideoDataOutput          *videoDataOutput;
+@property (nonatomic) AVCaptureAudioDataOutput          *audioDataOutput;
 @property (nonatomic) AVCaptureVideoPreviewLayer        *videoPreviewLayer;
+
+// AudioProperties
+@property (nonatomic)AUGraph                            auGraph;
+@property (nonatomic)AudioUnit                          converterAudioUnit;
+@property (nonatomic)AudioUnit                          delayAudioUnit;
+@property (nonatomic)AudioChannelLayout                 *currentRecordingChannelLayout;
+@property (nonatomic)ExtAudioFileRef                    extAudioFile;
+
+@property (nonatomic)AudioStreamBasicDescription        currentInputASBD;
+@property (nonatomic)AudioStreamBasicDescription        graphOutputASBD;
+@property (nonatomic)AudioBufferList                    *currentInputAudioBufferList;
+
+
+@property (nonatomic)double                             currentSampleTime;
+@property (nonatomic)BOOL                               didSetUpAudioUnits;
+
 // Ultilities
 @property (nonatomic) UIBackgroundTaskIdentifier backgroundRecordingID;
 @property (nonatomic, getter = isDeviceAuthorized) BOOL deviceAuthorized;
@@ -63,89 +85,14 @@ static void *SessionRunningAndDeviceAuthorizedContext = &SessionRunningAndDevice
 @synthesize chatView;
 
 
-
-- (void)avCaptureSessionSetUp
-{
-    // Create the AVCaptureSession
-    AVCaptureSession *session = [[AVCaptureSession alloc]init];
-    
-    [[self session] setSessionPreset:AVCaptureSessionPresetLow];
-    
-    [self setSession:session];
-    
-    // Setup the preview view
-    [[self previewView] setSession:session];
-    
-    // Check for device authorized
-    [self checkDeviceAuthorizationStatus];
-    
-    // Dispatch session setup to the sessionQueue so that the main queue isn't blocked
-    
-    dispatch_queue_t sessionQueue = dispatch_queue_create("session queue", DISPATCH_QUEUE_SERIAL);
-    
-    [self setSessionQueue:sessionQueue];
-    
-    dispatch_async(sessionQueue, ^{
-        
-        [self setBackgroundRecordingID:UIBackgroundTaskInvalid];
-        
-        NSError *error = nil;
-        
-        AVCaptureDevice *videoDevice = [PlaygroundViewController deviceWithMediaType:AVMediaTypeVideo preferringPosition:AVCaptureDevicePositionFront];
-        
-        AVCaptureDeviceInput *videoDeviceInput = [AVCaptureDeviceInput deviceInputWithDevice:videoDevice error:&error];
-        
-        if (error)
-        {
-            NSLog(@"AVCaptureDeviceInput error %@,%@",error,[error localizedDescription]);
-        }
-        
-        if ([session canAddInput:videoDeviceInput])
-        {
-            [session addInput:videoDeviceInput];
-            
-            [self setVideoDeviceInput:videoDeviceInput];
-            
-            dispatch_async(dispatch_get_main_queue(), ^{
-                
-                [[(AVCaptureVideoPreviewLayer *)[[self previewView]layer]connection] setVideoOrientation:(AVCaptureVideoOrientation)[self interfaceOrientation]];
-            });
-        }
-        
-        
-        AVCaptureVideoDataOutput *videoDataOutput = [[AVCaptureVideoDataOutput alloc]init];
-       
-        if ([session canAddOutput:videoDataOutput])
-        {
-            [session addOutput:videoDataOutput];
-            
-            videoDataOutput.videoSettings =
-            [NSDictionary dictionaryWithObject:
-             [NSNumber numberWithInt:kCVPixelFormatType_32BGRA]
-                                        forKey:(id)kCVPixelBufferPixelFormatTypeKey];
-            
-            videoDataOutput.alwaysDiscardsLateVideoFrames = YES;
-            
-            [self setVideoDataOutput:videoDataOutput];
-            
-            [self.videoDataOutput setSampleBufferDelegate:self queue:self.sessionQueue];
-           
-            
-        }
-
-    
-    });
-    
-}
-
 - (void)captureOutput:(AVCaptureOutput *)captureOutput didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer fromConnection:(AVCaptureConnection *)connection
 {
     if ([self.playBtn isSelected])
     {
         UIImage *image = [self imageFromSampleBuffer:sampleBuffer];
         
-        NSData *imageData = UIImageJPEGRepresentation(image, 0.2);//max compression = 0, min compression:1.0
-        //NSLog(@"length %f",(float)imageData.length/1024);
+        NSData *imageData = UIImageJPEGRepresentation(image, 0.0);//max compression = 0, min compression:1.0
+        NSLog(@"length %f",(float)imageData.length/1024);
         // maybe not always the correct input?  just using this to send current FPS...
         NSNumber* timestamp = @(CMTimeGetSeconds(CMSampleBufferGetPresentationTimeStamp(sampleBuffer)));
         
@@ -153,8 +100,8 @@ static void *SessionRunningAndDeviceAuthorizedContext = &SessionRunningAndDevice
                                @"image": imageData,
                                @"timestamp" : timestamp
                                };
-        
         [chanel broadcastDict:dict fromUser:[[Util sharedInstance]name]];
+
     }
     
 }
@@ -289,6 +236,80 @@ static void *SessionRunningAndDeviceAuthorizedContext = &SessionRunningAndDevice
 }
 
 #pragma mark - Test
+- (void)avCaptureSessionSetUp
+{
+    // Create the AVCaptureSession
+    AVCaptureSession *session = [[AVCaptureSession alloc]init];
+    
+    [[self session] setSessionPreset:AVCaptureSessionPreset352x288];
+    
+    [self setSession:session];
+    
+    // Setup the preview view
+    [[self previewView] setSession:session];
+    
+    // Check for device authorized
+    [self checkDeviceAuthorizationStatus];
+    
+    // Dispatch session setup to the sessionQueue so that the main queue isn't blocked
+    
+    dispatch_queue_t sessionQueue = dispatch_queue_create("session queue", DISPATCH_QUEUE_SERIAL);
+    
+    [self setSessionQueue:sessionQueue];
+    
+    dispatch_async(sessionQueue, ^{
+        
+        [self setBackgroundRecordingID:UIBackgroundTaskInvalid];
+        
+        NSError *error = nil;
+        
+        AVCaptureDevice *videoDevice = [PlaygroundViewController deviceWithMediaType:AVMediaTypeVideo preferringPosition:AVCaptureDevicePositionFront];
+        
+        AVCaptureDeviceInput *videoDeviceInput = [AVCaptureDeviceInput deviceInputWithDevice:videoDevice error:&error];
+        
+        if (error)
+        {
+            NSLog(@"AVCaptureDeviceInput error %@,%@",error,[error localizedDescription]);
+        }
+        
+        if ([session canAddInput:videoDeviceInput])
+        {
+            [session addInput:videoDeviceInput];
+            
+            [self setVideoDeviceInput:videoDeviceInput];
+            
+            dispatch_async(dispatch_get_main_queue(), ^{
+                
+                [[(AVCaptureVideoPreviewLayer *)[[self previewView]layer]connection] setVideoOrientation:(AVCaptureVideoOrientation)[self interfaceOrientation]];
+            });
+        }
+        
+        
+        AVCaptureVideoDataOutput *videoDataOutput = [[AVCaptureVideoDataOutput alloc]init];
+        
+        if ([session canAddOutput:videoDataOutput])
+        {
+            [session addOutput:videoDataOutput];
+            
+            videoDataOutput.videoSettings =
+            [NSDictionary dictionaryWithObject:
+             [NSNumber numberWithInt:kCVPixelFormatType_32BGRA]
+                                        forKey:(id)kCVPixelBufferPixelFormatTypeKey];
+            
+            videoDataOutput.alwaysDiscardsLateVideoFrames = YES;
+            
+            [self setVideoDataOutput:videoDataOutput];
+            
+            [self.videoDataOutput setSampleBufferDelegate:self queue:self.sessionQueue];
+            
+            
+        }
+        
+        
+    });
+    
+}
+
 + (AVCaptureDevice *)deviceWithMediaType:(NSString *)mediaType preferringPosition:(AVCaptureDevicePosition)position
 {
     NSArray *devices = [AVCaptureDevice devicesWithMediaType:mediaType];
