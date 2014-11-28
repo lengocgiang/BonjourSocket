@@ -83,7 +83,7 @@
 - (void)broadcastDict:(NSDictionary *)dict fromUser:(NSString *)name
 {
     //[self.delegate displayChatMessage:@"data sending" fromUser:name];
-    [self.delegate displayImageFromView:dict[@"image"] withFPS:dict[@"framesPerSecond"] fromUser:name];
+    //[self.delegate displayImageFromView:dict[@"image"] withFPS:dict[@"framesPerSecond"] fromUser:name];
     
     [connection sendNetworkPackage:dict];
 }

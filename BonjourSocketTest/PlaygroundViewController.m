@@ -63,84 +63,7 @@ static void *SessionRunningAndDeviceAuthorizedContext = &SessionRunningAndDevice
 @synthesize chatView;
 
 
-//@synthesize server;
-- (BOOL)isSessionRunningAndDeviceAuthorized
-{
-    return [[self session]isRunning] && [self isDeviceAuthorized];
-}
 
-+ (NSSet *)keyPathsForValuesAffectingDeviceAuthorized
-{
-    return [NSSet setWithObjects:@"session.running",@"deviceAuthorized",nil];
-}
-
-
-- (void)viewDidLoad {
-    [super viewDidLoad];
-    // Do any additional setup after loading the view.
-    [self avCaptureSessionSetUp];
-    
-    [self.session startRunning];
-    
-}
-
-- (void)viewWillAppear:(BOOL)animated
-{
-    dispatch_async([self sessionQueue], ^{
-        
-        [self addObserver:self forKeyPath:@"sessionRunningAndDeviceAuthorized" options:(NSKeyValueObservingOptionOld | NSKeyValueObservingOptionNew) context:SessionRunningAndDeviceAuthorizedContext];
-        
-        [self addObserver:self forKeyPath:@"stillImageOutput.capturingStillImage" options:(NSKeyValueObservingOptionOld | NSKeyValueObservingOptionNew) context:CapturingStillImageContext];
-        
-        [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(subjectAreaDidChange:) name:AVCaptureDeviceSubjectAreaDidChangeNotification object:[[self videoDeviceInput]device]];
-        
-        
-        __weak PlaygroundViewController *weakSelf = self;
-        
-        [self setRuntimeErrorHandlingObserver:[[NSNotificationCenter defaultCenter]addObserverForName:AVCaptureSessionRuntimeErrorNotification object:[self session] queue:nil usingBlock:^(NSNotification *note) {
-            
-            PlaygroundViewController *strongSelf = weakSelf;
-            
-            dispatch_async([strongSelf sessionQueue], ^{
-                // Manual restaring the session since it must have been stopped due to an error
-                [[strongSelf session] startRunning];
-                
-            });
-            
-        }]];
-        [[self session] startRunning];
-        
-    });
-
-}
-- (void)viewDidDisappear:(BOOL)animated
-{
-    dispatch_async([self sessionQueue], ^{
-        
-        [[self session]stopRunning];
-        
-        // remove NSNotificatonCenter
-        [[NSNotificationCenter defaultCenter]removeObserver:self name:AVCaptureDeviceSubjectAreaDidChangeNotification object:[[self videoDeviceInput]device]];
-        
-        [[NSNotificationCenter defaultCenter]removeObserver:[self runtimeErrorHandlingObserver]];
-
-        
-        [self removeObserver:self forKeyPath:@"sessionRunningAndDeviceAuthorized" context:SessionRunningAndDeviceAuthorizedContext];
-        [self removeObserver:self forKeyPath:@"stillImageOutput.capturingStillImage" context:CapturingStillImageContext];
-        
-    });
-    
-}
-
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
-}
-- (void)subjectAreaDidChange:(NSNotification *)notification
-{
-    CGPoint devicePoint = CGPointMake(.5, .5);
-    [self focusWithMode:AVCaptureFocusModeAutoFocus exposeWithMode:AVCaptureExposureModeAutoExpose atDevicePoint:devicePoint monitorSubjectAreaChange:NO];
-}
 - (void)avCaptureSessionSetUp
 {
     // Create the AVCaptureSession
@@ -214,45 +137,13 @@ static void *SessionRunningAndDeviceAuthorizedContext = &SessionRunningAndDevice
     });
     
 }
-- (void)focusWithMode:(AVCaptureFocusMode)focusMode exposeWithMode:(AVCaptureExposureMode)exposureMode atDevicePoint:(CGPoint)point monitorSubjectAreaChange:(BOOL)monitorSubjectAreaChange
-{
-    dispatch_async([self sessionQueue], ^{
-        
-        AVCaptureDevice *device = [[self videoDeviceInput]device];
-        
-        NSError *error = nil;
-        
-        if ([device lockForConfiguration:&error])
-        {
-            if ([device isFocusPointOfInterestSupported] && [device isFocusModeSupported:focusMode])
-            {
-                [device setFocusMode:focusMode];
-                [device setFocusPointOfInterest:point];
-            }
-            if ([device isExposurePointOfInterestSupported] && [device isExposureModeSupported:exposureMode])
-            {
-                [device setExposureMode:exposureMode];
-                [device setExposurePointOfInterest:point];
-            }
-            
-            [device setSubjectAreaChangeMonitoringEnabled:monitorSubjectAreaChange];
-            [device unlockForConfiguration];
-        }
-        else
-        {
-#ifdef DEBUG
-            NSLog(@"forcusWithMode error %@,%@",error,[error localizedDescription]);
-#endif
-        }
-        
-    });
-}
-
 
 - (void)captureOutput:(AVCaptureOutput *)captureOutput didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer fromConnection:(AVCaptureConnection *)connection
 {
 
-    @autoreleasepool {
+//    dispatch_async(self.sessionQueue, ^{
+    //@autoreleasepool {
+
         if ([self.playBtn isSelected])
         {
             UIImage *image = [self imageFromSampleBuffer:sampleBuffer];
@@ -266,12 +157,12 @@ static void *SessionRunningAndDeviceAuthorizedContext = &SessionRunningAndDevice
                                    @"image": imageData,
                                    @"timestamp" : timestamp
                                    };
-
+            
             [chanel broadcastDict:dict fromUser:[[Util sharedInstance]name]];
         }
 
-        
-    }
+  //  }
+    
 }
 //! Returns an image object from the buffer received from camera
 - (UIImage *) imageFromSampleBuffer:(CMSampleBufferRef) sampleBuffer
@@ -322,75 +213,6 @@ static void *SessionRunningAndDeviceAuthorizedContext = &SessionRunningAndDevice
     return (image);
     //}
 }
-
-+ (void)setFlashMode:(AVCaptureFlashMode)flasMode forDevice:(AVCaptureDevice *)device
-{
-    if ([device hasFlash] && [device isFlashModeSupported:flasMode])
-    {
-        NSError *error = nil;
-        
-        if ([device lockForConfiguration:&error])
-        {
-            [device setFlashMode:flasMode];
-            [device unlockForConfiguration];
-        }
-        else
-        {
-#ifdef DEBUG
-            NSLog(@"FlashMode error %@,%@",error,[error localizedDescription]);
-#endif
-        }
-    }
-}
-
-- (void) setFrameRate:(NSInteger) framerate onDevice:(AVCaptureDevice*) videoDevice {
-    
-    if ([videoDevice lockForConfiguration:nil]) {
-        videoDevice.activeVideoMaxFrameDuration = CMTimeMake(1,(int32_t)framerate);
-        videoDevice.activeVideoMinFrameDuration = CMTimeMake(1,(int32_t)framerate);
-        [videoDevice unlockForConfiguration];
-    }
-}
-+ (AVCaptureDevice *)deviceWithMediaType:(NSString *)mediaType preferringPosition:(AVCaptureDevicePosition)position
-{
-    NSArray *devices = [AVCaptureDevice devicesWithMediaType:mediaType];
-    
-    AVCaptureDevice *captureDevice = [devices firstObject];
-    
-    for (AVCaptureDevice *device in devices)
-    {
-        if ([device position] == position)
-        {
-            captureDevice = device;
-            break;
-        }
-    }
-    return captureDevice;
-}
-- (void)checkDeviceAuthorizationStatus
-{
-    NSString *mediaType = AVMediaTypeVideo;
-    
-    [AVCaptureDevice requestAccessForMediaType:mediaType completionHandler:^(BOOL granted) {
-        
-        if (granted)
-        {
-            [self setDeviceAuthorized:YES];
-        }
-        else
-        {
-            // not granted access to media type
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [[[UIAlertView alloc]initWithTitle:@"AVCaptureDevice"
-                                           message:@"AVCaptureDevice doesn't have permission to use Camera, please change privacy settings" delegate:self
-                                 cancelButtonTitle:@"OK"
-                                 otherButtonTitles:nil]show];
-            });
-        }
-    }];
-}
-
-
 
 #pragma mark - IBAction
 - (IBAction)exitAction:(id)sender
@@ -472,26 +294,158 @@ static void *SessionRunningAndDeviceAuthorizedContext = &SessionRunningAndDevice
     });
 }
 
-#define LERP(A,B,C) ((A)*(1.0-C)+(B)*C)
-- (void)displayNextFrame:(NSTimer *)timer
+#pragma mark - Test
++ (AVCaptureDevice *)deviceWithMediaType:(NSString *)mediaType preferringPosition:(AVCaptureDevicePosition)position
 {
+    NSArray *devices = [AVCaptureDevice devicesWithMediaType:mediaType];
     
-    NSTimeInterval startTime = [NSDate timeIntervalSinceReferenceDate];
-    if (![self.video stepFrame]) {
-        [self.displayLink setPaused:YES];
-        [timer invalidate];
-        return;
+    AVCaptureDevice *captureDevice = [devices firstObject];
+    
+    for (AVCaptureDevice *device in devices)
+    {
+        if ([device position] == position)
+        {
+            captureDevice = device;
+            break;
+        }
     }
-    float frameTime = 1.0/([NSDate timeIntervalSinceReferenceDate]-startTime);
+    return captureDevice;
+}
+- (void)checkDeviceAuthorizationStatus
+{
+    NSString *mediaType = AVMediaTypeVideo;
     
-    NSData *data = UIImageJPEGRepresentation(self.video.currentImage, 0.2);
+    [AVCaptureDevice requestAccessForMediaType:mediaType completionHandler:^(BOOL granted) {
+        
+        if (granted)
+        {
+            [self setDeviceAuthorized:YES];
+        }
+        else
+        {
+            // not granted access to media type
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [[[UIAlertView alloc]initWithTitle:@"AVCaptureDevice"
+                                           message:@"AVCaptureDevice doesn't have permission to use Camera, please change privacy settings" delegate:self
+                                 cancelButtonTitle:@"OK"
+                                 otherButtonTitles:nil]show];
+            });
+        }
+    }];
+}
+//@synthesize server;
+- (BOOL)isSessionRunningAndDeviceAuthorized
+{
+    return [[self session]isRunning] && [self isDeviceAuthorized];
+}
 
-    NSDictionary *dict = @{@"image":data,
-                           @"framePerSecond":[NSNumber numberWithFloat:frameTime]};
++ (NSSet *)keyPathsForValuesAffectingDeviceAuthorized
+{
+    return [NSSet setWithObjects:@"session.running",@"deviceAuthorized",nil];
+}
 
-    [chanel broadcastDict:dict fromUser:[[Util sharedInstance]name]];
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    // Do any additional setup after loading the view.
+    [self avCaptureSessionSetUp];
+    
+    [self.session startRunning];
     
 }
-     
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [self.view bringSubviewToFront:self.previewView];
+    
+    dispatch_async([self sessionQueue], ^{
+        
+        [self addObserver:self forKeyPath:@"sessionRunningAndDeviceAuthorized" options:(NSKeyValueObservingOptionOld | NSKeyValueObservingOptionNew) context:SessionRunningAndDeviceAuthorizedContext];
+        
+        [self addObserver:self forKeyPath:@"stillImageOutput.capturingStillImage" options:(NSKeyValueObservingOptionOld | NSKeyValueObservingOptionNew) context:CapturingStillImageContext];
+        
+        [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(subjectAreaDidChange:) name:AVCaptureDeviceSubjectAreaDidChangeNotification object:[[self videoDeviceInput]device]];
+        
+        
+        __weak PlaygroundViewController *weakSelf = self;
+        
+        [self setRuntimeErrorHandlingObserver:[[NSNotificationCenter defaultCenter]addObserverForName:AVCaptureSessionRuntimeErrorNotification object:[self session] queue:nil usingBlock:^(NSNotification *note) {
+            
+            PlaygroundViewController *strongSelf = weakSelf;
+            
+            dispatch_async([strongSelf sessionQueue], ^{
+                // Manual restaring the session since it must have been stopped due to an error
+                [[strongSelf session] startRunning];
+                
+            });
+            
+        }]];
+        [[self session] startRunning];
+        
+    });
+    
+}
+- (void)viewDidDisappear:(BOOL)animated
+{
+    dispatch_async([self sessionQueue], ^{
+        
+        [[self session]stopRunning];
+        
+        // remove NSNotificatonCenter
+        [[NSNotificationCenter defaultCenter]removeObserver:self name:AVCaptureDeviceSubjectAreaDidChangeNotification object:[[self videoDeviceInput]device]];
+        
+        [[NSNotificationCenter defaultCenter]removeObserver:[self runtimeErrorHandlingObserver]];
+        
+        
+        [self removeObserver:self forKeyPath:@"sessionRunningAndDeviceAuthorized" context:SessionRunningAndDeviceAuthorizedContext];
+        [self removeObserver:self forKeyPath:@"stillImageOutput.capturingStillImage" context:CapturingStillImageContext];
+        
+    });
+    
+}
+
+- (void)didReceiveMemoryWarning {
+    [super didReceiveMemoryWarning];
+    // Dispose of any resources that can be recreated.
+}
+- (void)subjectAreaDidChange:(NSNotification *)notification
+{
+    CGPoint devicePoint = CGPointMake(.5, .5);
+    [self focusWithMode:AVCaptureFocusModeAutoFocus exposeWithMode:AVCaptureExposureModeAutoExpose atDevicePoint:devicePoint monitorSubjectAreaChange:NO];
+}
+- (void)focusWithMode:(AVCaptureFocusMode)focusMode exposeWithMode:(AVCaptureExposureMode)exposureMode atDevicePoint:(CGPoint)point monitorSubjectAreaChange:(BOOL)monitorSubjectAreaChange
+{
+    dispatch_async([self sessionQueue], ^{
+        
+        AVCaptureDevice *device = [[self videoDeviceInput]device];
+        
+        NSError *error = nil;
+        
+        if ([device lockForConfiguration:&error])
+        {
+            if ([device isFocusPointOfInterestSupported] && [device isFocusModeSupported:focusMode])
+            {
+                [device setFocusMode:focusMode];
+                [device setFocusPointOfInterest:point];
+            }
+            if ([device isExposurePointOfInterestSupported] && [device isExposureModeSupported:exposureMode])
+            {
+                [device setExposureMode:exposureMode];
+                [device setExposurePointOfInterest:point];
+            }
+            
+            [device setSubjectAreaChangeMonitoringEnabled:monitorSubjectAreaChange];
+            [device unlockForConfiguration];
+        }
+        else
+        {
+#ifdef DEBUG
+            NSLog(@"forcusWithMode error %@,%@",error,[error localizedDescription]);
+#endif
+        }
+        
+    });
+}
+
 
 @end

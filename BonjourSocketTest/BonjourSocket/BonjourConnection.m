@@ -427,37 +427,44 @@ void writeStreamEventHandler(CFWriteStreamRef stream,CFStreamEventType eventType
 - (void)writeOutgoingBufferToStream
 {
     // Is connection open?
-    if (!readStreamOpen || !writeStreamOpen)
-    {
-        // No, wait until everything is operational before pushing data throught
-        return;
-    }
-    // do we have anything to write?
-    if([outgoingDataBuffer length] == 0)
-    {
-        return;
-    }
-    // Can stream take any data in?
-    if (!CFWriteStreamCanAcceptBytes(writeStream)) {
-        return;
-    }
-    // Write as much as we can
-    NSLog(@"length %zd",[outgoingDataBuffer length]);
+    //dispatch_queue_t writeQueue = dispatch_queue_create("con.gianglengoc.writeQueue", DISPATCH_QUEUE_SERIAL);
+    //dispatch_async(writeQueue, ^{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if (!readStreamOpen || !writeStreamOpen)
+        {
+            // No, wait until everything is operational before pushing data throught
+            return;
+        }
+        // do we have anything to write?
+        if([outgoingDataBuffer length] == 0)
+        {
+            return;
+        }
+        // Can stream take any data in?
+        if (!CFWriteStreamCanAcceptBytes(writeStream)) {
+            return;
+        }
+        // Write as much as we can
+        NSLog(@"length %zd",[outgoingDataBuffer length]);
+        
+        CFIndex writtenBytes = CFWriteStreamWrite(writeStream, [outgoingDataBuffer bytes], [outgoingDataBuffer length]);
+        
+        if (writtenBytes == -1)
+        {
+            // Error orrcured, close everything up
+            [self close];
+            [delegate connectionTerminated:self];
+            return;
+        }
+        
+        NSLog(@"writtenbytes: %ld",writtenBytes);
+        
+        NSRange range = {0,writtenBytes};
+        [outgoingDataBuffer replaceBytesInRange:range withBytes:nil length:0];
+    });
     
-    CFIndex writtenBytes = CFWriteStreamWrite(writeStream, [outgoingDataBuffer bytes], [outgoingDataBuffer length]);
-    
-    if (writtenBytes == -1)
-    {
-        // Error orrcured, close everything up
-        [self close];
-        [delegate connectionTerminated:self];
-        return;
-    }
-    
-    NSLog(@"writtenbytes: %ld",writtenBytes);
-    
-    NSRange range = {0,writtenBytes};
-    [outgoingDataBuffer replaceBytesInRange:range withBytes:nil length:0];
+
+   // });
 }
 
 #pragma mark - 

@@ -61,21 +61,6 @@
     [clients makeObjectsPerformSelector:@selector(close)];
 }
 
-- (void)setupAudio
-{
-    AVAudioSession *audioSession = [AVAudioSession sharedInstance];
-    [audioSession setDelegate:self];
-    [audioSession setActive: NO error: nil];
-    [audioSession setCategory:AVAudioSessionCategoryPlayAndRecord error:NULL];
-    [audioSession setMode: AVAudioSessionModeVoiceChat error:NULL];
-    UInt32 allowMixing = 1;
-    AudioSessionSetProperty(kAudioSessionProperty_OverrideCategoryMixWithOthers, sizeof(allowMixing), &allowMixing);
-    
-    [audioSession setActive: YES error: NULL];
-    
-    [GKVoiceChatService defaultVoiceChatService].client = self;
-
-}
 
 
 - (void)broadcastChatMessage:(NSString *)message fromUser:(NSString *)name
@@ -91,7 +76,7 @@
 - (void)broadcastDict:(NSDictionary *)dict fromUser:(NSString *)name
 {
     //[self.delegate displayChatMessage:@"data sending" fromUser:name];
-    [self.delegate displayImageFromView:dict[@"image"] withFPS:dict[@"framesPerSecond"] fromUser:name];
+    //[self.delegate displayImageFromView:dict[@"image"] withFPS:dict[@"framesPerSecond"] fromUser:name];
     
     [clients makeObjectsPerformSelector:@selector(sendNetworkPackage:) withObject:dict];
 }
@@ -129,7 +114,7 @@
     [self.delegate displayImageFromView:message[@"image"] withFPS:message[@"framesPerSecond"] fromUser:[message objectForKey:@"from"]];
     
     // Broadcast this message to all connected clients, including the one that sent it
-    [clients makeObjectsPerformSelector:@selector(sendNetworkPackage:) withObject:message];
+    //[clients makeObjectsPerformSelector:@selector(sendNetworkPackage:) withObject:message];
 }
 
 - (void)receivedNetworkDataPacket:(NSData *)data viaConnection:(BonjourConnection *)connection

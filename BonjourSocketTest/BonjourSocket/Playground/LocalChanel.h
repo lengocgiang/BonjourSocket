@@ -17,9 +17,8 @@
 @interface LocalChanel : Chanel
 <
     BonjourConnectionDelegate,
-    BonjourServerDelegate,
-    GKVoiceChatClient,
-    AVAudioSessionDelegate
+    BonjourServerDelegate
+
 >
 
 @property (strong, nonatomic,readonly) BonjourServer         *server;
